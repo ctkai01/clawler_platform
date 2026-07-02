@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Report — {{ entity or 'Tất cả' }}{% endblock %}
+{% block content %}
+<a class="back-link" href="/">← Quay lại danh sách</a>
+
+<form class="trigger-box" method="get" action="/report">
+    <label for="entity">Entity:</label>
+    <input type="text" id="entity" name="entity" value="{{ entity }}" placeholder="vd: mobifone (để trống = tất cả)" style="flex:1 1 auto; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid var(--border); font-size:0.85rem;">
+    <label for="days">Số ngày:</label>
+    <select name="days" id="days" style="width:6rem;">
+        {% for d in [1, 7, 14, 30, 90, 365] %}
+        <option value="{{ d }}" {{ 'selected' if d == days }}>{{ d }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">📊 Xem report</button>
+</form>
+
+<p class="meta">Khoảng thời gian: <strong>{{ period_start.strftime('%Y-%m-%d') }}</strong> → <strong>{{ period_end.strftime('%Y-%m-%d') }}</strong> · Entity lọc: <strong>{{ entity or 'tất cả' }}</strong></p>
+
+<h3>I. Tổng số thông tin{% if entity %} về {{ entity }}{% endif %} trên mạng xã hội</h3>
+<div class="card">
+    <div class="report-kpi-grid">
+        <div class="report-kpi"><div class="report-kpi-label">Tổng số tin tức</div><div class="report-kpi-value">{{ kpis.total_posts }}</div></div>
+        <div class="report-kpi"><div class="report-kpi-label">Bình luận</div><div class="report-kpi-value">{{ kpis.total_comments }}</div></div>
+        <div class="report-kpi"><div class="report-kpi-label">Quan tâm</div><div class="report-kpi-value">{{ kpis.total_reactions }}</div></div>
+        <div class="report-kpi"><div class="report-kpi-label">Chia sẻ</div><div class="report-kpi-value">{{ kpis.total_shares }}</div></div>
+    </div>
+    <div class="report-chart-box">
+        <canvas id="sentimentPie"></canvas>
+    </div>
+</div>
+
+<h3>II. Thông tin theo chủ đề (entity)</h3>
+<div class="card">
+    {% if topic_detail %}
+    <table class="report-table">
+        <thead><tr><th>Chủ đề</th><th>Bài đăng</th><th>Bình luận</th><th>Tổng số tương tác</th></tr></thead>
+        <tbody>
+            {% for row in topic_detail %}
+            <tr><td>{{ row.topic }}</td><td>{{ row.posts }}</td><td>{{ row.comments }}</td><td>{{ row.total_engagement }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Không có dữ liệu entity trong khoảng thời gian này.</div>
+    {% endif %}
+</div>
+
+<h3>III. So sánh sắc thái theo chủ đề</h3>
+<div class="card">
+    {% if topics %}
+    <div class="report-chart-box report-chart-tall">
+        <canvas id="topicSentimentBar"></canvas>
+    </div>
+    {% else %}
+    <div class="empty-state">Không có dữ liệu.</div>
+    {% endif %}
+</div>
+
+<h3>IV. Thông tin tiêu cực{% if entity %} về {{ entity }}{% endif %}</h3>
+<div class="card">
+    <p class="meta">Tổng bài viết tiêu cực: <strong>{{ negative_count }}</strong> bài viết</p>
+    {% if negative_posts %}
+    <table class="report-table">
+        <thead><tr><th>Tiêu đề bài đăng</th><th>Kênh</th><th>Tổng số tương tác</th></tr></thead>
+        <tbody>
+            {% for p in negative_posts %}
+            <tr>
+                <td><a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a> · <a href="/documents/{{ p.id }}">[chi tiết]</a></td>
+                <td>{{ p.channel_label }}</td>
+                <td>{{ p.engagement_total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Không có bài viết tiêu cực trong khoảng thời gian này.</div>
+    {% endif %}
+</div>
+
+<h3>V. Thông tin tích cực{% if entity %} về {{ entity }}{% endif %}</h3>
+<div class="card">
+    <p class="meta">Tổng bài viết tích cực: <strong>{{ positive_count }}</strong> bài viết</p>
+    {% if positive_posts %}
+    <table class="report-table">
+        <thead><tr><th>Tiêu đề bài đăng</th><th>Kênh</th><th>Tổng số tương tác</th></tr></thead>
+        <tbody>
+            {% for p in positive_posts %}
+            <tr>
+                <td><a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title }}</a> · <a href="/documents/{{ p.id }}">[chi tiết]</a></td>
+                <td>{{ p.channel_label }}</td>
+                <td>{{ p.engagement_total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Không có bài viết tích cực trong khoảng thời gian này.</div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+new Chart(document.getElementById('sentimentPie'), {
+    type: 'pie',
+    data: {
+        labels: ['Tích cực', 'Trung tính', 'Tiêu cực'],
+        datasets: [{
+            data: [{{ sentiment_positive }}, {{ sentiment_neutral }}, {{ sentiment_negative }}],
+            backgroundColor: ['#15803d', '#94a3b8', '#dc2626'],
+        }],
+    },
+    options: { plugins: { title: { display: true, text: 'Thu thập thông tin theo sắc thái' } } },
+});
+
+{% if topics %}
+new Chart(document.getElementById('topicSentimentBar'), {
+    type: 'bar',
+    data: {
+        labels: {{ topics | tojson }},
+        datasets: [
+            { label: 'Tiêu cực', data: {{ topic_negative_counts | tojson }}, backgroundColor: '#dc2626' },
+            { label: 'Trung lập', data: {{ topic_neutral_counts | tojson }}, backgroundColor: '#94a3b8' },
+            { label: 'Tích cực', data: {{ topic_positive_counts | tojson }}, backgroundColor: '#15803d' },
+        ],
+    },
+    options: {
+        indexAxis: 'y',
+        scales: { x: { stacked: true }, y: { stacked: true } },
+        plugins: { title: { display: true, text: 'So sánh sắc thái theo chủ đề' } },
+    },
+});
+{% endif %}
+</script>
+{% endblock %}

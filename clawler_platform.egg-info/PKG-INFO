@@ -1,0 +1,22 @@
+Metadata-Version: 2.4
+Name: clawler-platform
+Version: 0.1.0
+Summary: Multi-platform crawling platform (FB group/page, forum, news) orchestrated by Airflow
+Requires-Python: >=3.11
+Requires-Dist: psycopg[binary]>=3.1
+Requires-Dist: psycopg-pool>=3.2
+Requires-Dist: httpx>=0.27
+Requires-Dist: beautifulsoup4>=4.12
+Requires-Dist: lxml>=5.0
+Requires-Dist: python-dateutil>=2.9
+Requires-Dist: fastapi>=0.110
+Requires-Dist: uvicorn>=0.29
+Requires-Dist: jinja2>=3.1
+Requires-Dist: python-multipart>=0.0.9
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: airflow
+Requires-Dist: apache-airflow<3,>=2.9; extra == "airflow"
+Requires-Dist: apache-airflow-providers-celery>=3.6; extra == "airflow"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23; extra == "dev"

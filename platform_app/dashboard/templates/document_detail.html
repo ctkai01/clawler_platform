@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ doc.topic or doc.author or 'Bài viết' }}{% endblock %}
+{% block content %}
+<a class="back-link" href="/">← Quay lại danh sách</a>
+
+{% if not doc %}
+<div class="empty-state">Không tìm thấy bài viết.</div>
+{% else %}
+<div class="card">
+    <div class="meta">
+        <span class="badge badge-{{ doc.platform_type }}">{{ doc.platform_type }}</span>
+        <span class="badge badge-source">{{ doc.source_type }}</span>
+        <span>{{ doc.target_name or '' }} · {{ doc.author or 'Ẩn danh' }}{% if doc.published_at %} · {{ doc.published_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}</span>
+    </div>
+    {% if doc.classification_category or entities %}
+    <div class="meta">
+        {% if doc.classification_category %}
+        <span class="badge badge-category">{{ doc.classification_category }}</span>
+        <span class="badge badge-sentiment-{{ doc.classification_sentiment or 'neutral' }}">{{ doc.classification_sentiment or 'neutral' }}</span>
+        {% if doc.classification_sentiment_source %}
+        <span class="badge badge-sentsrc-{{ doc.classification_sentiment_source }}">{{ 'AI' if doc.classification_sentiment_source == 'ai' else 'default' }}</span>
+        {% endif %}
+        {% if doc.classification_severity and doc.classification_severity > 1 %}
+        <span class="badge badge-severity">⚠ severity {{ doc.classification_severity }}</span>
+        {% endif %}
+        {% endif %}
+        {% for e in entities %}<span class="badge badge-entity">{{ e }}</span>{% endfor %}
+    </div>
+    {% if doc.classification_reasoning %}<p class="meta">💡 {{ doc.classification_reasoning }}</p>{% endif %}
+    {% endif %}
+    {% if doc.topic %}<p class="topic">{{ doc.topic }}</p>{% endif %}
+    <div class="content">{{ doc.content }}</div>
+    {% if doc.images %}
+    <div class="media">
+        {% for img in doc.images %}
+        <a href="{{ img }}" target="_blank" rel="noopener"><img src="{{ img }}" loading="lazy" alt=""></a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if doc.videos %}
+    <div class="media-links">
+        {% for v in doc.videos %}<a href="{{ v }}" target="_blank" rel="noopener">🎬 Video {{ loop.index }}</a>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="stats">
+        <span class="stat">👍 {{ doc.like_count }}</span>
+        <span class="stat">❤️ {{ doc.reactions.get('love', 0) }}</span>
+        {% if doc.reactions.get('haha') %}<span class="stat">😆 {{ doc.reactions.haha }}</span>{% endif %}
+        {% if doc.reactions.get('wow') %}<span class="stat">😮 {{ doc.reactions.wow }}</span>{% endif %}
+        {% if doc.reactions.get('sad') %}<span class="stat">😢 {{ doc.reactions.sad }}</span>{% endif %}
+        {% if doc.reactions.get('angry') %}<span class="stat">😠 {{ doc.reactions.angry }}</span>{% endif %}
+        <span class="stat">Σ {{ doc.reaction_count }} cảm xúc</span>
+        <span class="stat">💬 {{ doc.comment_count }}</span>
+        <span class="spacer"></span>
+        <a href="{{ doc.url }}" target="_blank" rel="noopener">Bài gốc ↗</a>
+    </div>
+</div>
+
+<h3>Bình luận ({{ comments|length }})</h3>
+<div class="card comment-list">
+    {% for c in comments %}
+    <div class="comment" style="margin-left: {{ (c.depth or 0) * 1.75 }}rem;">
+        <div class="avatar">{{ (c.author or '?')[0]|upper }}</div>
+        <div class="comment-body">
+            <div class="meta">
+                <strong>{{ c.author or 'Ẩn danh' }}</strong>
+                {% if c.created_at %} · {{ c.created_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}
+            </div>
+            <div>{{ c.text }}</div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">Chưa có bình luận nào được lưu.</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

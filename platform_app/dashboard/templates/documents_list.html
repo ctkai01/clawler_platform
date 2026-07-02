@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Bài viết đã crawl{% endblock %}
+{% block content %}
+{% if triggered %}
+<div class="flash flash-ok">✅ Đã trigger <strong>{{ triggered }}</strong> — xem tiến trình ở <a href="http://localhost:8081" target="_blank" rel="noopener">Airflow UI</a>.</div>
+{% endif %}
+{% if trigger_error %}
+<div class="flash flash-error">⚠️ {{ trigger_error }}</div>
+{% endif %}
+
+<form class="trigger-box" action="/trigger" method="post">
+    <label for="dag_id">Trigger crawl:</label>
+    <select name="dag_id" id="dag_id">
+        {% for d in crawl_dags %}
+        <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">▶ Trigger</button>
+</form>
+
+<form class="trigger-box" action="/settings/classify-mode" method="post">
+    <label for="mode">Chế độ phân loại (classify):</label>
+    <select name="mode" id="mode">
+        {% for m in classify_modes %}
+        <option value="{{ m }}" {{ 'selected' if m == classify_mode }}>{{ m }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">💾 Lưu</button>
+    <span class="stat" style="margin-left:0.5rem;">Đang dùng: <strong>{{ classify_mode }}</strong></span>
+</form>
+
+<div class="filters">
+    <a href="/" class="{{ 'active' if not selected_platform }}">Tất cả ({{ total }})</a>
+    {% for p in platforms %}
+    <a href="/?platform_type={{ p }}" class="{{ 'active' if selected_platform == p }}">{{ p }}</a>
+    {% endfor %}
+</div>
+
+{% for doc in documents %}
+<div class="card">
+    <div class="meta">
+        <span class="badge badge-{{ doc.platform_type }}">{{ doc.platform_type }}</span>
+        <span class="badge badge-source">{{ doc.source_type }}</span>
+        <span>{{ doc.target_name or '' }} · {{ doc.author or 'Ẩn danh' }}{% if doc.published_at %} · {{ doc.published_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}</span>
+    </div>
+    {% if doc.classification_category or doc.entities %}
+    <div class="meta">
+        {% if doc.classification_category %}
+        <span class="badge badge-category">{{ doc.classification_category }}</span>
+        <span class="badge badge-sentiment-{{ doc.classification_sentiment or 'neutral' }}">{{ doc.classification_sentiment or 'neutral' }}</span>
+        {% if doc.classification_sentiment_source %}
+        <span class="badge badge-sentsrc-{{ doc.classification_sentiment_source }}">{{ 'AI' if doc.classification_sentiment_source == 'ai' else 'default' }}</span>
+        {% endif %}
+        {% if doc.classification_severity and doc.classification_severity > 1 %}
+        <span class="badge badge-severity">⚠ severity {{ doc.classification_severity }}</span>
+        {% endif %}
+        {% endif %}
+        {% for e in doc.entities %}<span class="badge badge-entity">{{ e }}</span>{% endfor %}
+    </div>
+    {% endif %}
+    {% if doc.topic %}<p class="topic">{{ doc.topic }}</p>{% endif %}
+    <div class="content">{{ (doc.content[:280] + '…') if doc.content|length > 280 else doc.content }}</div>
+    {% if doc.images %}
+    <div class="media">
+        {% for img in doc.images[:4] %}
+        <a href="{{ img }}" target="_blank" rel="noopener"><img src="{{ img }}" loading="lazy" alt=""></a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="stats">
+        <span class="stat">👍 {{ doc.like_count }}</span>
+        <span class="stat">❤️ {{ doc.reactions.get('love', 0) }}</span>
+        <span class="stat">Σ {{ doc.reaction_count }} cảm xúc</span>
+        <span class="stat">💬 {{ doc.comment_count }}</span>
+        <span class="spacer"></span>
+        <a href="/documents/{{ doc.id }}">Chi tiết + bình luận →</a>
+        <a href="{{ doc.url }}" target="_blank" rel="noopener">Link gốc ↗</a>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">Chưa có dữ liệu.</div>
+{% endfor %}
+
+{% if documents %}
+<div class="pagination">
+    <span>{% if has_prev %}<a href="/?page={{ page - 1 }}{{ '&platform_type=' + selected_platform if selected_platform }}">← Trang trước</a>{% endif %}</span>
+    <span>Trang {{ page }}</span>
+    <span>{% if has_next %}<a href="/?page={{ page + 1 }}{{ '&platform_type=' + selected_platform if selected_platform }}">Trang sau →</a>{% endif %}</span>
+</div>
+{% endif %}
+{% endblock %}

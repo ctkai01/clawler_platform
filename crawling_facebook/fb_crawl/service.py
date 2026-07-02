@@ -1,0 +1,129 @@
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+from datetime import datetime
+
+from fb_crawl.filters import (
+    NEW_POST_HOURS,
+    RECENT_COMMENT_MINUTES,
+    PostCrawlResult,
+    _utcnow,
+    classify_post,
+)
+from fb_crawl.parser import (
+    dedupe_post_urls,
+    extract_group_id,
+    normalize_group_post_url,
+)
+from fb_crawl.playwright_crawler import PlaywrightGroupCrawler
+from fb_crawl.storage import Storage, _from_iso
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class CrawlGroupResult:
+    group_id: str
+    group_url: str
+    group_name: str | None
+    crawled_at: datetime
+    posts: list[PostCrawlResult]
+
+
+class GroupCrawlService:
+    def __init__(
+        self,
+        storage: Storage,
+        crawler: PlaywrightGroupCrawler,
+        *,
+        new_post_hours: float = NEW_POST_HOURS,
+        recent_comment_minutes: float = RECENT_COMMENT_MINUTES,
+    ) -> None:
+        self.storage = storage
+        self.crawler = crawler
+        self.new_post_hours = new_post_hours
+        self.recent_comment_minutes = recent_comment_minutes
+
+    async def crawl_group(self, group_url: str, *, feed_only: bool = False) -> CrawlGroupResult:
+        crawled_at = _utcnow()
+        group_id = extract_group_id(group_url)
+        if not group_id:
+            raise ValueError(f"URL nhóm không hợp lệ: {group_url}")
+
+        group_name = await self.crawler.fetch_group_name(group_url)
+        self.storage.upsert_group(group_id, group_url, name=group_name)
+        if not group_name:
+            stored = self.storage.get_group(group_id)
+            group_name = (stored or {}).get("name")
+
+        feed_urls = await self.crawler.discover_feed_post_urls(group_url)
+        recheck_only: list[str] = []
+        if not feed_only:
+            recheck_rows = self.storage.list_posts_to_recheck(
+                group_id,
+                since_hours=max(self.new_post_hours, self.recent_comment_minutes / 60.0),
+                source_type="group",
+            )
+            recheck_urls = [
+                normalize_group_post_url(r["url"], group_id) or r["url"]
+                for r in recheck_rows
+                if r.get("url")
+            ]
+            feed_set = set(feed_urls)
+            recheck_only = [u for u in recheck_urls if u not in feed_set]
+        all_urls = dedupe_post_urls(feed_urls + recheck_only, group_id)
+        logger.info(
+            "Crawl %d URL (feed=%d, recheck=%d%s)",
+            len(all_urls),
+            len(feed_urls),
+            len(recheck_only),
+            ", feed-only" if feed_only else "",
+        )
+
+        crawled = await self.crawler.fetch_posts_from_urls(all_urls, group_id=group_id)
+
+        results: list[PostCrawlResult] = []
+        for post in crawled:
+            if post.group_id in ("unknown", ""):
+                post.group_id = group_id
+            post.source_type = "group"
+
+            existing = self.storage.get_post(post.post_id)
+            is_first_crawl = existing is None
+            if existing and existing.get("first_seen_at"):
+                first_crawled_at = _from_iso(existing["first_seen_at"]) or crawled_at
+            else:
+                first_crawled_at = crawled_at
+
+            reason = classify_post(
+                post,
+                self.storage,
+                new_post_hours=self.new_post_hours,
+                recent_comment_minutes=self.recent_comment_minutes,
+            )
+            if not reason:
+                self.storage.save_post(post)
+                self.storage.upsert_comments(post.post_id, post.comments)
+                continue
+
+            self.storage.save_post(post)
+            self.storage.upsert_comments(post.post_id, post.comments)
+            results.append(
+                PostCrawlResult(
+                    post=post,
+                    filter_reason=reason,
+                    is_first_crawl=is_first_crawl,
+                    first_crawled_at=first_crawled_at,
+                    crawled_at=crawled_at,
+                )
+            )
+
+        self.storage.mark_group_synced(group_id)
+        return CrawlGroupResult(
+            group_id=group_id,
+            group_url=group_url,
+            group_name=group_name,
+            crawled_at=crawled_at,
+            posts=results,
+        )

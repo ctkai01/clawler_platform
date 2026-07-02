@@ -1,0 +1,305 @@
+surface_form,match_kind,canonical_display_name,canonical_name,concept_id,entity_type,stakeholder_role,parent_display_name,org_level,industry_code,match_mode,is_active
+Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,canonical,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+BSR,official,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Binh Son,slang,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Bình Sơn refinery,slang,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+NMLD Binh Son,slang,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+loc hoa dau Binh Son,slang,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+CôngtyTNHHMTVLọc-HóaDầuBìnhSơn,typo,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+cong ty tnhh mtv loc-hoa dau binh son,typo,BSR,Công ty TNHH MTV Lọc-Hóa Dầu Bình Sơn,oilgas:ent:bsr,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,canonical,BSR-BF,Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,oilgas:ent:cong_ty_cp_nhien_lieu_sinh_hoc_dau_khi_mien_trung,organization,PARTNER,,partner,ENERGY,contains,TRUE
+BSR-BF,official,BSR-BF,Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,oilgas:ent:cong_ty_cp_nhien_lieu_sinh_hoc_dau_khi_mien_trung,organization,PARTNER,,partner,ENERGY,contains,TRUE
+CôngtyCPNhiênliệusinhhọcDầukhíMiềnTrung,typo,BSR-BF,Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,oilgas:ent:cong_ty_cp_nhien_lieu_sinh_hoc_dau_khi_mien_trung,organization,PARTNER,,partner,ENERGY,contains,TRUE
+bsr-bf,typo,BSR-BF,Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,oilgas:ent:cong_ty_cp_nhien_lieu_sinh_hoc_dau_khi_mien_trung,organization,PARTNER,,partner,ENERGY,contains,TRUE
+cong ty cp nhien lieu sinh hoc dau khi mien trung,typo,BSR-BF,Công ty CP Nhiên liệu sinh học Dầu khí Miền Trung,oilgas:ent:cong_ty_cp_nhien_lieu_sinh_hoc_dau_khi_mien_trung,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty TNHH MTV Công nghiệp Tàu thủy Dung Quất,canonical,DQS,Công ty TNHH MTV Công nghiệp Tàu thủy Dung Quất,oilgas:ent:dqs,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+DQS,official,DQS,Công ty TNHH MTV Công nghiệp Tàu thủy Dung Quất,oilgas:ent:dqs,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+CôngtyTNHHMTVCôngnghiệpTàuthủyDungQuất,typo,DQS,Công ty TNHH MTV Công nghiệp Tàu thủy Dung Quất,oilgas:ent:dqs,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+cong ty tnhh mtv cong nghiep tau thuy dung quat,typo,DQS,Công ty TNHH MTV Công nghiệp Tàu thủy Dung Quất,oilgas:ent:dqs,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+Tập đoàn Điện lực Việt Nam,canonical,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+EVN,official,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+dien luc viet nam,slang,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+tap doan dien luc,slang,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+TậpđoànĐiệnlựcViệtNam,typo,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+tap đoan đien luc viet nam,typo,EVN,Tập đoàn Điện lực Việt Nam,oilgas:ent:evn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty TNHH Gazpromviet,canonical,Gazpromviet,Công ty TNHH Gazpromviet,oilgas:ent:cong_ty_tnhh_gazpromviet,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Gazpromviet,official,Gazpromviet,Công ty TNHH Gazpromviet,oilgas:ent:cong_ty_tnhh_gazpromviet,organization,PARTNER,,partner,ENERGY,contains,TRUE
+CôngtyTNHHGazpromviet,typo,Gazpromviet,Công ty TNHH Gazpromviet,oilgas:ent:cong_ty_tnhh_gazpromviet,organization,PARTNER,,partner,ENERGY,contains,TRUE
+cong ty tnhh gazpromviet,typo,Gazpromviet,Công ty TNHH Gazpromviet,oilgas:ent:cong_ty_tnhh_gazpromviet,organization,PARTNER,,partner,ENERGY,contains,TRUE
+gazpromviet,typo,Gazpromviet,Công ty TNHH Gazpromviet,oilgas:ent:cong_ty_tnhh_gazpromviet,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty TNHH Lọc hóa dầu Nghi Sơn,canonical,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+NSRP,official,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+LH Nghi Son,slang,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Nghi Son Refinery,slang,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+lien doanh Nghi Son,slang,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+CôngtyTNHHLọchóadầuNghiSơn,typo,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+cong ty tnhh loc hoa dau nghi son,typo,NSRP,Công ty TNHH Lọc hóa dầu Nghi Sơn,oilgas:ent:nsrp,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,canonical,OBF,Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,oilgas:ent:cong_ty_tnhh_nhien_lieu_sinh_hoc_dau_khi_phuong_ong,organization,PARTNER,,partner,ENERGY,contains,TRUE
+OBF,official,OBF,Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,oilgas:ent:cong_ty_tnhh_nhien_lieu_sinh_hoc_dau_khi_phuong_ong,organization,PARTNER,,partner,ENERGY,contains,TRUE
+CôngtyTNHHNhiênliệusinhhọcDầukhíPhươngĐông,typo,OBF,Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,oilgas:ent:cong_ty_tnhh_nhien_lieu_sinh_hoc_dau_khi_phuong_ong,organization,PARTNER,,partner,ENERGY,contains,TRUE
+cong ty tnhh nhien lieu sinh hoc dau khi phuong đong,typo,OBF,Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,oilgas:ent:cong_ty_tnhh_nhien_lieu_sinh_hoc_dau_khi_phuong_ong,organization,PARTNER,,partner,ENERGY,contains,TRUE
+obf,typo,OBF,Công ty TNHH Nhiên liệu sinh học Dầu khí Phương Đông,oilgas:ent:cong_ty_tnhh_nhien_lieu_sinh_hoc_dau_khi_phuong_ong,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tập đoàn Xăng dầu Việt Nam,canonical,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+PLX,official,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Petrolimex,variant,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Xăng dầu Việt Nam,variant,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+tap doan xang dau,slang,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+xang dau viet nam,slang,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+TậpđoànXăngdầuViệtNam,typo,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+tap đoan xang dau viet nam,typo,PLX,Tập đoàn Xăng dầu Việt Nam,oilgas:ent:plx,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,canonical,PTSC,Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:ptsc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PTSC,official,PTSC,Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:ptsc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PetroVietnam Technical Services,slang,PTSC,Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:ptsc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtycổphầnDịchvụKỹthuậtDầukhí,typo,PTSC,Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:ptsc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty co phan dich vu ky thuat dau khi,typo,PTSC,Tổng công ty cổ phần Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:ptsc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Liên doanh PTSC CGGV (khảo sát địa chấn),canonical,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+PTSC CGGV,official,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+LiêndoanhPTSCCGGV(khảosátđịachấn),typo,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+PTSCCGGV,typo,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+lien doanh ptsc cggv (khao sat đia chan),typo,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+ptsc cggv,typo,PTSC CGGV,Liên doanh PTSC CGGV (khảo sát địa chấn),oilgas:ent:lien_doanh_ptsc_cggv_khao_sat_ia_chan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,canonical,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV Drilling,official,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV Driling,slang,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVDrilling,slang,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+pvd,slang,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtycổphầnKhoanvàDịchvụKhoanDầukhí,typo,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty co phan khoan va dich vu khoan dau khi,typo,PV Drilling,Tổng công ty cổ phần Khoan và Dịch vụ Khoan Dầu khí,oilgas:ent:pv_drilling,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty Khí Việt Nam,canonical,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV GAS,official,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV-GAS,abbrev,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVGAS,variant,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TC Khí,slang,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng Khí,slang,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong khi,slang,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyKhíViệtNam,typo,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty khi viet nam,typo,PV GAS,Tổng công ty Khí Việt Nam,oilgas:ent:pv_gas,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty Điện lực Dầu khí Việt Nam,canonical,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV Power,official,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVPower,variant,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV Power Corp,slang,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV-Power,slang,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TC dien luc DK,slang,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyĐiệnlựcDầukhíViệtNam,typo,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty đien luc dau khi viet nam,typo,PV Power,Tổng công ty Điện lực Dầu khí Việt Nam,oilgas:ent:pv_power,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,canonical,PVB,Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,oilgas:ent:cong_ty_cp_hoa_dau_va_nhien_lieu_sinh_hoc_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+PVB,official,PVB,Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,oilgas:ent:cong_ty_cp_hoa_dau_va_nhien_lieu_sinh_hoc_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+CôngtyCPHóadầuvàNhiênliệusinhhọcDầukhí,typo,PVB,Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,oilgas:ent:cong_ty_cp_hoa_dau_va_nhien_lieu_sinh_hoc_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+cong ty cp hoa dau va nhien lieu sinh hoc dau khi,typo,PVB,Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,oilgas:ent:cong_ty_cp_hoa_dau_va_nhien_lieu_sinh_hoc_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+pvb,typo,PVB,Công ty CP Hóa dầu và Nhiên liệu sinh học Dầu khí,oilgas:ent:cong_ty_cp_hoa_dau_va_nhien_lieu_sinh_hoc_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tổng công ty cổ phần Xây lắp Dầu khí,canonical,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVC,official,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PetroVietnam Construction,slang,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TC Xay lap DK,slang,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+xay lap dau khi,slang,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtycổphầnXâylắpDầukhí,typo,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty co phan xay lap dau khi,typo,PVC,Tổng công ty cổ phần Xây lắp Dầu khí,oilgas:ent:pvc,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),canonical,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+PVCFC,official,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+DCM,abbrev,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+Dam Ca Mau,slang,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+đạm Cà Mau,slang,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+CôngtyCPPhânbónDầukhíCàMau(ĐạmCàMau),typo,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+cong ty cp phan bon dau khi ca mau (đam ca mau),typo,PVCFC,Công ty CP Phân bón Dầu khí Cà Mau (Đạm Cà Mau),oilgas:ent:pvcfc,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,canonical,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVChem,official,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PAP,abbrev,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TC Hoa chat DK,slang,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+hoa chat dau khi PVN,slang,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyCPHóachấtvàDịchvụKỹthuậtDầukhí,typo,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty cp hoa chat va dich vu ky thuat dau khi,typo,PVChem,Tổng công ty CP Hóa chất và Dịch vụ Kỹ thuật Dầu khí,oilgas:ent:pvchem,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty Thăm dò Khai thác Dầu khí,canonical,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVEP,official,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TCKT,abbrev,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVEP-PVN,slang,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TCKT dau khi,slang,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty PVEP,slang,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyThămdòKhaithácDầukhí,typo,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty tham do khai thac dau khi,typo,PVEP,Tổng công ty Thăm dò Khai thác Dầu khí,oilgas:ent:pvep,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),canonical,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVFCCo,official,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+DPM,abbrev,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Dam Phu My,slang,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+phan bon Phu My,slang,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+đạm Phú Mỹ,slang,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyCPPhânbónvàHóachấtDầukhí(ĐạmPhúMỹ),typo,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty cp phan bon va hoa chat dau khi (đam phu my),typo,PVFCCo,Tổng công ty CP Phân bón và Hóa chất Dầu khí (Đạm Phú Mỹ),oilgas:ent:pvfcco,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tập đoàn Dầu khí Việt Nam,canonical,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+PVN,official,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+TĐ DK,abbrev,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+Petrovietnam,variant,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+Tập đoàn,variant,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+PVN group,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+Petro Vietnam,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+PetroViet Nam,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+Tập đoàn DK,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+dau khi viet nam,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+dầu khí VN,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+tap doan DK,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+tap doan dau khi,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+tap doan dau khi VN,slang,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+TậpđoànDầukhíViệtNam,typo,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+tap đoan dau khi viet nam,typo,PVN,Tập đoàn Dầu khí Việt Nam,oilgas:ent:pvn,organization,SELF,,group,ENERGY,contains,TRUE
+Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),canonical,PVNDB,Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),oilgas:ent:chi_nhanh_phan_phoi_san_pham_loc_dau_nghi_son_pvn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+PVNDB,official,PVNDB,Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),oilgas:ent:chi_nhanh_phan_phoi_san_pham_loc_dau_nghi_son_pvn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+ChinhánhPhânphốisảnphẩmlọcdầuNghiSơn(PVN),typo,PVNDB,Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),oilgas:ent:chi_nhanh_phan_phoi_san_pham_loc_dau_nghi_son_pvn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+chi nhanh phan phoi san pham loc dau nghi son (pvn),typo,PVNDB,Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),oilgas:ent:chi_nhanh_phan_phoi_san_pham_loc_dau_nghi_son_pvn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+pvndb,typo,PVNDB,Chi nhánh Phân phối sản phẩm lọc dầu Nghi Sơn (PVN),oilgas:ent:chi_nhanh_phan_phoi_san_pham_loc_dau_nghi_son_pvn,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tổng công ty Dầu Việt Nam,canonical,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVOIL,official,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV OIL,abbrev,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV-OIL,abbrev,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TC Dau VN,slang,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty dau viet nam,slang,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtyDầuViệtNam,typo,PVOIL,Tổng công ty Dầu Việt Nam,oilgas:ent:tong_cong_ty_dau_viet_nam,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Tổng công ty cổ phần Vận tải Dầu khí,canonical,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PVTrans,official,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+PV Trans,slang,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+pvt,slang,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+TổngcôngtycổphầnVậntảiDầukhí,typo,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+tong cong ty co phan van tai dau khi,typo,PVTrans,Tổng công ty cổ phần Vận tải Dầu khí,oilgas:ent:pv_trans,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Ngân hàng TMCP Đại Chúng Việt Nam,canonical,PVcomBank,Ngân hàng TMCP Đại Chúng Việt Nam,oilgas:ent:pvcombank,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+PVcomBank,official,PVcomBank,Ngân hàng TMCP Đại Chúng Việt Nam,oilgas:ent:pvcombank,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+NgânhàngTMCPĐạiChúngViệtNam,typo,PVcomBank,Ngân hàng TMCP Đại Chúng Việt Nam,oilgas:ent:pvcombank,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+ngan hang tmcp đai chung viet nam,typo,PVcomBank,Ngân hàng TMCP Đại Chúng Việt Nam,oilgas:ent:pvcombank,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,canonical,Petrosetco,Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,oilgas:ent:tong_cong_ty_cp_dich_vu_tong_hop_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Petrosetco,official,Petrosetco,Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,oilgas:ent:tong_cong_ty_cp_dich_vu_tong_hop_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+TổngcôngtyCPDịchvụTổnghợpDầukhí,typo,Petrosetco,Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,oilgas:ent:tong_cong_ty_cp_dich_vu_tong_hop_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+petrosetco,typo,Petrosetco,Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,oilgas:ent:tong_cong_ty_cp_dich_vu_tong_hop_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+tong cong ty cp dich vu tong hop dau khi,typo,Petrosetco,Tổng công ty CP Dịch vụ Tổng hợp Dầu khí,oilgas:ent:tong_cong_ty_cp_dich_vu_tong_hop_dau_khi,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Nhà thầu Power Machines (PM),canonical,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Power Machines,official,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+NhàthầuPowerMachines(PM),typo,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+PowerMachines,typo,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+nha thau power machines (pm),typo,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+power machines,typo,Power Machines,Nhà thầu Power Machines (PM),oilgas:ent:nha_thau_power_machines_pm,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,canonical,Shinkong,Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,oilgas:ent:tong_cong_ty_shinkong_ssfc_oi_tac_ai_loan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Shinkong,official,Shinkong,Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,oilgas:ent:tong_cong_ty_shinkong_ssfc_oi_tac_ai_loan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+TổngcôngtyShinkong(SSFC)-đốitácĐàiLoan,typo,Shinkong,Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,oilgas:ent:tong_cong_ty_shinkong_ssfc_oi_tac_ai_loan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+shinkong,typo,Shinkong,Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,oilgas:ent:tong_cong_ty_shinkong_ssfc_oi_tac_ai_loan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+tong cong ty shinkong (ssfc) - đoi tac đai loan,typo,Shinkong,Tổng công ty Shinkong (SSFC) - đối tác Đài Loan,oilgas:ent:tong_cong_ty_shinkong_ssfc_oi_tac_ai_loan,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty dầu khí Total Myanmar - đối tác nước ngoài,canonical,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Total Myanmar,official,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+CôngtydầukhíTotalMyanmar-đốitácnướcngoài,typo,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+TotalMyanmar,typo,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+cong ty dau khi total myanmar - đoi tac nuoc ngoai,typo,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+total myanmar,typo,Total Myanmar,Công ty dầu khí Total Myanmar - đối tác nước ngoài,oilgas:ent:cong_ty_dau_khi_total_myanmar_oi_tac_nuoc_ngoai,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty CP Hóa dầu và Xơ sợi Việt Nam,canonical,VNPOLY,Công ty CP Hóa dầu và Xơ sợi Việt Nam,oilgas:ent:vnpoly,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+VNPOLY,official,VNPOLY,Công ty CP Hóa dầu và Xơ sợi Việt Nam,oilgas:ent:vnpoly,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+CôngtyCPHóadầuvàXơsợiViệtNam,typo,VNPOLY,Công ty CP Hóa dầu và Xơ sợi Việt Nam,oilgas:ent:vnpoly,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+cong ty cp hoa dau va xo soi viet nam,typo,VNPOLY,Công ty CP Hóa dầu và Xơ sợi Việt Nam,oilgas:ent:vnpoly,organization,SUBSIDIARY,PVN,subsidiary,ENERGY,contains,TRUE
+Viện Dầu khí Việt Nam,canonical,VPI,Viện Dầu khí Việt Nam,oilgas:ent:vpi,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+VPI,official,VPI,Viện Dầu khí Việt Nam,oilgas:ent:vpi,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+ViệnDầukhíViệtNam,typo,VPI,Viện Dầu khí Việt Nam,oilgas:ent:vpi,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+vien dau khi viet nam,typo,VPI,Viện Dầu khí Việt Nam,oilgas:ent:vpi,organization,SUBSIDIARY,,subsidiary,ENERGY,contains,TRUE
+Liên doanh Việt - Nga Vietsovpetro,canonical,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+VSP,official,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Vietsovpetro,variant,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+LD Vietsovpetro,slang,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+VSPetro,slang,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+lien doanh Vietsovpetro,slang,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+LiêndoanhViệt-NgaVietsovpetro,typo,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+lien doanh viet - nga vietsovpetro,typo,VSP,Liên doanh Việt - Nga Vietsovpetro,oilgas:ent:vsp,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,canonical,Vinacomin,Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,oilgas:ent:tap_oan_cong_nghiep_than_khoang_san_viet_nam,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Vinacomin,official,Vinacomin,Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,oilgas:ent:tap_oan_cong_nghiep_than_khoang_san_viet_nam,organization,PARTNER,,partner,ENERGY,contains,TRUE
+TậpđoànCôngnghiệpThan-KhoángsảnViệtNam,typo,Vinacomin,Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,oilgas:ent:tap_oan_cong_nghiep_than_khoang_san_viet_nam,organization,PARTNER,,partner,ENERGY,contains,TRUE
+tap đoan cong nghiep than - khoang san viet nam,typo,Vinacomin,Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,oilgas:ent:tap_oan_cong_nghiep_than_khoang_san_viet_nam,organization,PARTNER,,partner,ENERGY,contains,TRUE
+vinacomin,typo,Vinacomin,Tập đoàn Công nghiệp Than - Khoáng sản Việt Nam,oilgas:ent:tap_oan_cong_nghiep_than_khoang_san_viet_nam,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,canonical,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Wood Mackenzie,official,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+WoodMackenzie,typo,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+WoodMackenzie-tổchứcdựbáonănglượngquốctế,typo,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+wood mackenzie,typo,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+wood mackenzie - to chuc du bao nang luong quoc te,typo,Wood Mackenzie,Wood Mackenzie - tổ chức dự báo năng lượng quốc tế,oilgas:ent:wood_mackenzie_to_chuc_du_bao_nang_luong_quoc_te,organization,PARTNER,,partner,ENERGY,contains,TRUE
+Công ty CP Nhiên liệu bay Petrolimex,canonical,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Nhiên liệu bay Petrolimex,official,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+CôngtyCPNhiênliệubayPetrolimex,typo,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+NhiênliệubayPetrolimex,typo,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+cong ty cp nhien lieu bay petrolimex,typo,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+nhien lieu bay petrolimex,typo,Nhiên liệu bay Petrolimex,Công ty CP Nhiên liệu bay Petrolimex,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Tổng công ty Vận tải thủy Petrolimex,canonical,PGT,Tổng công ty Vận tải thủy Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+PGT,official,PGT,Tổng công ty Vận tải thủy Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+TổngcôngtyVậntảithủyPetrolimex,typo,PGT,Tổng công ty Vận tải thủy Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+tong cong ty van tai thuy petrolimex,typo,PGT,Tổng công ty Vận tải thủy Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+Tổng công ty Dịch vụ Xăng dầu Petrolimex,canonical,PTC,Tổng công ty Dịch vụ Xăng dầu Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+PTC,official,PTC,Tổng công ty Dịch vụ Xăng dầu Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+TổngcôngtyDịchvụXăngdầuPetrolimex,typo,PTC,Tổng công ty Dịch vụ Xăng dầu Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+tong cong ty dich vu xang dau petrolimex,typo,PTC,Tổng công ty Dịch vụ Xăng dầu Petrolimex,nan,organization,COMPETITOR,PLX,partner,ENERGY,contains,TRUE
+Petrolimex Lào,official,Petrolimex Lào,Petrolimex Lào,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+PetrolimexLào,typo,Petrolimex Lào,Petrolimex Lào,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+petrolimex lao,typo,Petrolimex Lào,Petrolimex Lào,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+Petrolimex Singapore,official,Petrolimex Singapore,Petrolimex Singapore,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+PetrolimexSingapore,typo,Petrolimex Singapore,Petrolimex Singapore,nan,organization,COMPETITOR,,partner,ENERGY,contains,TRUE
+mobifone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobifone,organization,SELF,,group,TELECOM,contains,TRUE
+mobi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi,organization,SELF,,group,TELECOM,contains,TRUE
+mobilfon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilfon,organization,SELF,,group,TELECOM,contains,TRUE
+mobifon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobifon,organization,SELF,,group,TELECOM,contains,TRUE
+"mbf,sim",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mbf_sim,organization,SELF,,group,TELECOM,contains,TRUE
+mobilefon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilefon,organization,SELF,,group,TELECOM,contains,TRUE
+mobilphone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilphone,organization,SELF,,group,TELECOM,contains,TRUE
+mobiphone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiphone,organization,SELF,,group,TELECOM,contains,TRUE
+mobilphon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilphon,organization,SELF,,group,TELECOM,contains,TRUE
+mobiphon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiphon,organization,SELF,,group,TELECOM,contains,TRUE
+mobilphôn,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilphon,organization,SELF,,group,TELECOM,contains,TRUE
+mobiphôn,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiphon,organization,SELF,,group,TELECOM,contains,TRUE
+mobipon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobipon,organization,SELF,,group,TELECOM,contains,TRUE
+mobipone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobipone,organization,SELF,,group,TELECOM,contains,TRUE
+mobilepone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilepone,organization,SELF,,group,TELECOM,contains,TRUE
+mobifoon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobifoon,organization,SELF,,group,TELECOM,contains,TRUE
+mobiphoon,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiphoon,organization,SELF,,group,TELECOM,contains,TRUE
+mobilfone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilfone,organization,SELF,,group,TELECOM,contains,TRUE
+mobilefone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobilefone,organization,SELF,,group,TELECOM,contains,TRUE
+mô bi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mo_bi,organization,SELF,,group,TELECOM,contains,TRUE
+mobi3g,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi3g,organization,SELF,,group,TELECOM,contains,TRUE
+mobi4g,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi4g,organization,SELF,,group,TELECOM,contains,TRUE
+Vnmobifone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_vnmobifone,organization,SELF,,group,TELECOM,contains,TRUE
+witalk,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_witalk,organization,SELF,,group,TELECOM,contains,TRUE
+MyMobiFone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mymobifone,organization,SELF,,group,TELECOM,contains,TRUE
+MobiGold,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobigold,organization,SELF,,group,TELECOM,contains,TRUE
+MobiCard,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobicard,organization,SELF,,group,TELECOM,contains,TRUE
+MobiQ,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiq,organization,SELF,,group,TELECOM,contains,TRUE
+MobiF,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobif,organization,SELF,,group,TELECOM,contains,TRUE
+Mobi365,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi365,organization,SELF,,group,TELECOM,contains,TRUE
+MobiEZ,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiez,organization,SELF,,group,TELECOM,contains,TRUE
+mobifoneGo,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobifonego,organization,SELF,,group,TELECOM,contains,TRUE
+3gmobi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_3gmobi,organization,SELF,,group,TELECOM,contains,TRUE
+4gmobi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_4gmobi,organization,SELF,,group,TELECOM,contains,TRUE
+"mobie,mạng",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobie_mang,organization,SELF,,group,TELECOM,contains,TRUE
+"mobie,cước",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobie_cuoc,organization,SELF,,group,TELECOM,contains,TRUE
+"mobie,sóng",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobie_song,organization,SELF,,group,TELECOM,contains,TRUE
+Mobipay,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobipay,organization,SELF,,group,TELECOM,contains,TRUE
+MobiFonePay,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobifonepay,organization,SELF,,group,TELECOM,contains,TRUE
+mobipayy,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobipayy,organization,SELF,,group,TELECOM,contains,TRUE
+mymobifone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mymobifone,organization,SELF,,group,TELECOM,contains,TRUE
+"mbf,mạng",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mbf_mang,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, môbai",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_mobai,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, Mô bai phôn",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_mo_bai_phon,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, Mô bi phôn",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_mo_bi_phon,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, Môbaiphôn",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_mobaiphon,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, Môbiphôn",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_mobiphon,organization,SELF,,group,TELECOM,contains,TRUE
+Mobyfone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobyfone,organization,SELF,,group,TELECOM,contains,TRUE
+Mobile Internet,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobile_internet,organization,SELF,,group,TELECOM,contains,TRUE
+Amobi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_amobi,organization,SELF,,group,TELECOM,contains,TRUE
+DV Mobilytix,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_dv_mobilytix,organization,SELF,,group,TELECOM,contains,TRUE
+EduMobi,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_edumobi,organization,SELF,,group,TELECOM,contains,TRUE
+Mobi Radio,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi_radio,organization,SELF,,group,TELECOM,contains,TRUE
+MobiClip,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiclip,organization,SELF,,group,TELECOM,contains,TRUE
+Mobile TV,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobile_tv,organization,SELF,,group,TELECOM,contains,TRUE
+MobiStore,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobistore,organization,SELF,,group,TELECOM,contains,TRUE
+Thính Mobile,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_thinh_mobile,organization,SELF,,group,TELECOM,contains,TRUE
+Gói cước Mobi263,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_goi_cuoc_mobi263,organization,SELF,,group,TELECOM,contains,TRUE
+MobiBIG,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobibig,organization,SELF,,group,TELECOM,contains,TRUE
+MobiBIGT,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobibigt,organization,SELF,,group,TELECOM,contains,TRUE
+MegaMeeting,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_megameeting,organization,SELF,,group,TELECOM,contains,TRUE
+Mobi4U,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobi4u,organization,SELF,,group,TELECOM,contains,TRUE
+MOBIDATA,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobidata,organization,SELF,,group,TELECOM,contains,TRUE
+Mobiistar,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobiistar,organization,SELF,,group,TELECOM,contains,TRUE
+MobiKid,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobikid,organization,SELF,,group,TELECOM,contains,TRUE
+Mobizone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_mobizone,organization,SELF,,group,TELECOM,contains,TRUE
+My Mobifone,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_my_mobifone,organization,SELF,,group,TELECOM,contains,TRUE
+Witalk,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_witalk,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, chuyển đến",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_chuyen_en,organization,SELF,,group,TELECOM,contains,TRUE
+"Nhà mạng, chuyển đi",variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_nha_mang_chuyen_i,organization,SELF,,group,TELECOM,contains,TRUE
+MEETIK,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_meetik,organization,SELF,,group,TELECOM,contains,TRUE
+MeeLove,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_meelove,organization,SELF,,group,TELECOM,contains,TRUE
+umee,variant,MobiFone,Tổng công ty Viễn thông MobiFone,telco:ent:mobifone_umee,organization,SELF,,group,TELECOM,contains,TRUE

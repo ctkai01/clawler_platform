@@ -1,0 +1,203 @@
+﻿surface_form,match_kind,canonical_display_name,canonical_name,concept_id,entity_type,stakeholder_role,parent_display_name,org_level,industry_code,match_mode,is_active
+Hiệp hội các quốc gia Đông Nam Á (ASEAN),canonical,ASEAN,Hiệp hội các quốc gia Đông Nam Á (ASEAN),oilgas:geo:hiep_hoi_cac_quoc_gia_ong_nam_a_asean,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ASEAN,official,ASEAN,Hiệp hội các quốc gia Đông Nam Á (ASEAN),oilgas:geo:hiep_hoi_cac_quoc_gia_ong_nam_a_asean,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HiệphộicácquốcgiaĐôngNamÁ(ASEAN),typo,ASEAN,Hiệp hội các quốc gia Đông Nam Á (ASEAN),oilgas:geo:hiep_hoi_cac_quoc_gia_ong_nam_a_asean,geo,PARTNER,,geo,ENERGY,contains,TRUE
+asean,typo,ASEAN,Hiệp hội các quốc gia Đông Nam Á (ASEAN),oilgas:geo:hiep_hoi_cac_quoc_gia_ong_nam_a_asean,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hiep hoi cac quoc gia đong nam a (asean),typo,ASEAN,Hiệp hội các quốc gia Đông Nam Á (ASEAN),oilgas:geo:hiep_hoi_cac_quoc_gia_ong_nam_a_asean,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Lô 433a-416a Algeria,canonical,Algeria,Lô 433a-416a Algeria,oilgas:geo:lo_433a_416a_algeria,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Algeria,official,Algeria,Lô 433a-416a Algeria,oilgas:geo:lo_433a_416a_algeria,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Lô433a-416aAlgeria,typo,Algeria,Lô 433a-416a Algeria,oilgas:geo:lo_433a_416a_algeria,geo,PARTNER,,geo,ENERGY,contains,TRUE
+algeria,typo,Algeria,Lô 433a-416a Algeria,oilgas:geo:lo_433a_416a_algeria,geo,PARTNER,,geo,ENERGY,contains,TRUE
+lo 433a-416a algeria,typo,Algeria,Lô 433a-416a Algeria,oilgas:geo:lo_433a_416a_algeria,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Biển Đông,canonical,Biển Đông,Biển Đông,oilgas:geo:bien_ong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+BiểnĐông,typo,Biển Đông,Biển Đông,oilgas:geo:bien_ong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+bien đong,typo,Biển Đông,Biển Đông,oilgas:geo:bien_ong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Brunei,canonical,Brunei,Brunei,oilgas:geo:brunei,geo,PARTNER,,geo,ENERGY,contains,TRUE
+brunei,typo,Brunei,Brunei,oilgas:geo:brunei,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Bà Rịa - Vũng Tàu,canonical,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Bà Rịa - Vũng Tàu,official,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+BàRịa-VũngTàu,typo,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhBàRịa-VũngTàu,typo,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ba ria - vung tau,typo,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh ba ria - vung tau,typo,Bà Rịa - Vũng Tàu,Tỉnh Bà Rịa - Vũng Tàu,oilgas:geo:tinh_ba_ria_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Bình Dương,canonical,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Bình Dương,official,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+BìnhDương,typo,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhBìnhDương,typo,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+binh duong,typo,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh binh duong,typo,Bình Dương,Tỉnh Bình Dương,oilgas:geo:tinh_binh_duong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Bình Phước (NMNLSH Bình Phước),canonical,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Bình Phước,official,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+BìnhPhước,typo,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhBìnhPhước(NMNLSHBìnhPhước),typo,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+binh phuoc,typo,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh binh phuoc (nmnlsh binh phuoc),typo,Bình Phước,Tỉnh Bình Phước (NMNLSH Bình Phước),oilgas:geo:tinh_binh_phuoc_nmnlsh_binh_phuoc,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Campuchia,canonical,Campuchia,Campuchia,oilgas:geo:campuchia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+campuchia,typo,Campuchia,Campuchia,oilgas:geo:campuchia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Cà Mau (Đạm Cà Mau),canonical,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Cà Mau,official,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+CàMau,typo,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhCàMau(ĐạmCàMau),typo,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ca mau,typo,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh ca mau (đam ca mau),typo,Cà Mau,Tỉnh Cà Mau (Đạm Cà Mau),oilgas:geo:tinh_ca_mau_am_ca_mau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Khu vực Cà Ná (Ninh Thuận),canonical,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Cà Ná,official,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+CàNá,typo,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+KhuvựcCàNá(NinhThuận),typo,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ca na,typo,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+khu vuc ca na (ninh thuan),typo,Cà Ná,Khu vực Cà Ná (Ninh Thuận),oilgas:geo:khu_vuc_ca_na_ninh_thuan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Liên minh châu Âu,canonical,EU,Liên minh châu Âu,oilgas:geo:lien_minh_chau_au,geo,PARTNER,,geo,ENERGY,contains,TRUE
+EU,official,EU,Liên minh châu Âu,oilgas:geo:lien_minh_chau_au,geo,PARTNER,,geo,ENERGY,contains,TRUE
+LiênminhchâuÂu,typo,EU,Liên minh châu Âu,oilgas:geo:lien_minh_chau_au,geo,PARTNER,,geo,ENERGY,contains,TRUE
+eu,typo,EU,Liên minh châu Âu,oilgas:geo:lien_minh_chau_au,geo,PARTNER,,geo,ENERGY,contains,TRUE
+lien minh chau au,typo,EU,Liên minh châu Âu,oilgas:geo:lien_minh_chau_au,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hong Kong (AHKFTA),canonical,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hong Kong,official,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HongKong,typo,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HongKong(AHKFTA),typo,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hong kong,typo,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hong kong (ahkfta),typo,Hong Kong,Hong Kong (AHKFTA),oilgas:geo:hong_kong_ahkfta,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quần đảo/khu vực biển Hoàng Sa,canonical,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hoàng Sa,official,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HoàngSa,typo,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quầnđảo/khuvựcbiểnHoàngSa,typo,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hoang sa,typo,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+quan đao/khu vuc bien hoang sa,typo,Hoàng Sa,Quần đảo/khu vực biển Hoàng Sa,oilgas:geo:quan_ao_khu_vuc_bien_hoang_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thành phố Hà Nội,canonical,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hà Nội,official,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HàNội,typo,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThànhphốHàNội,typo,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ha noi,typo,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh pho ha noi,typo,Hà Nội,Thành phố Hà Nội,oilgas:geo:thanh_pho_ha_noi,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Hà Tĩnh,canonical,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hà Tĩnh,official,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HàTĩnh,typo,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhHàTĩnh,typo,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ha tinh,typo,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh ha tinh,typo,Hà Tĩnh,Tỉnh Hà Tĩnh,oilgas:geo:tinh_ha_tinh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thành phố Hải Phòng,canonical,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hải Phòng,official,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HảiPhòng,typo,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThànhphốHảiPhòng,typo,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hai phong,typo,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh pho hai phong,typo,Hải Phòng,Thành phố Hải Phòng,oilgas:geo:thanh_pho_hai_phong,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Indonesia,canonical,Indonesia,Indonesia,oilgas:geo:indonesia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+indonesia,typo,Indonesia,Indonesia,oilgas:geo:indonesia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Long An,canonical,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Long An,official,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+LongAn,typo,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhLongAn,typo,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+long an,typo,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh long an,typo,Long An,Tỉnh Long An,oilgas:geo:tinh_long_an,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Cộng hòa Dân chủ Nhân dân Lào,canonical,Lào,Cộng hòa Dân chủ Nhân dân Lào,oilgas:geo:cong_hoa_dan_chu_nhan_dan_lao,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Lào,official,Lào,Cộng hòa Dân chủ Nhân dân Lào,oilgas:geo:cong_hoa_dan_chu_nhan_dan_lao,geo,PARTNER,,geo,ENERGY,contains,TRUE
+CộnghòaDânchủNhândânLào,typo,Lào,Cộng hòa Dân chủ Nhân dân Lào,oilgas:geo:cong_hoa_dan_chu_nhan_dan_lao,geo,PARTNER,,geo,ENERGY,contains,TRUE
+cong hoa dan chu nhan dan lao,typo,Lào,Cộng hòa Dân chủ Nhân dân Lào,oilgas:geo:cong_hoa_dan_chu_nhan_dan_lao,geo,PARTNER,,geo,ENERGY,contains,TRUE
+lao,typo,Lào,Cộng hòa Dân chủ Nhân dân Lào,oilgas:geo:cong_hoa_dan_chu_nhan_dan_lao,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Malaysia,canonical,Malaysia,Malaysia,oilgas:geo:malaysia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+malaysia,typo,Malaysia,Malaysia,oilgas:geo:malaysia,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Myanmar,canonical,Myanmar,Myanmar,oilgas:geo:myanmar,geo,PARTNER,,geo,ENERGY,contains,TRUE
+myanmar,typo,Myanmar,Myanmar,oilgas:geo:myanmar,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Hợp chúng quốc Hoa Kỳ,canonical,Mỹ,Hợp chúng quốc Hoa Kỳ,oilgas:geo:hop_chung_quoc_hoa_ky,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Mỹ,official,Mỹ,Hợp chúng quốc Hoa Kỳ,oilgas:geo:hop_chung_quoc_hoa_ky,geo,PARTNER,,geo,ENERGY,contains,TRUE
+HợpchúngquốcHoaKỳ,typo,Mỹ,Hợp chúng quốc Hoa Kỳ,oilgas:geo:hop_chung_quoc_hoa_ky,geo,PARTNER,,geo,ENERGY,contains,TRUE
+hop chung quoc hoa ky,typo,Mỹ,Hợp chúng quốc Hoa Kỳ,oilgas:geo:hop_chung_quoc_hoa_ky,geo,PARTNER,,geo,ENERGY,contains,TRUE
+my,typo,Mỹ,Hợp chúng quốc Hoa Kỳ,oilgas:geo:hop_chung_quoc_hoa_ky,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Liên bang Nga,canonical,Nga,Liên bang Nga,oilgas:geo:lien_bang_nga,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Nga,official,Nga,Liên bang Nga,oilgas:geo:lien_bang_nga,geo,PARTNER,,geo,ENERGY,contains,TRUE
+LiênbangNga,typo,Nga,Liên bang Nga,oilgas:geo:lien_bang_nga,geo,PARTNER,,geo,ENERGY,contains,TRUE
+lien bang nga,typo,Nga,Liên bang Nga,oilgas:geo:lien_bang_nga,geo,PARTNER,,geo,ENERGY,contains,TRUE
+nga,typo,Nga,Liên bang Nga,oilgas:geo:lien_bang_nga,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Lô 67 Peru,canonical,Peru,Lô 67 Peru,oilgas:geo:lo_67_peru,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Peru,official,Peru,Lô 67 Peru,oilgas:geo:lo_67_peru,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Lô67Peru,typo,Peru,Lô 67 Peru,oilgas:geo:lo_67_peru,geo,PARTNER,,geo,ENERGY,contains,TRUE
+lo 67 peru,typo,Peru,Lô 67 Peru,oilgas:geo:lo_67_peru,geo,PARTNER,,geo,ENERGY,contains,TRUE
+peru,typo,Peru,Lô 67 Peru,oilgas:geo:lo_67_peru,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Đạm Phú Mỹ,canonical,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Phú Mỹ,official,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+PhúMỹ,typo,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+phu my,typo,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ĐạmPhúMỹ,typo,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+đam phu my,typo,Phú Mỹ,Đạm Phú Mỹ,oilgas:geo:am_phu_my,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Phú Thọ (NMNLSH Phú Thọ),canonical,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Phú Thọ,official,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+PhúThọ,typo,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhPhúThọ(NMNLSHPhúThọ),typo,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+phu tho,typo,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh phu tho (nmnlsh phu tho),typo,Phú Thọ,Tỉnh Phú Thọ (NMNLSH Phú Thọ),oilgas:geo:tinh_phu_tho_nmnlsh_phu_tho,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Quảng Bình (Hòn La),canonical,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quảng Bình,official,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+QuảngBình,typo,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhQuảngBình(HònLa),typo,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+quang binh,typo,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh quang binh (hon la),typo,Quảng Bình,Tỉnh Quảng Bình (Hòn La),oilgas:geo:tinh_quang_binh_hon_la,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),canonical,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quảng Ngãi,official,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+QuảngNgãi,typo,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhQuảngNgãi(NMNLSHQuảngNgãi),typo,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+quang ngai,typo,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh quang ngai (nmnlsh quang ngai),typo,Quảng Ngãi,Tỉnh Quảng Ngãi (NMNLSH Quảng Ngãi),oilgas:geo:tinh_quang_ngai_nmnlsh_quang_ngai,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Quảng Ninh (Cẩm Phả),canonical,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quảng Ninh,official,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+QuảngNinh,typo,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhQuảngNinh(CẩmPhả),typo,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+quang ninh,typo,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh quang ninh (cam pha),typo,Quảng Ninh,Tỉnh Quảng Ninh (Cẩm Phả),oilgas:geo:tinh_quang_ninh_cam_pha,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Singapore,canonical,Singapore,Singapore,oilgas:geo:singapore,geo,PARTNER,,geo,ENERGY,contains,TRUE
+singapore,typo,Singapore,Singapore,oilgas:geo:singapore,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Sri Lanka,canonical,Sri Lanka,Sri Lanka,oilgas:geo:sri_lanka,geo,PARTNER,,geo,ENERGY,contains,TRUE
+SriLanka,typo,Sri Lanka,Sri Lanka,oilgas:geo:sri_lanka,geo,PARTNER,,geo,ENERGY,contains,TRUE
+sri lanka,typo,Sri Lanka,Sri Lanka,oilgas:geo:sri_lanka,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thành phố Hồ Chí Minh,canonical,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TP. Hồ Chí Minh,official,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TP.HồChíMinh,typo,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThànhphốHồChíMinh,typo,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh pho ho chi minh,typo,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tp. ho chi minh,typo,TP. Hồ Chí Minh,Thành phố Hồ Chí Minh,oilgas:geo:thanh_pho_ho_chi_minh,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tỉnh Thanh Hóa (Nghi Sơn),canonical,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thanh Hóa,official,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThanhHóa,typo,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TỉnhThanhHóa(NghiSơn),typo,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh hoa,typo,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tinh thanh hoa (nghi son),typo,Thanh Hóa,Tỉnh Thanh Hóa (Nghi Sơn),oilgas:geo:tinh_thanh_hoa_nghi_son,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thái Lan,canonical,Thái Lan,Thái Lan,oilgas:geo:thai_lan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TháiLan,typo,Thái Lan,Thái Lan,oilgas:geo:thai_lan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thai lan,typo,Thái Lan,Thái Lan,oilgas:geo:thai_lan,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tiền Hải (Thái Bình) - trạm nén khí CNG,canonical,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Tiền Hải,official,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TiềnHải,typo,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TiềnHải(TháiBình)-trạmnénkhíCNG,typo,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tien hai,typo,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+tien hai (thai binh) - tram nen khi cng,typo,Tiền Hải,Tiền Hải (Thái Bình) - trạm nén khí CNG,oilgas:geo:tien_hai_thai_binh_tram_nen_khi_cng,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quần đảo/khu vực biển Trường Sa,canonical,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Trường Sa,official,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Quầnđảo/khuvựcbiểnTrườngSa,typo,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+TrườngSa,typo,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+quan đao/khu vuc bien truong sa,typo,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+truong sa,typo,Trường Sa,Quần đảo/khu vực biển Trường Sa,oilgas:geo:quan_ao_khu_vuc_bien_truong_sa,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Venezuela (mỏ Junin-2),canonical,Venezuela,Venezuela (mỏ Junin-2),oilgas:geo:venezuela_mo_junin_2,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Venezuela,official,Venezuela,Venezuela (mỏ Junin-2),oilgas:geo:venezuela_mo_junin_2,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Venezuela(mỏJunin-2),typo,Venezuela,Venezuela (mỏ Junin-2),oilgas:geo:venezuela_mo_junin_2,geo,PARTNER,,geo,ENERGY,contains,TRUE
+venezuela,typo,Venezuela,Venezuela (mỏ Junin-2),oilgas:geo:venezuela_mo_junin_2,geo,PARTNER,,geo,ENERGY,contains,TRUE
+venezuela (mo junin-2),typo,Venezuela,Venezuela (mỏ Junin-2),oilgas:geo:venezuela_mo_junin_2,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,canonical,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Việt Nam,official,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+NướcCộnghòaXãhộiChủnghĩaViệtNam,typo,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ViệtNam,typo,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+nuoc cong hoa xa hoi chu nghia viet nam,typo,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+viet nam,typo,Việt Nam,Nước Cộng hòa Xã hội Chủ nghĩa Việt Nam,oilgas:geo:nuoc_cong_hoa_xa_hoi_chu_nghia_viet_nam,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thành phố Vũng Tàu,canonical,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Vũng Tàu,official,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThànhphốVũngTàu,typo,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+VũngTàu,typo,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh pho vung tau,typo,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+vung tau,typo,Vũng Tàu,Thành phố Vũng Tàu,oilgas:geo:thanh_pho_vung_tau,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Thành phố Đà Nẵng,canonical,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Đà Nẵng,official,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ThànhphốĐàNẵng,typo,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+thanh pho đa nang,typo,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ĐàNẵng,typo,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+đa nang,typo,Đà Nẵng,Thành phố Đà Nẵng,oilgas:geo:thanh_pho_a_nang,geo,PARTNER,,geo,ENERGY,contains,TRUE
+Ấn Độ,canonical,Ấn Độ,Ấn Độ,oilgas:geo:an_o,geo,PARTNER,,geo,ENERGY,contains,TRUE
+an đo,typo,Ấn Độ,Ấn Độ,oilgas:geo:an_o,geo,PARTNER,,geo,ENERGY,contains,TRUE
+ẤnĐộ,typo,Ấn Độ,Ấn Độ,oilgas:geo:an_o,geo,PARTNER,,geo,ENERGY,contains,TRUE

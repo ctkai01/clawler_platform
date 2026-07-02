@@ -1,0 +1,19 @@
+{
+  "pages": [
+    {"source_name": "beatvn.network", "share_url": "https://www.facebook.com/beatvn.network/", "enabled": true},
+    {"source_name": "anhdaden.vietnam", "share_url": "https://www.facebook.com/anhdaden.vietnam/", "enabled": true},
+    {"source_name": "Theanh28", "share_url": "https://www.facebook.com/Theanh28/", "enabled": true},
+    {"source_name": "SchannelChannel", "share_url": "https://www.facebook.com/SchannelChannel/", "enabled": true},
+    {"source_name": "khongsocho.official", "share_url": "https://www.facebook.com/khongsocho.official/", "enabled": true},
+    {"source_name": "tinhte", "share_url": "https://www.facebook.com/tinhte", "enabled": true},
+    {"source_name": "Otofun.Community", "share_url": "https://www.facebook.com/Otofun.Community", "enabled": true},
+    {"source_name": "techrum", "share_url": "https://www.facebook.com/techrum", "enabled": true},
+    {"source_name": "baotuoitre", "share_url": "https://www.facebook.com/baotuoitre", "enabled": true},
+    {"source_name": "chame.lam", "share_url": "https://www.facebook.com/chame.lam", "enabled": true},
+    {"source_name": "mobifone", "share_url": "https://www.facebook.com/mobifone/", "enabled": true},
+    {"source_name": "vietteltelecom", "share_url": "https://www.facebook.com/vietteltelecom/", "enabled": true},
+    {"source_name": "pagechuithue", "share_url": "https://www.facebook.com/pagechuithue", "enabled": true},
+    {"source_name": "gigagoesim", "share_url": "https://www.facebook.com/gigagoesim", "enabled": true},
+    {"source_name": "cskhmobifone", "share_url": "https://www.facebook.com/cskhmobifone", "enabled": true}
+  ]
+}

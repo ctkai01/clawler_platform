@@ -1,0 +1,135 @@
+# Domain: PVN (Tập đoàn Dầu khí Việt Nam / PetroVietnam Group).
+# Matched on NFC-normalized lowercased text.
+#
+# brand_keywords sourced from the user's "01_entity_normalization" sheet
+# (17 surface_form rows for canonical entity PVN, stakeholder_role=SELF) —
+# all rows included EXCEPT the standalone "Tập đoàn" row, which means just
+# "Corporation/Group" in Vietnamese and would match posts about ANY company,
+# not just PVN — defeats the Stage-1 cost-gate's purpose (CLAUDE.md: "the
+# cost gate is load-bearing"). Dropped per explicit confirmation.
+#
+# competitor_keywords intentionally EMPTY — no competitor data provided yet.
+# Add via `python -m opencrawler.pipeline.add_keywords` when available.
+#
+# industry_keywords below are NOT from the user's sheet — added as a
+# starting point so Stage 1 isn't restricted to exact PVN-name mentions
+# (e.g. an article about "giàn khoan" or "lọc hóa dầu" with no literal "PVN"
+# would otherwise never reach Stage 2). Review/trim/extend as needed.
+#
+# Subsidiary names (PVOIL, PV GAS, PVEP, PVD, BSR, PTSC, PVcomBank, ...) are
+# deliberately NOT added here — they're distinct entities from PVN itself
+# and weren't part of the provided entity sheet. Add them as their own
+# brand_keywords (or a new category) once/if their own surface-form data
+# is provided, the same way PVN's was.
+#
+# Vietsovpetro/VSP IS added below (2026-06-27) — it's a PVN joint venture
+# whose own FB page posts (internal company life: sports tournaments,
+# summer classes, etc.) otherwise never carry a literal "PVN"/"Petrovietnam"
+# mention and would silently never reach Stage 2. Surface forms taken from
+# entity_gazetteer's existing VSP rows so Stage 1 and the entity-normalization
+# system agree on spelling.
+
+brand_keywords:
+  - "tđ dk"
+  - "tập đoàn dầu khí việt nam"
+  - "pvn"
+  - "pvn group"
+  - "petro vietnam"
+  - "petroviet nam"
+  - "tập đoàn dk"
+  - "dau khi viet nam"
+  - "dầu khí vn"
+  - "tap doan dk"
+  - "tap doan dau khi"
+  - "tap doan dau khi vn"
+  - "tập đoàn dầu khí"
+  - "tậpđoàndầukhíviệtnam"
+  - "tap doan dau khi viet nam"
+  - "petrovietnam"
+  - "vietsovpetro"
+  - "vsp"
+  - "vspetro"
+  - "liên doanh việt - nga vietsovpetro"
+  - "ld vietsovpetro"
+
+  - "mobifone"
+  - "mobi fone"
+  - "mobiphone"     # common misspelling
+  - "my mobifone"
+  - "saymee"
+  - "mobìone"
+  - "mobilfon"
+  - "môbifon"
+  - "môbilfon"
+  - "mobifon"
+  - "mbf"
+  - "mobilefon"
+  - "môbiphone"
+  - "mobilphone"
+  - "môbilphone"
+  - "môbiphon"
+  - "mobilphon"
+  - "mobi3g"
+  - "mobi4g"
+  - "#taychaymobifone"
+
+
+competitor_keywords:
+  - "viettel"
+  - "vinaphone"
+  - "vietnamobile"
+  - "gmobile"
+
+industry_keywords:
+  - "dầu khí"
+  - "xăng dầu"
+  - "khí đốt"
+  - "khí thiên nhiên"
+  - "dầu thô"
+  - "lọc dầu"
+  - "lọc hóa dầu"
+  - "giàn khoan"
+  - "mỏ dầu"
+  - "thượng nguồn"
+  - "trung nguồn"
+  - "hạ nguồn"
+  - "condensate"
+  - "phân đạm"
+
+  - "nhà mạng"
+  - "viễn thông"
+  - "chuyển mạng"
+  - "giữ số"
+  - "roaming"
+  - "5g"
+  - "4g"
+  - "cước phí"
+  - "gói cước"
+  - "sim"
+  - "esim"
+  - "data"
+  - "tổng đài"
+  - "1800"
+  - "9090"
+  - "GSM"
+  - "LTE"
+  - "3G"
+  - "2G"
+  - "CDMA"
+  - "EDGE"
+  - "HSPA"
+  - "VoLTE"
+  - "VoIP"
+  - "M2M"
+  - "IoT"
+  - "chuyển mạng giữ số"
+
+
+mobifone_prefixes:
+  - "090"
+  - "093"
+  - "070"
+  - "079"
+  - "077"
+  - "076"
+  - "078"

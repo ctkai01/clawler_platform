@@ -1,0 +1,979 @@
+﻿surface_form,match_kind,canonical_display_name,canonical_name,concept_id,entity_type,stakeholder_role,parent_display_name,org_level,industry_code,match_mode,is_active
+Bộ Chính trị,official,Bộ Chính trị,Bộ Chính trị,oilgas:ent:bo_chinh_tri,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộChínhtrị,typo,Bộ Chính trị,Bộ Chính trị,oilgas:ent:bo_chinh_tri,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo chinh tri,typo,Bộ Chính trị,Bộ Chính trị,oilgas:ent:bo_chinh_tri,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Công Thương,official,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BCT,abbrev,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+MOIT,abbrev,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo cong thuong,slang,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộCôngThương,typo,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Công an,official,Bộ Công an,Bộ Công an,oilgas:ent:bo_cong_an,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộCôngan,typo,Bộ Công an,Bộ Công an,oilgas:ent:bo_cong_an,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo cong an,typo,Bộ Công an,Bộ Công an,oilgas:ent:bo_cong_an,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Kế hoạch và Đầu tư,official,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BKHĐT,abbrev,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+MPI,abbrev,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bo KH&ĐT,slang,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộKếhoạchvàĐầutư,typo,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo ke hoach va đau tu,typo,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Ngoại giao,official,Bộ Ngoại giao,Bộ Ngoại giao,oilgas:ent:bo_ngoai_giao,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộNgoạigiao,typo,Bộ Ngoại giao,Bộ Ngoại giao,oilgas:ent:bo_ngoai_giao,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo ngoai giao,typo,Bộ Ngoại giao,Bộ Ngoại giao,oilgas:ent:bo_ngoai_giao,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Quốc phòng,official,Bộ Quốc phòng,Bộ Quốc phòng,oilgas:ent:bo_quoc_phong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộQuốcphòng,typo,Bộ Quốc phòng,Bộ Quốc phòng,oilgas:ent:bo_quoc_phong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo quoc phong,typo,Bộ Quốc phòng,Bộ Quốc phòng,oilgas:ent:bo_quoc_phong,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Bộ Tài chính,official,Bộ Tài chính,Bộ Tài chính,oilgas:ent:bo_tai_chinh,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BTC,abbrev,Bộ Tài chính,Bộ Tài chính,oilgas:ent:bo_tai_chinh,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+BộTàichính,typo,Bộ Tài chính,Bộ Tài chính,oilgas:ent:bo_tai_chinh,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+bo tai chinh,typo,Bộ Tài chính,Bộ Tài chính,oilgas:ent:bo_tai_chinh,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Chính phủ nước CHXHCN Việt Nam,canonical,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Chính phủ,official,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Chínhphủ,typo,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ChínhphủnướcCHXHCNViệtNam,typo,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+chinh phu,typo,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+chinh phu nuoc chxhcn viet nam,typo,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Ngân hàng Nhà nước Việt Nam,canonical,NHNN,Ngân hàng Nhà nước Việt Nam,oilgas:ent:ngan_hang_nha_nuoc_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+NHNN,official,NHNN,Ngân hàng Nhà nước Việt Nam,oilgas:ent:ngan_hang_nha_nuoc_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+NgânhàngNhànướcViệtNam,typo,NHNN,Ngân hàng Nhà nước Việt Nam,oilgas:ent:ngan_hang_nha_nuoc_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ngan hang nha nuoc viet nam,typo,NHNN,Ngân hàng Nhà nước Việt Nam,oilgas:ent:ngan_hang_nha_nuoc_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Quốc hội nước CHXHCN Việt Nam,canonical,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Quốc hội,official,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Quốchội,typo,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+QuốchộinướcCHXHCNViệtNam,typo,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+quoc hoi,typo,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+quoc hoi nuoc chxhcn viet nam,typo,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Thủ tướng Chính phủ nước CHXHCN Việt Nam,canonical,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Thủ tướng Chính phủ,official,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ThủtướngChínhphủ,typo,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ThủtướngChínhphủnướcCHXHCNViệtNam,typo,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+thu tuong chinh phu,typo,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+thu tuong chinh phu nuoc chxhcn viet nam,typo,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,canonical,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+UBQLV,official,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+UBQLVNN,abbrev,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Uy ban QLVNN,slang,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Uy ban quan ly von,slang,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+uy ban quan ly von nha nuoc tai doanh nghiep,typo,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ỦybanQuảnlývốnNhànướctạidoanhnghiệp,typo,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Đảng Cộng sản Việt Nam,canonical,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Đảng,official,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+ĐảngCộngsảnViệtNam,typo,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+đang,typo,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+đang cong san viet nam,typo,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,,regulator,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành năng lượng,canonical,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành năng lượng,official,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh nang luong,slang,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+quản lý năng lượng,variant,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh nang luong,slang,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản năng lượng,variant,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý ngành năng lượng,variant,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhnănglượng,typo,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhnănglượng,typo,QL ngành Năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:cum:nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành dầu khí,canonical,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành dầu khí,official,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dau khi,slang,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+quản lý dầu khí,variant,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh dau khi,slang,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản dầu khí,variant,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về dầu khí,variant,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhdầukhí,typo,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhdầukhí,typo,QL ngành Dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:cum:dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành điện lực,canonical,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành điện lực,official,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dien luc,slang,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+quản lý điện lực,variant,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+co quan dieu tiet dien luc,slang,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh dien,slang,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về điện,variant,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhđiệnlực,typo,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhđiệnlực,typo,QL ngành Điện,Cụm cơ quan quản lý ngành điện lực,gov:cum:dien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành công thương,canonical,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành công thương,official,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh cong thuong,slang,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+quản lý công thương,variant,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+bo so phong cong thuong,slang,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+ngành công thương,variant,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+hệ thống công thương,variant,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhcôngthương,typo,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhcôngthương,typo,QL ngành Công Thương,Cụm cơ quan quản lý ngành công thương,gov:cum:cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành công nghiệp,canonical,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành công nghiệp,official,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh cong nghiep,slang,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+quản lý công nghiệp,variant,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+bo so phong cong nghiep,slang,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản công nghiệp,variant,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhcôngnghiệp,typo,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhcôngnghiệp,typo,QL ngành Công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:cum:cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành thương mại,canonical,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thương mại,official,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh thuong mai,slang,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+quản lý thương mại,variant,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+bo so phong thuong mai,slang,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+quản lý thị trường thương mại,variant,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhthươngmại,typo,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhthươngmại,typo,QL ngành Thương mại,Cụm cơ quan quản lý ngành thương mại,gov:cum:thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành du lịch,canonical,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành du lịch,official,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh du lich,slang,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+quản lý du lịch,variant,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+bo so phong du lich,slang,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản du lịch,variant,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý du lịch,variant,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhdulịch,typo,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhdulịch,typo,QL ngành Du lịch,Cụm cơ quan quản lý ngành du lịch,gov:cum:du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành văn hóa,canonical,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành văn hóa,official,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh van hoa,slang,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+quản lý văn hóa,variant,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+bo so phong van hoa,slang,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+ngành văn hóa thể thao,variant,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhvănhóa,typo,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhvănhóa,typo,QL ngành Văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:cum:van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành thể thao,canonical,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thể thao,official,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh the thao,slang,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+quản lý thể thao,variant,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+bo so phong the thao,slang,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+ngành thể dục thể thao,variant,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhthểthao,typo,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhthểthao,typo,QL ngành Thể thao,Cụm cơ quan quản lý ngành thể thao,gov:cum:the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành y tế,canonical,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành y tế,official,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh y te,slang,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+quản lý y tế,variant,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+bo so phong y te,slang,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản y tế,variant,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý ngành y,variant,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhytế,typo,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhytế,typo,QL ngành Y tế,Cụm cơ quan quản lý ngành y tế,gov:cum:y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành giáo dục,canonical,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành giáo dục,official,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh giao duc,slang,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+quản lý giáo dục,variant,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+bo so phong giao duc,slang,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+ngành giáo dục đào tạo,variant,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản giáo dục,variant,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhgiáodục,typo,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhgiáodục,typo,QL ngành Giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:cum:giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành đào tạo,canonical,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đào tạo,official,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dao tao,slang,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+quản lý đào tạo,variant,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+bo so phong dao tao,slang,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+hệ thống đào tạo công lập,variant,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhđàotạo,typo,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhđàotạo,typo,QL ngành Đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:cum:dao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành giao thông,canonical,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành giao thông,official,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh giao thong,slang,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+quản lý giao thông,variant,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+bo so phong giao thong,slang,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+giao thông vận tải,variant,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản giao thông,variant,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhgiaothông,typo,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhgiaothông,typo,QL ngành Giao thông,Cụm cơ quan quản lý ngành giao thông,gov:cum:giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành vận tải,canonical,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành vận tải,official,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh van tai,slang,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+quản lý vận tải,variant,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+bo so phong van tai,slang,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về vận tải,variant,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhvậntải,typo,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhvậntải,typo,QL ngành Vận tải,Cụm cơ quan quản lý ngành vận tải,gov:cum:van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành logistics,canonical,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành logistics,official,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh logistics,slang,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+quản lý logistics,variant,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+bo so phong logistics,slang,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý logistics,variant,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhlogistics,typo,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhlogistics,typo,QL ngành Logistics,Cụm cơ quan quản lý ngành logistics,gov:cum:logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành xây dựng,canonical,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành xây dựng,official,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh xay dung,slang,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+quản lý xây dựng,variant,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+bo so phong xay dung,slang,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản xây dựng,variant,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhxâydựng,typo,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhxâydựng,typo,QL ngành Xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:cum:xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành đô thị,canonical,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đô thị,official,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh do thi,slang,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+quản lý đô thị,variant,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+bo so phong do thi,slang,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+hạ tầng đô thị,variant,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhđôthị,typo,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhđôthị,typo,QL ngành Đô thị,Cụm cơ quan quản lý ngành đô thị,gov:cum:do_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành bất động sản,canonical,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành bất động sản,official,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh bat dong san,slang,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+quản lý bất động sản,variant,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+quản lý thị trường nhà đất,variant,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+bo so phong nha dat,slang,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhbấtđộngsản,typo,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhbấtđộngsản,typo,QL ngành Bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:cum:bat_dong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành nông nghiệp,canonical,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành nông nghiệp,official,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh nong nghiep,slang,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+quản lý nông nghiệp,variant,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+bo so phong nong nghiep,slang,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản nông nghiệp,variant,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhnôngnghiệp,typo,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhnôngnghiệp,typo,QL ngành Nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:cum:nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành môi trường,canonical,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành môi trường,official,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh moi truong,slang,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+quản lý môi trường,variant,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+bo so phong moi truong,slang,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản môi trường,variant,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhmôitrường,typo,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhmôitrường,typo,QL ngành Môi trường,Cụm cơ quan quản lý ngành môi trường,gov:cum:moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành tài nguyên,canonical,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tài nguyên,official,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tai nguyen,slang,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+quản lý tài nguyên,variant,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+bo so phong tai nguyen,slang,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+đất đai khoáng sản môi trường,variant,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhtàinguyên,typo,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhtàinguyên,typo,QL ngành Tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:cum:tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành khoáng sản,canonical,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành khoáng sản,official,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh khoang san,slang,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+quản lý khoáng sản,variant,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+bo so phong khoang san,slang,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản khoáng sản,variant,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhkhoángsản,typo,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhkhoángsản,typo,QL ngành Khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:cum:khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành tài chính,canonical,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tài chính,official,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tai chinh,slang,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+quản lý tài chính,variant,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+bo so phong tai chinh,slang,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản tài chính,variant,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhtàichính,typo,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhtàichính,typo,QL ngành Tài chính,Cụm cơ quan quản lý ngành tài chính,gov:cum:tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành ngân hàng,canonical,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành ngân hàng,official,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ngan hang,slang,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+quản lý ngân hàng,variant,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+co quan chu quan ngan hang,slang,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+hệ thống giám sát ngân hàng,variant,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhngânhàng,typo,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhngânhàng,typo,QL ngành Ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:cum:ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành chứng khoán,canonical,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành chứng khoán,official,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh chung khoan,slang,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+quản lý chứng khoán,variant,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+giám sát chứng khoán,variant,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản chứng khoán,variant,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhchứngkhoán,typo,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhchứngkhoán,typo,QL ngành Chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:cum:chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành bảo hiểm,canonical,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành bảo hiểm,official,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh bao hiem,slang,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+quản lý bảo hiểm,variant,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+giám sát bảo hiểm,variant,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản bảo hiểm,variant,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhbảohiểm,typo,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhbảohiểm,typo,QL ngành Bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:cum:bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành lao động,canonical,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành lao động,official,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh lao dong,slang,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+quản lý lao động,variant,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+bo so phong lao dong,slang,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản lao động,variant,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhlaođộng,typo,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhlaođộng,typo,QL ngành Lao động,Cụm cơ quan quản lý ngành lao động,gov:cum:lao_dong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành an sinh xã hội,canonical,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an sinh xã hội,official,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+co quan quan ly an sinh xa hoi,slang,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+quản lý an sinh xã hội,variant,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+bo so phong bao tro xa hoi,slang,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản an sinh,variant,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhansinhxãhội,typo,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhansinhxãhội,typo,QL ngành An sinh,Cụm cơ quan quản lý ngành an sinh xã hội,gov:cum:an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành khoa học công nghệ,canonical,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành khoa học công nghệ,official,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh khoa hoc cong nghe,slang,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+quản lý khoa học công nghệ,variant,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+bo so phong khcn,slang,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản khoa học công nghệ,variant,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhkhoahọccôngnghệ,typo,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhkhoahọccôngnghệ,typo,QL ngành Khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:cum:khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành thông tin truyền thông,canonical,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thông tin truyền thông,official,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh thong tin truyen thong,slang,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+quản lý thông tin truyền thông,variant,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+bo so phong tttt,slang,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản truyền thông,variant,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhthôngtintruyềnthông,typo,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhthôngtintruyềnthông,typo,QL ngành Thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:cum:thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành ngoại giao,canonical,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành ngoại giao,official,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ngoai giao,slang,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+quản lý đối ngoại,variant,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+bo so phong doi ngoai,slang,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản ngoại giao,variant,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhngoạigiao,typo,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhngoạigiao,typo,QL ngành Ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:cum:ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành quốc phòng,canonical,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành quốc phòng,official,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh quoc phong,slang,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+quản lý quốc phòng,variant,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+bo chi huy quan su,slang,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản quốc phòng,variant,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhquốcphòng,typo,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhquốcphòng,typo,QL ngành Quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:cum:quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành an ninh,canonical,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an ninh,official,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh an ninh,slang,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+quản lý an ninh,variant,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+công an các cấp,variant,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản an ninh,variant,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhanninh,typo,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhanninh,typo,QL ngành An ninh,Cụm cơ quan quản lý ngành an ninh,gov:cum:an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành tư pháp,canonical,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tư pháp,official,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tu phap,slang,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+quản lý tư pháp,variant,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+bo so phong tu phap,slang,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản tư pháp,variant,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhtưpháp,typo,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhtưpháp,typo,QL ngành Tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:cum:tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành nội vụ,canonical,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành nội vụ,official,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh noi vu,slang,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+quản lý nội vụ,variant,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+bo so phong noi vu,slang,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản nội vụ,variant,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhnộivụ,typo,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhnộivụ,typo,QL ngành Nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:cum:noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành quy hoạch,canonical,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành quy hoạch,official,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh quy hoach,slang,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+quản lý quy hoạch,variant,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+quản lý kế hoạch quy hoạch,variant,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản quy hoạch,variant,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhquyhoạch,typo,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhquyhoạch,typo,QL ngành Quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:cum:quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành đầu tư,canonical,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đầu tư,official,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dau tu,slang,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+quản lý đầu tư,variant,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+bo so phong dau tu,slang,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản đầu tư,variant,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhđầutư,typo,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhđầutư,typo,QL ngành Đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:cum:dau_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành hạ tầng,canonical,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành hạ tầng,official,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ha tang,slang,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+quản lý hạ tầng,variant,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+bo so phong ha tang,slang,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+hệ thống hạ tầng kỹ thuật,variant,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhhạtầng,typo,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhhạtầng,typo,QL ngành Hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:cum:ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành cấp thoát nước,canonical,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành cấp thoát nước,official,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+co quan quan ly cap thoat nuoc,slang,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+quản lý cấp thoát nước,variant,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+hạ tầng nước sạch,variant,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+bo so phong nuoc sach,slang,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhcấpthoátnước,typo,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhcấpthoátnước,typo,QL ngành Cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:cum:cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+Cụm cơ quan quản lý ngành an toàn thực phẩm,canonical,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an toàn thực phẩm,official,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+co quan quan ly an toan thuc pham,slang,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+quản lý an toàn thực phẩm,variant,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+bo so phong attp,slang,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản thực phẩm,variant,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+cơquanquảnlýngànhantoànthựcphẩm,typo,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+Cụmcơquanquảnlýngànhantoànthựcphẩm,typo,QL ngành ATTP,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:cum:an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+ĐCSVN,abbrev,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Đảng CSVN,variant,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Dang Cong san Viet Nam,variant,Đảng,Đảng Cộng sản Việt Nam,oilgas:ent:ang_cong_san_viet_nam,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+BCH,abbrev,Bộ Chính trị,Bộ Chính trị,oilgas:ent:bo_chinh_tri,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Chấp hành Trung ương,variant,Bộ Chính trị,Bộ Chính trị,oilgas:ent:bo_chinh_tri,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Bí thư,official,Bí thư Trung ương,Ban Bí thư Trung ương,gov:party:ban_bí_thư_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+BBT,abbrev,Bí thư Trung ương,Ban Bí thư Trung ương,gov:party:ban_bí_thư_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+ban bi thu,variant,Bí thư Trung ương,Ban Bí thư Trung ương,gov:party:ban_bí_thư_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Tổ chức Trung ương,canonical,Tổ chức Trung ương,Ban Tổ chức Trung ương,gov:party:ban_tổ_chức_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Tổ chức TW,variant,Tổ chức Trung ương,Ban Tổ chức Trung ương,gov:party:ban_tổ_chức_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+ban to chuc trung uong,variant,Tổ chức Trung ương,Ban Tổ chức Trung ương,gov:party:ban_tổ_chức_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Kinh tế Trung ương,canonical,Kinh tế Trung ương,Ban Kinh tế Trung ương,gov:party:ban_kinh_tế_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Kinh tế TW,variant,Kinh tế Trung ương,Ban Kinh tế Trung ương,gov:party:ban_kinh_tế_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+ban kinh te trung uong,variant,Kinh tế Trung ương,Ban Kinh tế Trung ương,gov:party:ban_kinh_tế_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Tuyên giáo Trung ương,canonical,Tuyên giáo Trung ương,Ban Tuyên giáo Trung ương,gov:party:ban_tuyên_giáo_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Tuyên giáo TW,variant,Tuyên giáo Trung ương,Ban Tuyên giáo Trung ương,gov:party:ban_tuyên_giáo_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Nội chính Trung ương,canonical,Nội chính Trung ương,Ban Nội chính Trung ương,gov:party:ban_nội_chính_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Nội chính TW,variant,Nội chính Trung ương,Ban Nội chính Trung ương,gov:party:ban_nội_chính_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Dân vận Trung ương,canonical,Dân vận Trung ương,Ban Dân vận Trung ương,gov:party:ban_dân_vận_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Ban Dân vận TW,variant,Dân vận Trung ương,Ban Dân vận Trung ương,gov:party:ban_dân_vận_trung_ương,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+Trung ương Đảng,canonical,Trung ương Đảng,Trung ương Đảng,gov:party:trung_ương_đảng,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+TW Đảng,variant,Trung ương Đảng,Trung ương Đảng,gov:party:trung_ương_đảng,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+trung uong dang,variant,Trung ương Đảng,Trung ương Đảng,gov:party:trung_ương_đảng,organization,REGULATOR,Đảng,trung_uong,ENERGY,contains,TRUE
+QH,abbrev,Quốc hội,Quốc hội nước CHXHCN Việt Nam,oilgas:ent:quoc_hoi_nuoc_chxhcn_viet_nam,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Thường vụ Quốc hội,canonical,Thường vụ Quốc hội,Ủy ban Thường vụ Quốc hội,gov:org:uy_ban_thuong_vu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UBTVQH,abbrev,Thường vụ Quốc hội,Ủy ban Thường vụ Quốc hội,gov:org:uy_ban_thuong_vu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Uy ban Thuong vu Quoc hoi,variant,Thường vụ Quốc hội,Ủy ban Thường vụ Quốc hội,gov:org:uy_ban_thuong_vu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Tổng Thư ký Quốc hội,canonical,Tổng Thư ký Quốc hội,Tổng Thư ký Quốc hội,gov:org:tong_thu_ky_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Tong Thu ky Quoc hoi,variant,Tổng Thư ký Quốc hội,Tổng Thư ký Quốc hội,gov:org:tong_thu_ky_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Kinh tế và Tài chính,official,Kinh tế và Tài chính của Quốc hội,Ủy ban Kinh tế và Tài chính của Quốc hội,gov:org:uy_ban_kinh_te_va_tai_chinh_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB Kinh tế Tài chính,variant,Kinh tế và Tài chính của Quốc hội,Ủy ban Kinh tế và Tài chính của Quốc hội,gov:org:uy_ban_kinh_te_va_tai_chinh_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Uy ban Kinh te va Tai chinh,variant,Kinh tế và Tài chính của Quốc hội,Ủy ban Kinh tế và Tài chính của Quốc hội,gov:org:uy_ban_kinh_te_va_tai_chinh_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Khoa học Công nghệ và Môi trường,official,"Khoa học, Công nghệ và Môi trường của Quốc hội","Ủy ban Khoa học, Công nghệ và Môi trường của Quốc hội",gov:org:uy_ban_khoa_hoc_cong_nghe_va_moi_truong_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB KHCN Môi trường,variant,"Khoa học, Công nghệ và Môi trường của Quốc hội","Ủy ban Khoa học, Công nghệ và Môi trường của Quốc hội",gov:org:uy_ban_khoa_hoc_cong_nghe_va_moi_truong_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Văn hóa và Giáo dục,official,Văn hóa và Giáo dục của Quốc hội,Ủy ban Văn hóa và Giáo dục của Quốc hội,gov:org:uy_ban_van_hoa_va_giao_duc_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB Văn hóa Giáo dục,variant,Văn hóa và Giáo dục của Quốc hội,Ủy ban Văn hóa và Giáo dục của Quốc hội,gov:org:uy_ban_van_hoa_va_giao_duc_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Pháp luật,official,Pháp luật của Quốc hội,Ủy ban Pháp luật của Quốc hội,gov:org:uy_ban_phap_luat_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB Pháp luật Quốc hội,variant,Pháp luật của Quốc hội,Ủy ban Pháp luật của Quốc hội,gov:org:uy_ban_phap_luat_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Quốc phòng An ninh,official,Quốc phòng và An ninh của Quốc hội,Ủy ban Quốc phòng và An ninh của Quốc hội,gov:org:uy_ban_quoc_phong_va_an_ninh_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB Quốc phòng An ninh,variant,Quốc phòng và An ninh của Quốc hội,Ủy ban Quốc phòng và An ninh của Quốc hội,gov:org:uy_ban_quoc_phong_va_an_ninh_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+Ủy ban Đối ngoại,official,Đối ngoại của Quốc hội,Ủy ban Đối ngoại của Quốc hội,gov:org:uy_ban_oi_ngoai_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+UB Đối ngoại Quốc hội,variant,Đối ngoại của Quốc hội,Ủy ban Đối ngoại của Quốc hội,gov:org:uy_ban_oi_ngoai_cua_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+đại biểu Quốc hội,official,Đại biểu Quốc hội,Đại biểu Quốc hội,gov:org:ai_bieu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+ĐBQH,abbrev,Đại biểu Quốc hội,Đại biểu Quốc hội,gov:org:ai_bieu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+dai bieu quoc hoi,variant,Đại biểu Quốc hội,Đại biểu Quốc hội,gov:org:ai_bieu_quoc_hoi,organization,REGULATOR,Lập pháp,trung_uong,ENERGY,contains,TRUE
+CP,abbrev,Chính phủ,Chính phủ nước CHXHCN Việt Nam,oilgas:ent:chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thủ tướng,variant,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thu tuong Chinh phu,variant,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+thu tuong,variant,Thủ tướng Chính phủ,Thủ tướng Chính phủ nước CHXHCN Việt Nam,oilgas:ent:thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Phó Thủ tướng Chính phủ,canonical,Phó Thủ tướng Chính phủ,Phó Thủ tướng Chính phủ,gov:org:pho_thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Phó Thủ tướng,variant,Phó Thủ tướng Chính phủ,Phó Thủ tướng Chính phủ,gov:org:pho_thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+pho thu tuong,variant,Phó Thủ tướng Chính phủ,Phó Thủ tướng Chính phủ,gov:org:pho_thu_tuong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Văn phòng Chính phủ,canonical,Văn phòng Chính phủ,Văn phòng Chính phủ,gov:org:van_phong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+VPCP,abbrev,Văn phòng Chính phủ,Văn phòng Chính phủ,gov:org:van_phong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Van phong Chinh phu,variant,Văn phòng Chính phủ,Văn phòng Chính phủ,gov:org:van_phong_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Chủ tịch nước,canonical,Chủ tịch nước,Chủ tịch nước,gov:org:chu_tich_nuoc,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Chu tich nuoc,variant,Chủ tịch nước,Chủ tịch nước,gov:org:chu_tich_nuoc,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thanh tra Chính phủ,canonical,Thanh tra Chính phủ,Thanh tra Chính phủ,gov:org:thanh_tra_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thanh tra CP,variant,Thanh tra Chính phủ,Thanh tra Chính phủ,gov:org:thanh_tra_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+thanh tra chinh phu,variant,Thanh tra Chính phủ,Thanh tra Chính phủ,gov:org:thanh_tra_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Bộ trưởng,canonical,trưởng,Bộ trưởng,gov:org:bo_truong,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Bo truong,variant,trưởng,Bộ trưởng,gov:org:bo_truong,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+bộ trưởng Bộ,variant,trưởng,Bộ trưởng,gov:org:bo_truong,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thứ trưởng,canonical,Thứ trưởng,Thứ trưởng,gov:org:thu_truong,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Thu truong,variant,Thứ trưởng,Thứ trưởng,gov:org:thu_truong,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan ngang Bộ,official,Cơ quan ngang Bộ,Cơ quan ngang Bộ,gov:org:co_quan_ngang_bo,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+co quan ngang bo,variant,Cơ quan ngang Bộ,Cơ quan ngang Bộ,gov:org:co_quan_ngang_bo,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan thuộc Chính phủ,official,Cơ quan thuộc Chính phủ,Cơ quan thuộc Chính phủ,gov:org:co_quan_thuoc_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+co quan thuoc chinh phu,variant,Cơ quan thuộc Chính phủ,Cơ quan thuộc Chính phủ,gov:org:co_quan_thuoc_chinh_phu,organization,REGULATOR,Hành pháp,trung_uong,ENERGY,contains,TRUE
+Bộ Công thương,variant,Bộ Công Thương,Bộ Công Thương,oilgas:ent:bo_cong_thuong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo ke hoach va dau tu,variant,Bộ Kế hoạch và Đầu tư,Bộ Kế hoạch và Đầu tư,oilgas:ent:bo_ke_hoach_va_au_tu,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Nông nghiệp và Môi trường,canonical,Nông nghiệp và Môi trường,Bộ Nông nghiệp và Môi trường,gov:org:bo_nong_nghiep_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BNNMT,abbrev,Nông nghiệp và Môi trường,Bộ Nông nghiệp và Môi trường,gov:org:bo_nong_nghiep_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo nong nghiep moi truong,variant,Nông nghiệp và Môi trường,Bộ Nông nghiệp và Môi trường,gov:org:bo_nong_nghiep_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Xây dựng,canonical,Xây dựng,Bộ Xây dựng,gov:org:bo_xay_dung,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BXD,abbrev,Xây dựng,Bộ Xây dựng,gov:org:bo_xay_dung,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo xay dung,variant,Xây dựng,Bộ Xây dựng,gov:org:bo_xay_dung,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Giao thông vận tải,canonical,Giao thông vận tải,Bộ Giao thông vận tải,gov:org:bo_giao_thong_van_tai,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BGTVT,abbrev,Giao thông vận tải,Bộ Giao thông vận tải,gov:org:bo_giao_thong_van_tai,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo giao thong van tai,variant,Giao thông vận tải,Bộ Giao thông vận tải,gov:org:bo_giao_thong_van_tai,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Nội vụ,canonical,Nội vụ,Bộ Nội vụ,gov:org:bo_noi_vu,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BNV,abbrev,Nội vụ,Bộ Nội vụ,gov:org:bo_noi_vu,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo noi vu,variant,Nội vụ,Bộ Nội vụ,gov:org:bo_noi_vu,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Y tế,canonical,Y tế,Bộ Y tế,gov:org:bo_y_te,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BYT,abbrev,Y tế,Bộ Y tế,gov:org:bo_y_te,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo y te,variant,Y tế,Bộ Y tế,gov:org:bo_y_te,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Giáo dục và Đào tạo,canonical,Giáo dục và Đào tạo,Bộ Giáo dục và Đào tạo,gov:org:bo_giao_duc_va_ao_tao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BGDĐT,abbrev,Giáo dục và Đào tạo,Bộ Giáo dục và Đào tạo,gov:org:bo_giao_duc_va_ao_tao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo giao duc dao tao,variant,Giáo dục và Đào tạo,Bộ Giáo dục và Đào tạo,gov:org:bo_giao_duc_va_ao_tao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Văn hóa Thể thao và Du lịch,canonical,Văn hóa Thể thao và Du lịch,Bộ Văn hóa Thể thao và Du lịch,gov:org:bo_van_hoa_the_thao_va_du_lich,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BVHTTDL,variant,Văn hóa Thể thao và Du lịch,Bộ Văn hóa Thể thao và Du lịch,gov:org:bo_van_hoa_the_thao_va_du_lich,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo van hoa the thao du lich,variant,Văn hóa Thể thao và Du lịch,Bộ Văn hóa Thể thao và Du lịch,gov:org:bo_van_hoa_the_thao_va_du_lich,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Lao động Thương binh và Xã hội,canonical,Lao động Thương binh và Xã hội,Bộ Lao động Thương binh và Xã hội,gov:org:bo_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BLĐTBXH,variant,Lao động Thương binh và Xã hội,Bộ Lao động Thương binh và Xã hội,gov:org:bo_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo lao dong thuong binh xa hoi,variant,Lao động Thương binh và Xã hội,Bộ Lao động Thương binh và Xã hội,gov:org:bo_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Tư pháp,canonical,Tư pháp,Bộ Tư pháp,gov:org:bo_tu_phap,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BTP,abbrev,Tư pháp,Bộ Tư pháp,gov:org:bo_tu_phap,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo tu phap,variant,Tư pháp,Bộ Tư pháp,gov:org:bo_tu_phap,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BQP,abbrev,Bộ Quốc phòng,Bộ Quốc phòng,oilgas:ent:bo_quoc_phong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BCA,abbrev,Bộ Công an,Bộ Công an,oilgas:ent:bo_cong_an,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BNG,abbrev,Bộ Ngoại giao,Bộ Ngoại giao,oilgas:ent:bo_ngoai_giao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Khoa học và Công nghệ,canonical,Khoa học và Công nghệ,Bộ Khoa học và Công nghệ,gov:org:bo_khoa_hoc_va_cong_nghe,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BKHCN,abbrev,Khoa học và Công nghệ,Bộ Khoa học và Công nghệ,gov:org:bo_khoa_hoc_va_cong_nghe,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo khoa hoc cong nghe,variant,Khoa học và Công nghệ,Bộ Khoa học và Công nghệ,gov:org:bo_khoa_hoc_va_cong_nghe,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Tài nguyên và Môi trường,canonical,Tài nguyên và Môi trường,Bộ Tài nguyên và Môi trường,gov:org:bo_tai_nguyen_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BTNMT,abbrev,Tài nguyên và Môi trường,Bộ Tài nguyên và Môi trường,gov:org:bo_tai_nguyen_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo tai nguyen moi truong,variant,Tài nguyên và Môi trường,Bộ Tài nguyên và Môi trường,gov:org:bo_tai_nguyen_va_moi_truong,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Bộ Dân tộc và Tôn giáo,canonical,Dân tộc và Tôn giáo,Bộ Dân tộc và Tôn giáo,gov:org:bo_dan_toc_va_ton_giao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+BDTTG,abbrev,Dân tộc và Tôn giáo,Bộ Dân tộc và Tôn giáo,gov:org:bo_dan_toc_va_ton_giao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+bo dan toc ton giao,variant,Dân tộc và Tôn giáo,Bộ Dân tộc và Tôn giáo,gov:org:bo_dan_toc_va_ton_giao,organization,REGULATOR,Bộ,trung_uong,ENERGY,contains,TRUE
+Tổng cục Dầu khí Việt Nam,canonical,Tổng cục Dầu khí Việt Nam,Tổng cục Dầu khí Việt Nam,gov:org:tong_cuc_dau_khi_viet_nam,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+Tổng cục DK,variant,Tổng cục Dầu khí Việt Nam,Tổng cục Dầu khí Việt Nam,gov:org:tong_cuc_dau_khi_viet_nam,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+Cục Dầu khí,variant,Tổng cục Dầu khí Việt Nam,Tổng cục Dầu khí Việt Nam,gov:org:tong_cuc_dau_khi_viet_nam,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+tong cuc dau khi,variant,Tổng cục Dầu khí Việt Nam,Tổng cục Dầu khí Việt Nam,gov:org:tong_cuc_dau_khi_viet_nam,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+Cục Điều tiết Điện lực,canonical,Cục Điều tiết Điện lực,Cục Điều tiết Điện lực,gov:org:cuc_ieu_tiet_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+ERAV,abbrev,Cục Điều tiết Điện lực,Cục Điều tiết Điện lực,gov:org:cuc_ieu_tiet_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+cuc dieu tiet dien luc,variant,Cục Điều tiết Điện lực,Cục Điều tiết Điện lực,gov:org:cuc_ieu_tiet_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+Tổng cục Thuế,canonical,Tổng cục Thuế,Tổng cục Thuế,gov:org:tong_cuc_thue,organization,REGULATOR,Thuế,trung_uong,ENERGY,contains,TRUE
+TCT,abbrev,Tổng cục Thuế,Tổng cục Thuế,gov:org:tong_cuc_thue,organization,REGULATOR,Thuế,trung_uong,ENERGY,contains,TRUE
+tong cuc thue,variant,Tổng cục Thuế,Tổng cục Thuế,gov:org:tong_cuc_thue,organization,REGULATOR,Thuế,trung_uong,ENERGY,contains,TRUE
+Tổng cục Hải quan,canonical,Tổng cục Hải quan,Tổng cục Hải quan,gov:org:tong_cuc_hai_quan,organization,REGULATOR,Hải quan,trung_uong,ENERGY,contains,TRUE
+TCHQ,abbrev,Tổng cục Hải quan,Tổng cục Hải quan,gov:org:tong_cuc_hai_quan,organization,REGULATOR,Hải quan,trung_uong,ENERGY,contains,TRUE
+tong cuc hai quan,variant,Tổng cục Hải quan,Tổng cục Hải quan,gov:org:tong_cuc_hai_quan,organization,REGULATOR,Hải quan,trung_uong,ENERGY,contains,TRUE
+Tổng cục Thống kê,canonical,Tổng cục Thống kê,Tổng cục Thống kê,gov:org:tong_cuc_thong_ke,organization,REGULATOR,Thống kê,trung_uong,ENERGY,contains,TRUE
+GSO,abbrev,Tổng cục Thống kê,Tổng cục Thống kê,gov:org:tong_cuc_thong_ke,organization,REGULATOR,Thống kê,trung_uong,ENERGY,contains,TRUE
+tong cuc thong ke,variant,Tổng cục Thống kê,Tổng cục Thống kê,gov:org:tong_cuc_thong_ke,organization,REGULATOR,Thống kê,trung_uong,ENERGY,contains,TRUE
+Tổng cục Đường bộ Việt Nam,canonical,Tổng cục Đường bộ Việt Nam,Tổng cục Đường bộ Việt Nam,gov:org:tong_cuc_uong_bo_viet_nam,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+tong cuc duong bo,variant,Tổng cục Đường bộ Việt Nam,Tổng cục Đường bộ Việt Nam,gov:org:tong_cuc_uong_bo_viet_nam,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+Tổng cục Đường thủy,canonical,Tổng cục Đường thủy,Tổng cục Đường thủy,gov:org:tong_cuc_uong_thuy,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+tong cuc duong thuy,variant,Tổng cục Đường thủy,Tổng cục Đường thủy,gov:org:tong_cuc_uong_thuy,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+Tổng cục Hàng hải,canonical,Tổng cục Hàng hải,Tổng cục Hàng hải,gov:org:tong_cuc_hang_hai,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+tong cuc hang hai,variant,Tổng cục Hàng hải,Tổng cục Hàng hải,gov:org:tong_cuc_hang_hai,organization,REGULATOR,GTVT,trung_uong,ENERGY,contains,TRUE
+Tổng cục Môi trường,canonical,Tổng cục Môi trường,Tổng cục Môi trường,gov:org:tong_cuc_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+tong cuc moi truong,variant,Tổng cục Môi trường,Tổng cục Môi trường,gov:org:tong_cuc_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+Cục Quản lý Đấu thầu,canonical,Cục Quản lý Đấu thầu,Cục Quản lý Đấu thầu,gov:org:cuc_quan_ly_au_thau,organization,REGULATOR,Đấu thầu,trung_uong,ENERGY,contains,TRUE
+cuc quan ly dau thau,variant,Cục Quản lý Đấu thầu,Cục Quản lý Đấu thầu,gov:org:cuc_quan_ly_au_thau,organization,REGULATOR,Đấu thầu,trung_uong,ENERGY,contains,TRUE
+Cục Quản lý Cạnh tranh,canonical,Cục Quản lý Cạnh tranh,Cục Quản lý Cạnh tranh,gov:org:cuc_quan_ly_canh_tranh,organization,REGULATOR,Cạnh tranh,trung_uong,ENERGY,contains,TRUE
+cuc quan ly canh tranh,variant,Cục Quản lý Cạnh tranh,Cục Quản lý Cạnh tranh,gov:org:cuc_quan_ly_canh_tranh,organization,REGULATOR,Cạnh tranh,trung_uong,ENERGY,contains,TRUE
+Cục Quản lý giá,canonical,Cục Quản lý giá,Cục Quản lý giá,gov:org:cuc_quan_ly_gia,organization,REGULATOR,Giá,trung_uong,ENERGY,contains,TRUE
+cuc quan ly gia,variant,Cục Quản lý giá,Cục Quản lý giá,gov:org:cuc_quan_ly_gia,organization,REGULATOR,Giá,trung_uong,ENERGY,contains,TRUE
+Cục Công nghiệp,canonical,Cục Công nghiệp,Cục Công nghiệp,gov:org:cuc_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cuc cong nghiep BCT,variant,Cục Công nghiệp,Cục Công nghiệp,gov:org:cuc_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+Cục Điện lực,canonical,Cục Điện lực,Cục Điện lực,gov:org:cuc_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+cuc dien luc,variant,Cục Điện lực,Cục Điện lực,gov:org:cuc_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+Vụ Khoa học Công nghệ,canonical,Vụ Khoa học Công nghệ,Vụ Khoa học Công nghệ,gov:org:vu_khoa_hoc_cong_nghe,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+vu khoa hoc cong nghe,variant,Vụ Khoa học Công nghệ,Vụ Khoa học Công nghệ,gov:org:vu_khoa_hoc_cong_nghe,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+Vụ Pháp chế,canonical,Vụ Pháp chế,Vụ Pháp chế,gov:org:vu_phap_che,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+vu phap che,variant,Vụ Pháp chế,Vụ Pháp chế,gov:org:vu_phap_che,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+Vụ Kế hoạch Tài chính,canonical,Vụ Kế hoạch Tài chính,Vụ Kế hoạch Tài chính,gov:org:vu_ke_hoach_tai_chinh,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+vu ke hoach tai chinh,variant,Vụ Kế hoạch Tài chính,Vụ Kế hoạch Tài chính,gov:org:vu_ke_hoach_tai_chinh,organization,REGULATOR,Vụ trong Bộ,trung_uong,ENERGY,contains,TRUE
+Thanh tra Bộ,canonical,Thanh tra Bộ,Thanh tra Bộ,gov:org:thanh_tra_bo,organization,REGULATOR,Thanh tra,trung_uong,ENERGY,contains,TRUE
+thanh tra bo,variant,Thanh tra Bộ,Thanh tra Bộ,gov:org:thanh_tra_bo,organization,REGULATOR,Thanh tra,trung_uong,ENERGY,contains,TRUE
+Ủy ban Quản lý vốn Nhà nước,official,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+Uy ban Quan ly von Nha nuoc,variant,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+uy ban quan ly von,variant,UBQLV,Ủy ban Quản lý vốn Nhà nước tại doanh nghiệp,oilgas:ent:uy_ban_quan_ly_von_nha_nuoc,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+Ngan hang Nha nuoc,variant,NHNN,Ngân hàng Nhà nước Việt Nam,oilgas:ent:ngan_hang_nha_nuoc_viet_nam,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+Ủy ban Chứng khoán Nhà nước,official,UBCKNN,UBCKNN,gov:org:ubcknn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+UBCKNN,abbrev,UBCKNN,UBCKNN,gov:org:ubcknn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+uy ban chung khoan nha nuoc,variant,UBCKNN,UBCKNN,gov:org:ubcknn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+Kho bạc Nhà nước,official,KBNN,KBNN,gov:org:kbnn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+KBNN,abbrev,KBNN,KBNN,gov:org:kbnn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+kho bac nha nuoc,variant,KBNN,KBNN,gov:org:kbnn,organization,REGULATOR,Tài chính NN,trung_uong,ENERGY,contains,TRUE
+cơ quan trung ương,canonical,cơ quan trung ương,cơ quan trung ương,gov:org:co_quan_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan trung uong,variant,cơ quan trung ương,cơ quan trung ương,gov:org:co_quan_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+CQ TW,abbrev,cơ quan trung ương,cơ quan trung ương,gov:org:co_quan_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+ban ngành trung ương,canonical,ban ngành trung ương,ban ngành trung ương,gov:org:ban_nganh_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+ban nganh TW,variant,ban ngành trung ương,ban ngành trung ương,gov:org:ban_nganh_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+ban nganh trung uong,variant,ban ngành trung ương,ban ngành trung ương,gov:org:ban_nganh_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+bộ máy nhà nước,canonical,bộ máy nhà nước,bộ máy nhà nước,gov:org:bo_may_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+bo may nha nuoc,variant,bộ máy nhà nước,bộ máy nhà nước,gov:org:bo_may_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+bộ máy hành chính,variant,bộ máy nhà nước,bộ máy nhà nước,gov:org:bo_may_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+chính quyền trung ương,canonical,chính quyền trung ương,chính quyền trung ương,gov:org:chinh_quyen_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+chinh quyen trung uong,variant,chính quyền trung ương,chính quyền trung ương,gov:org:chinh_quyen_trung_uong,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý nhà nước,canonical,cơ quan quản lý nhà nước,cơ quan quản lý nhà nước,gov:org:co_quan_quan_ly_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nha nuoc,variant,cơ quan quản lý nhà nước,cơ quan quản lý nhà nước,gov:org:co_quan_quan_ly_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan hành chính,canonical,cơ quan hành chính,cơ quan hành chính,gov:org:co_quan_hanh_chinh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan hanh chinh,variant,cơ quan hành chính,cơ quan hành chính,gov:org:co_quan_hanh_chinh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+Ủy ban nhân dân tỉnh,official,UBND cấp tỉnh,UBND cấp tỉnh,gov:org:ubnd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND tỉnh,variant,UBND cấp tỉnh,UBND cấp tỉnh,gov:org:ubnd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND tinh,variant,UBND cấp tỉnh,UBND cấp tỉnh,gov:org:ubnd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+uy ban nhan dan tinh,variant,UBND cấp tỉnh,UBND cấp tỉnh,gov:org:ubnd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Ủy ban nhân dân thành phố,official,UBND cấp thành phố,UBND cấp thành phố,gov:org:ubnd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND thành phố,variant,UBND cấp thành phố,UBND cấp thành phố,gov:org:ubnd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND TP,variant,UBND cấp thành phố,UBND cấp thành phố,gov:org:ubnd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND thanh pho,variant,UBND cấp thành phố,UBND cấp thành phố,gov:org:ubnd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Ủy ban nhân dân,canonical,nhân dân,Ủy ban nhân dân,gov:org:uy_ban_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+UBND,abbrev,nhân dân,Ủy ban nhân dân,gov:org:uy_ban_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+uy ban nhan dan,variant,nhân dân,Ủy ban nhân dân,gov:org:uy_ban_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Hội đồng nhân dân tỉnh,official,HĐND cấp tỉnh,HĐND cấp tỉnh,gov:org:h_nd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HĐND tỉnh,variant,HĐND cấp tỉnh,HĐND cấp tỉnh,gov:org:h_nd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HDND tinh,variant,HĐND cấp tỉnh,HĐND cấp tỉnh,gov:org:h_nd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+hoi dong nhan dan tinh,variant,HĐND cấp tỉnh,HĐND cấp tỉnh,gov:org:h_nd_cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Hội đồng nhân dân thành phố,official,HĐND cấp thành phố,HĐND cấp thành phố,gov:org:h_nd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HĐND thành phố,variant,HĐND cấp thành phố,HĐND cấp thành phố,gov:org:h_nd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HDND thanh pho,variant,HĐND cấp thành phố,HĐND cấp thành phố,gov:org:h_nd_cap_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Hội đồng nhân dân,canonical,Hội đồng nhân dân,Hội đồng nhân dân,gov:org:hoi_ong_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HĐND,abbrev,Hội đồng nhân dân,Hội đồng nhân dân,gov:org:hoi_ong_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+HDND,abbrev,Hội đồng nhân dân,Hội đồng nhân dân,gov:org:hoi_ong_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+hoi dong nhan dan,variant,Hội đồng nhân dân,Hội đồng nhân dân,gov:org:hoi_ong_nhan_dan,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Chủ tịch UBND tỉnh,canonical,Chủ tịch UBND tỉnh,Chủ tịch UBND tỉnh,gov:org:chu_tich_ubnd_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Chu tich UBND tinh,variant,Chủ tịch UBND tỉnh,Chủ tịch UBND tỉnh,gov:org:chu_tich_ubnd_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+chu tich tinh,variant,Chủ tịch UBND tỉnh,Chủ tịch UBND tỉnh,gov:org:chu_tich_ubnd_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Chủ tịch UBND thành phố,canonical,Chủ tịch UBND thành phố,Chủ tịch UBND thành phố,gov:org:chu_tich_ubnd_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Chu tich UBND thanh pho,variant,Chủ tịch UBND thành phố,Chủ tịch UBND thành phố,gov:org:chu_tich_ubnd_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+chu tich thanh pho,variant,Chủ tịch UBND thành phố,Chủ tịch UBND thành phố,gov:org:chu_tich_ubnd_thanh_pho,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+chính quyền địa phương,canonical,chính quyền địa phương,chính quyền địa phương,gov:org:chinh_quyen_ia_phuong,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+chinh quyen dia phuong,variant,chính quyền địa phương,chính quyền địa phương,gov:org:chinh_quyen_ia_phuong,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+cấp tỉnh,canonical,cấp tỉnh,cấp tỉnh,gov:org:cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+cap tinh,variant,cấp tỉnh,cấp tỉnh,gov:org:cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+tỉnh thành,variant,cấp tỉnh,cấp tỉnh,gov:org:cap_tinh,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+địa phương,canonical,địa phương,địa phương,gov:org:ia_phuong,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+dia phuong,variant,địa phương,địa phương,gov:org:ia_phuong,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+địa phương các cấp,variant,địa phương,địa phương,gov:org:ia_phuong,organization,REGULATOR,Địa phương,tinh,ENERGY,contains,TRUE
+Sở Công Thương,canonical,Công Thương,Sở Công Thương,gov:org:so_cong_thuong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so công thương,variant,Công Thương,Sở Công Thương,gov:org:so_cong_thuong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Tài chính,canonical,Tài chính,Sở Tài chính,gov:org:so_tai_chinh,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so tài chính,variant,Tài chính,Sở Tài chính,gov:org:so_tai_chinh,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Kế hoạch và Đầu tư,canonical,Kế hoạch và Đầu tư,Sở Kế hoạch và Đầu tư,gov:org:so_ke_hoach_va_au_tu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so kế hoạch và đầu tư,variant,Kế hoạch và Đầu tư,Sở Kế hoạch và Đầu tư,gov:org:so_ke_hoach_va_au_tu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Nông nghiệp và Môi trường,canonical,Nông nghiệp và Môi trường,Sở Nông nghiệp và Môi trường,gov:org:so_nong_nghiep_va_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so nông nghiệp và môi trường,variant,Nông nghiệp và Môi trường,Sở Nông nghiệp và Môi trường,gov:org:so_nong_nghiep_va_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Xây dựng,canonical,Xây dựng,Sở Xây dựng,gov:org:so_xay_dung,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so xây dựng,variant,Xây dựng,Sở Xây dựng,gov:org:so_xay_dung,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Giao thông vận tải,canonical,Giao thông vận tải,Sở Giao thông vận tải,gov:org:so_giao_thong_van_tai,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so giao thông vận tải,variant,Giao thông vận tải,Sở Giao thông vận tải,gov:org:so_giao_thong_van_tai,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Nội vụ,canonical,Nội vụ,Sở Nội vụ,gov:org:so_noi_vu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so nội vụ,variant,Nội vụ,Sở Nội vụ,gov:org:so_noi_vu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Y tế,canonical,Y tế,Sở Y tế,gov:org:so_y_te,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so y tế,variant,Y tế,Sở Y tế,gov:org:so_y_te,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Giáo dục và Đào tạo,canonical,Giáo dục và Đào tạo,Sở Giáo dục và Đào tạo,gov:org:so_giao_duc_va_ao_tao,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so giáo dục và đào tạo,variant,Giáo dục và Đào tạo,Sở Giáo dục và Đào tạo,gov:org:so_giao_duc_va_ao_tao,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Văn hóa Thể thao và Du lịch,canonical,Văn hóa Thể thao và Du lịch,Sở Văn hóa Thể thao và Du lịch,gov:org:so_van_hoa_the_thao_va_du_lich,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so văn hóa thể thao và du lịch,variant,Văn hóa Thể thao và Du lịch,Sở Văn hóa Thể thao và Du lịch,gov:org:so_van_hoa_the_thao_va_du_lich,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Lao động Thương binh và Xã hội,canonical,Lao động Thương binh và Xã hội,Sở Lao động Thương binh và Xã hội,gov:org:so_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so lao động thương binh và xã hội,variant,Lao động Thương binh và Xã hội,Sở Lao động Thương binh và Xã hội,gov:org:so_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Tư pháp,canonical,Tư pháp,Sở Tư pháp,gov:org:so_tu_phap,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so tư pháp,variant,Tư pháp,Sở Tư pháp,gov:org:so_tu_phap,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Tài nguyên và Môi trường,canonical,Tài nguyên và Môi trường,Sở Tài nguyên và Môi trường,gov:org:so_tai_nguyen_va_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so tài nguyên và môi trường,variant,Tài nguyên và Môi trường,Sở Tài nguyên và Môi trường,gov:org:so_tai_nguyen_va_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Khoa học và Công nghệ,canonical,Khoa học và Công nghệ,Sở Khoa học và Công nghệ,gov:org:so_khoa_hoc_va_cong_nghe,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so khoa học và công nghệ,variant,Khoa học và Công nghệ,Sở Khoa học và Công nghệ,gov:org:so_khoa_hoc_va_cong_nghe,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Thông tin và Truyền thông,canonical,Thông tin và Truyền thông,Sở Thông tin và Truyền thông,gov:org:so_thong_tin_va_truyen_thong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so thông tin và truyền thông,variant,Thông tin và Truyền thông,Sở Thông tin và Truyền thông,gov:org:so_thong_tin_va_truyen_thong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Tài nguyên Môi trường,canonical,Tài nguyên Môi trường,Sở Tài nguyên Môi trường,gov:org:so_tai_nguyen_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so tài nguyên môi trường,variant,Tài nguyên Môi trường,Sở Tài nguyên Môi trường,gov:org:so_tai_nguyen_moi_truong,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Kế hoạch Đầu tư,canonical,Kế hoạch Đầu tư,Sở Kế hoạch Đầu tư,gov:org:so_ke_hoach_au_tu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so kế hoạch đầu tư,variant,Kế hoạch Đầu tư,Sở Kế hoạch Đầu tư,gov:org:so_ke_hoach_au_tu,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+Sở Công Thương tỉnh,canonical,Công Thương tỉnh,Sở Công Thương tỉnh,gov:org:so_cong_thuong_tinh,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+so công thương tỉnh,variant,Công Thương tỉnh,Sở Công Thương tỉnh,gov:org:so_cong_thuong_tinh,organization,REGULATOR,Sở,tinh,ENERGY,contains,TRUE
+sở ngành,canonical,sở ngành,sở ngành,gov:org:so_nganh,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+so nganh,variant,sở ngành,sở ngành,gov:org:so_nganh,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+các sở,variant,sở ngành,sở ngành,gov:org:so_nganh,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+Ban Quản lý khu công nghiệp,canonical,Quản lý khu công nghiệp,Ban Quản lý khu công nghiệp,gov:org:ban_quan_ly_khu_cong_nghiep,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+Ban QL KCN,variant,Quản lý khu công nghiệp,Ban Quản lý khu công nghiệp,gov:org:ban_quan_ly_khu_cong_nghiep,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+ban quan ly khu cong nghiep,variant,Quản lý khu công nghiệp,Ban Quản lý khu công nghiệp,gov:org:ban_quan_ly_khu_cong_nghiep,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+Ban Quản lý khu kinh tế,canonical,Quản lý khu kinh tế,Ban Quản lý khu kinh tế,gov:org:ban_quan_ly_khu_kinh_te,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+Ban QL KKT,variant,Quản lý khu kinh tế,Ban Quản lý khu kinh tế,gov:org:ban_quan_ly_khu_kinh_te,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+ban quan ly khu kinh te,variant,Quản lý khu kinh tế,Ban Quản lý khu kinh tế,gov:org:ban_quan_ly_khu_kinh_te,organization,REGULATOR,KKT,tinh,ENERGY,contains,TRUE
+Chi cục,canonical,Chi cục,Chi cục,gov:org:chi_cuc,organization,REGULATOR,Chi cục,tinh,ENERGY,contains,TRUE
+chi cuc,variant,Chi cục,Chi cục,gov:org:chi_cuc,organization,REGULATOR,Chi cục,tinh,ENERGY,contains,TRUE
+Chi cục Thuế,variant,Chi cục,Chi cục,gov:org:chi_cuc,organization,REGULATOR,Chi cục,tinh,ENERGY,contains,TRUE
+Chi cục Hải quan,variant,Chi cục,Chi cục,gov:org:chi_cuc,organization,REGULATOR,Chi cục,tinh,ENERGY,contains,TRUE
+Chi cục BVMT,variant,Chi cục,Chi cục,gov:org:chi_cuc,organization,REGULATOR,Chi cục,tinh,ENERGY,contains,TRUE
+Ủy ban nhân dân huyện,official,UBND cấp huyện,UBND cấp huyện,gov:org:ubnd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND huyện,variant,UBND cấp huyện,UBND cấp huyện,gov:org:ubnd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND huyen,variant,UBND cấp huyện,UBND cấp huyện,gov:org:ubnd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Ủy ban nhân dân quận,official,UBND cấp quận,UBND cấp quận,gov:org:ubnd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND quận,variant,UBND cấp quận,UBND cấp quận,gov:org:ubnd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND quan,variant,UBND cấp quận,UBND cấp quận,gov:org:ubnd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Ủy ban nhân dân thị xã,official,UBND cấp thị xã,UBND cấp thị xã,gov:org:ubnd_cap_thi_xa,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND thị xã,variant,UBND cấp thị xã,UBND cấp thị xã,gov:org:ubnd_cap_thi_xa,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+UBND thi xa,variant,UBND cấp thị xã,UBND cấp thị xã,gov:org:ubnd_cap_thi_xa,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Hội đồng nhân dân huyện,official,HĐND cấp huyện,HĐND cấp huyện,gov:org:h_nd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+HĐND huyện,variant,HĐND cấp huyện,HĐND cấp huyện,gov:org:h_nd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+HDND huyen,variant,HĐND cấp huyện,HĐND cấp huyện,gov:org:h_nd_cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Hội đồng nhân dân quận,official,HĐND cấp quận,HĐND cấp quận,gov:org:h_nd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+HĐND quận,variant,HĐND cấp quận,HĐND cấp quận,gov:org:h_nd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+HDND quan,variant,HĐND cấp quận,HĐND cấp quận,gov:org:h_nd_cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Chủ tịch UBND huyện,canonical,Chủ tịch UBND huyện,Chủ tịch UBND huyện,gov:org:chu_tich_ubnd_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+chu tich huyen,variant,Chủ tịch UBND huyện,Chủ tịch UBND huyện,gov:org:chu_tich_ubnd_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Chủ tịch UBND quận,canonical,Chủ tịch UBND quận,Chủ tịch UBND quận,gov:org:chu_tich_ubnd_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+chu tich quan,variant,Chủ tịch UBND quận,Chủ tịch UBND quận,gov:org:chu_tich_ubnd_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+cấp huyện,canonical,cấp huyện,cấp huyện,gov:org:cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+cap huyen,variant,cấp huyện,cấp huyện,gov:org:cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+huyện quận,variant,cấp huyện,cấp huyện,gov:org:cap_huyen,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+cấp quận,canonical,cấp quận,cấp quận,gov:org:cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+cap quan,variant,cấp quận,cấp quận,gov:org:cap_quan,organization,REGULATOR,Địa phương,huyen,ENERGY,contains,TRUE
+Phòng Kinh tế,canonical,Kinh tế,Phòng Kinh tế,gov:org:phong_kinh_te,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong kinh tế,variant,Kinh tế,Phòng Kinh tế,gov:org:phong_kinh_te,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Tài chính – Kế hoạch,canonical,Tài chính – Kế hoạch,Phòng Tài chính – Kế hoạch,gov:org:phong_tai_chinh_ke_hoach,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong tài chính – kế hoạch,variant,Tài chính – Kế hoạch,Phòng Tài chính – Kế hoạch,gov:org:phong_tai_chinh_ke_hoach,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Tài chính Kế hoạch,canonical,Tài chính Kế hoạch,Phòng Tài chính Kế hoạch,gov:org:phong_tai_chinh_ke_hoach,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong tài chính kế hoạch,variant,Tài chính Kế hoạch,Phòng Tài chính Kế hoạch,gov:org:phong_tai_chinh_ke_hoach,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Nội vụ,canonical,Nội vụ,Phòng Nội vụ,gov:org:phong_noi_vu,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong nội vụ,variant,Nội vụ,Phòng Nội vụ,gov:org:phong_noi_vu,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Tư pháp,canonical,Tư pháp,Phòng Tư pháp,gov:org:phong_tu_phap,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong tư pháp,variant,Tư pháp,Phòng Tư pháp,gov:org:phong_tu_phap,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Giáo dục và Đào tạo,canonical,Giáo dục và Đào tạo,Phòng Giáo dục và Đào tạo,gov:org:phong_giao_duc_va_ao_tao,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong giáo dục và đào tạo,variant,Giáo dục và Đào tạo,Phòng Giáo dục và Đào tạo,gov:org:phong_giao_duc_va_ao_tao,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Y tế,canonical,Y tế,Phòng Y tế,gov:org:phong_y_te,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong y tế,variant,Y tế,Phòng Y tế,gov:org:phong_y_te,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Văn hóa Thể thao,canonical,Văn hóa Thể thao,Phòng Văn hóa Thể thao,gov:org:phong_van_hoa_the_thao,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong văn hóa thể thao,variant,Văn hóa Thể thao,Phòng Văn hóa Thể thao,gov:org:phong_van_hoa_the_thao,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Lao động Thương binh và Xã hội,canonical,Lao động Thương binh và Xã hội,Phòng Lao động Thương binh và Xã hội,gov:org:phong_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong lao động thương binh và xã hội,variant,Lao động Thương binh và Xã hội,Phòng Lao động Thương binh và Xã hội,gov:org:phong_lao_ong_thuong_binh_va_xa_hoi,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Tài nguyên và Môi trường,canonical,Tài nguyên và Môi trường,Phòng Tài nguyên và Môi trường,gov:org:phong_tai_nguyen_va_moi_truong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong tài nguyên và môi trường,variant,Tài nguyên và Môi trường,Phòng Tài nguyên và Môi trường,gov:org:phong_tai_nguyen_va_moi_truong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Giao thông vận tải,canonical,Giao thông vận tải,Phòng Giao thông vận tải,gov:org:phong_giao_thong_van_tai,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong giao thông vận tải,variant,Giao thông vận tải,Phòng Giao thông vận tải,gov:org:phong_giao_thong_van_tai,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Nông nghiệp và Môi trường,canonical,Nông nghiệp và Môi trường,Phòng Nông nghiệp và Môi trường,gov:org:phong_nong_nghiep_va_moi_truong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong nông nghiệp và môi trường,variant,Nông nghiệp và Môi trường,Phòng Nông nghiệp và Môi trường,gov:org:phong_nong_nghiep_va_moi_truong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Xây dựng,canonical,Xây dựng,Phòng Xây dựng,gov:org:phong_xay_dung,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong xây dựng,variant,Xây dựng,Phòng Xây dựng,gov:org:phong_xay_dung,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Công Thương,canonical,Công Thương,Phòng Công Thương,gov:org:phong_cong_thuong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong công thương,variant,Công Thương,Phòng Công Thương,gov:org:phong_cong_thuong,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Quản lý đô thị,canonical,Quản lý đô thị,Phòng Quản lý đô thị,gov:org:phong_quan_ly_o_thi,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong quản lý đô thị,variant,Quản lý đô thị,Phòng Quản lý đô thị,gov:org:phong_quan_ly_o_thi,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+Phòng Văn phòng HĐND và UBND,canonical,Văn phòng HĐND và UBND,Phòng Văn phòng HĐND và UBND,gov:org:phong_van_phong_h_nd_va_ubnd,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phong văn phòng hđnd và ubnd,variant,Văn phòng HĐND và UBND,Phòng Văn phòng HĐND và UBND,gov:org:phong_van_phong_h_nd_va_ubnd,organization,REGULATOR,Phòng,huyen,ENERGY,contains,TRUE
+phòng ban,canonical,phòng ban,phòng ban,gov:org:phong_ban,organization,REGULATOR,Generic,huyen,ENERGY,contains,TRUE
+phong ban,variant,phòng ban,phòng ban,gov:org:phong_ban,organization,REGULATOR,Generic,huyen,ENERGY,contains,TRUE
+các phòng,variant,phòng ban,phòng ban,gov:org:phong_ban,organization,REGULATOR,Generic,huyen,ENERGY,contains,TRUE
+phòng chuyên môn,canonical,phòng chuyên môn,phòng chuyên môn,gov:org:phong_chuyen_mon,organization,REGULATOR,Generic,huyen,ENERGY,contains,TRUE
+phong chuyen mon,variant,phòng chuyên môn,phòng chuyên môn,gov:org:phong_chuyen_mon,organization,REGULATOR,Generic,huyen,ENERGY,contains,TRUE
+Ủy ban nhân dân xã,official,UBND cấp xã,UBND cấp xã,gov:org:ubnd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND xã,variant,UBND cấp xã,UBND cấp xã,gov:org:ubnd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND xa,variant,UBND cấp xã,UBND cấp xã,gov:org:ubnd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Ủy ban nhân dân phường,official,UBND cấp phường,UBND cấp phường,gov:org:ubnd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND phường,variant,UBND cấp phường,UBND cấp phường,gov:org:ubnd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND phuong,variant,UBND cấp phường,UBND cấp phường,gov:org:ubnd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Ủy ban nhân dân thị trấn,official,UBND cấp thị trấn,UBND cấp thị trấn,gov:org:ubnd_cap_thi_tran,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND thị trấn,variant,UBND cấp thị trấn,UBND cấp thị trấn,gov:org:ubnd_cap_thi_tran,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+UBND thi tran,variant,UBND cấp thị trấn,UBND cấp thị trấn,gov:org:ubnd_cap_thi_tran,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Hội đồng nhân dân xã,official,HĐND cấp xã,HĐND cấp xã,gov:org:h_nd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+HĐND xã,variant,HĐND cấp xã,HĐND cấp xã,gov:org:h_nd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+HDND xa,variant,HĐND cấp xã,HĐND cấp xã,gov:org:h_nd_cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Hội đồng nhân dân phường,official,HĐND cấp phường,HĐND cấp phường,gov:org:h_nd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+HĐND phường,variant,HĐND cấp phường,HĐND cấp phường,gov:org:h_nd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+HDND phuong,variant,HĐND cấp phường,HĐND cấp phường,gov:org:h_nd_cap_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Chủ tịch UBND xã,canonical,Chủ tịch UBND xã,Chủ tịch UBND xã,gov:org:chu_tich_ubnd_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+chu tich xa,variant,Chủ tịch UBND xã,Chủ tịch UBND xã,gov:org:chu_tich_ubnd_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+Chủ tịch UBND phường,canonical,Chủ tịch UBND phường,Chủ tịch UBND phường,gov:org:chu_tich_ubnd_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+chu tich phuong,variant,Chủ tịch UBND phường,Chủ tịch UBND phường,gov:org:chu_tich_ubnd_phuong,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+cấp xã,canonical,cấp xã,cấp xã,gov:org:cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+cap xa,variant,cấp xã,cấp xã,gov:org:cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+xã phường,variant,cấp xã,cấp xã,gov:org:cap_xa,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+cấp cơ sở,canonical,cấp cơ sở,cấp cơ sở,gov:org:cap_co_so,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+cap co so,variant,cấp cơ sở,cấp cơ sở,gov:org:cap_co_so,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+chính quyền cơ sở,variant,cấp cơ sở,cấp cơ sở,gov:org:cap_co_so,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+thôn tổ dân phố,official,"thôn, tổ dân phố","thôn, tổ dân phố",gov:org:thon_to_dan_pho,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+thon to dan pho,variant,"thôn, tổ dân phố","thôn, tổ dân phố",gov:org:thon_to_dan_pho,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+tổ dân phố,variant,"thôn, tổ dân phố","thôn, tổ dân phố",gov:org:thon_to_dan_pho,organization,REGULATOR,Địa phương,xa,ENERGY,contains,TRUE
+cơ quan nhà nước,canonical,cơ quan nhà nước,cơ quan nhà nước,gov:org:co_quan_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan nha nuoc,variant,cơ quan nhà nước,cơ quan nhà nước,gov:org:co_quan_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+CQNN,abbrev,cơ quan nhà nước,cơ quan nhà nước,gov:org:co_quan_nha_nuoc,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý,canonical,cơ quan quản lý,cơ quan quản lý,gov:org:co_quan_quan_ly,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan quan ly,variant,cơ quan quản lý,cơ quan quản lý,gov:org:co_quan_quan_ly,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+ban ngành,canonical,ban ngành,ban ngành,gov:org:ban_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+ban nganh,variant,ban ngành,ban ngành,gov:org:ban_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+các ban ngành,variant,ban ngành,ban ngành,gov:org:ban_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản,canonical,cơ quan chủ quản,cơ quan chủ quản,gov:org:co_quan_chu_quan,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan chu quan,variant,cơ quan chủ quản,cơ quan chủ quản,gov:org:co_quan_chu_quan,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản ngành,canonical,cơ quan chủ quản ngành,cơ quan chủ quản ngành,gov:org:co_quan_chu_quan_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan chu quan nganh,variant,cơ quan chủ quản ngành,cơ quan chủ quản ngành,gov:org:co_quan_chu_quan_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý chuyên ngành,canonical,cơ quan quản lý chuyên ngành,cơ quan quản lý chuyên ngành,gov:org:co_quan_quan_ly_chuyen_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+co quan quan ly chuyen nganh,variant,cơ quan quản lý chuyên ngành,cơ quan quản lý chuyên ngành,gov:org:co_quan_quan_ly_chuyen_nganh,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành năng lượng,official,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh nang luong,variant,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+quản lý năng lượng,variant,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh nang luong,variant,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản năng lượng,variant,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý ngành năng lượng,variant,Cụm cơ quan quản lý ngành năng lượng,Cụm cơ quan quản lý ngành năng lượng,gov:org:cum_co_quan_quan_ly_nganh_nang_luong,organization,REGULATOR,Năng lượng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành dầu khí,official,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dau khi,variant,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+quản lý dầu khí,variant,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh dau khi,variant,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản dầu khí,variant,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về dầu khí,variant,Cụm cơ quan quản lý ngành dầu khí,Cụm cơ quan quản lý ngành dầu khí,gov:org:cum_co_quan_quan_ly_nganh_dau_khi,organization,REGULATOR,Dầu khí,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành điện lực,official,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dien luc,variant,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+quản lý điện lực,variant,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+co quan dieu tiet dien luc,variant,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+bo so phong nganh dien,variant,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về điện,variant,Cụm cơ quan quản lý ngành điện lực,Cụm cơ quan quản lý ngành điện lực,gov:org:cum_co_quan_quan_ly_nganh_ien_luc,organization,REGULATOR,Điện,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành công thương,official,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh cong thuong,variant,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+quản lý công thương,variant,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+bo so phong cong thuong,variant,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+ngành công thương,variant,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+hệ thống công thương,variant,Cụm cơ quan quản lý ngành công thương,Cụm cơ quan quản lý ngành công thương,gov:org:cum_co_quan_quan_ly_nganh_cong_thuong,organization,REGULATOR,Công Thương,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành công nghiệp,official,Cụm cơ quan quản lý ngành công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:org:cum_co_quan_quan_ly_nganh_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh cong nghiep,variant,Cụm cơ quan quản lý ngành công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:org:cum_co_quan_quan_ly_nganh_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+quản lý công nghiệp,variant,Cụm cơ quan quản lý ngành công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:org:cum_co_quan_quan_ly_nganh_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+bo so phong cong nghiep,variant,Cụm cơ quan quản lý ngành công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:org:cum_co_quan_quan_ly_nganh_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản công nghiệp,variant,Cụm cơ quan quản lý ngành công nghiệp,Cụm cơ quan quản lý ngành công nghiệp,gov:org:cum_co_quan_quan_ly_nganh_cong_nghiep,organization,REGULATOR,Công nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thương mại,official,Cụm cơ quan quản lý ngành thương mại,Cụm cơ quan quản lý ngành thương mại,gov:org:cum_co_quan_quan_ly_nganh_thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh thuong mai,variant,Cụm cơ quan quản lý ngành thương mại,Cụm cơ quan quản lý ngành thương mại,gov:org:cum_co_quan_quan_ly_nganh_thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+quản lý thương mại,variant,Cụm cơ quan quản lý ngành thương mại,Cụm cơ quan quản lý ngành thương mại,gov:org:cum_co_quan_quan_ly_nganh_thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+bo so phong thuong mai,variant,Cụm cơ quan quản lý ngành thương mại,Cụm cơ quan quản lý ngành thương mại,gov:org:cum_co_quan_quan_ly_nganh_thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+quản lý thị trường thương mại,variant,Cụm cơ quan quản lý ngành thương mại,Cụm cơ quan quản lý ngành thương mại,gov:org:cum_co_quan_quan_ly_nganh_thuong_mai,organization,REGULATOR,Thương mại,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành du lịch,official,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh du lich,variant,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+quản lý du lịch,variant,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+bo so phong du lich,variant,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản du lịch,variant,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý du lịch,variant,Cụm cơ quan quản lý ngành du lịch,Cụm cơ quan quản lý ngành du lịch,gov:org:cum_co_quan_quan_ly_nganh_du_lich,organization,REGULATOR,Du lịch,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành văn hóa,official,Cụm cơ quan quản lý ngành văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:org:cum_co_quan_quan_ly_nganh_van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh van hoa,variant,Cụm cơ quan quản lý ngành văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:org:cum_co_quan_quan_ly_nganh_van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+quản lý văn hóa,variant,Cụm cơ quan quản lý ngành văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:org:cum_co_quan_quan_ly_nganh_van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+bo so phong van hoa,variant,Cụm cơ quan quản lý ngành văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:org:cum_co_quan_quan_ly_nganh_van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+ngành văn hóa thể thao,variant,Cụm cơ quan quản lý ngành văn hóa,Cụm cơ quan quản lý ngành văn hóa,gov:org:cum_co_quan_quan_ly_nganh_van_hoa,organization,REGULATOR,Văn hóa,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thể thao,official,Cụm cơ quan quản lý ngành thể thao,Cụm cơ quan quản lý ngành thể thao,gov:org:cum_co_quan_quan_ly_nganh_the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh the thao,variant,Cụm cơ quan quản lý ngành thể thao,Cụm cơ quan quản lý ngành thể thao,gov:org:cum_co_quan_quan_ly_nganh_the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+quản lý thể thao,variant,Cụm cơ quan quản lý ngành thể thao,Cụm cơ quan quản lý ngành thể thao,gov:org:cum_co_quan_quan_ly_nganh_the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+bo so phong the thao,variant,Cụm cơ quan quản lý ngành thể thao,Cụm cơ quan quản lý ngành thể thao,gov:org:cum_co_quan_quan_ly_nganh_the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+ngành thể dục thể thao,variant,Cụm cơ quan quản lý ngành thể thao,Cụm cơ quan quản lý ngành thể thao,gov:org:cum_co_quan_quan_ly_nganh_the_thao,organization,REGULATOR,Thể thao,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành y tế,official,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh y te,variant,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+quản lý y tế,variant,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+bo so phong y te,variant,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản y tế,variant,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý ngành y,variant,Cụm cơ quan quản lý ngành y tế,Cụm cơ quan quản lý ngành y tế,gov:org:cum_co_quan_quan_ly_nganh_y_te,organization,REGULATOR,Y tế,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành giáo dục,official,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh giao duc,variant,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+quản lý giáo dục,variant,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+bo so phong giao duc,variant,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+ngành giáo dục đào tạo,variant,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản giáo dục,variant,Cụm cơ quan quản lý ngành giáo dục,Cụm cơ quan quản lý ngành giáo dục,gov:org:cum_co_quan_quan_ly_nganh_giao_duc,organization,REGULATOR,Giáo dục,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đào tạo,official,Cụm cơ quan quản lý ngành đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:org:cum_co_quan_quan_ly_nganh_ao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dao tao,variant,Cụm cơ quan quản lý ngành đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:org:cum_co_quan_quan_ly_nganh_ao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+quản lý đào tạo,variant,Cụm cơ quan quản lý ngành đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:org:cum_co_quan_quan_ly_nganh_ao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+bo so phong dao tao,variant,Cụm cơ quan quản lý ngành đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:org:cum_co_quan_quan_ly_nganh_ao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+hệ thống đào tạo công lập,variant,Cụm cơ quan quản lý ngành đào tạo,Cụm cơ quan quản lý ngành đào tạo,gov:org:cum_co_quan_quan_ly_nganh_ao_tao,organization,REGULATOR,Đào tạo,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành giao thông,official,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh giao thong,variant,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+quản lý giao thông,variant,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+bo so phong giao thong,variant,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+giao thông vận tải,variant,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản giao thông,variant,Cụm cơ quan quản lý ngành giao thông,Cụm cơ quan quản lý ngành giao thông,gov:org:cum_co_quan_quan_ly_nganh_giao_thong,organization,REGULATOR,Giao thông,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành vận tải,official,Cụm cơ quan quản lý ngành vận tải,Cụm cơ quan quản lý ngành vận tải,gov:org:cum_co_quan_quan_ly_nganh_van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh van tai,variant,Cụm cơ quan quản lý ngành vận tải,Cụm cơ quan quản lý ngành vận tải,gov:org:cum_co_quan_quan_ly_nganh_van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+quản lý vận tải,variant,Cụm cơ quan quản lý ngành vận tải,Cụm cơ quan quản lý ngành vận tải,gov:org:cum_co_quan_quan_ly_nganh_van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+bo so phong van tai,variant,Cụm cơ quan quản lý ngành vận tải,Cụm cơ quan quản lý ngành vận tải,gov:org:cum_co_quan_quan_ly_nganh_van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+quản lý nhà nước về vận tải,variant,Cụm cơ quan quản lý ngành vận tải,Cụm cơ quan quản lý ngành vận tải,gov:org:cum_co_quan_quan_ly_nganh_van_tai,organization,REGULATOR,Vận tải,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành logistics,official,Cụm cơ quan quản lý ngành logistics,Cụm cơ quan quản lý ngành logistics,gov:org:cum_co_quan_quan_ly_nganh_logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh logistics,variant,Cụm cơ quan quản lý ngành logistics,Cụm cơ quan quản lý ngành logistics,gov:org:cum_co_quan_quan_ly_nganh_logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+quản lý logistics,variant,Cụm cơ quan quản lý ngành logistics,Cụm cơ quan quản lý ngành logistics,gov:org:cum_co_quan_quan_ly_nganh_logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+bo so phong logistics,variant,Cụm cơ quan quản lý ngành logistics,Cụm cơ quan quản lý ngành logistics,gov:org:cum_co_quan_quan_ly_nganh_logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+hệ thống quản lý logistics,variant,Cụm cơ quan quản lý ngành logistics,Cụm cơ quan quản lý ngành logistics,gov:org:cum_co_quan_quan_ly_nganh_logistics,organization,REGULATOR,Logistics,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành xây dựng,official,Cụm cơ quan quản lý ngành xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:org:cum_co_quan_quan_ly_nganh_xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh xay dung,variant,Cụm cơ quan quản lý ngành xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:org:cum_co_quan_quan_ly_nganh_xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+quản lý xây dựng,variant,Cụm cơ quan quản lý ngành xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:org:cum_co_quan_quan_ly_nganh_xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+bo so phong xay dung,variant,Cụm cơ quan quản lý ngành xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:org:cum_co_quan_quan_ly_nganh_xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản xây dựng,variant,Cụm cơ quan quản lý ngành xây dựng,Cụm cơ quan quản lý ngành xây dựng,gov:org:cum_co_quan_quan_ly_nganh_xay_dung,organization,REGULATOR,Xây dựng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đô thị,official,Cụm cơ quan quản lý ngành đô thị,Cụm cơ quan quản lý ngành đô thị,gov:org:cum_co_quan_quan_ly_nganh_o_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh do thi,variant,Cụm cơ quan quản lý ngành đô thị,Cụm cơ quan quản lý ngành đô thị,gov:org:cum_co_quan_quan_ly_nganh_o_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+quản lý đô thị,variant,Cụm cơ quan quản lý ngành đô thị,Cụm cơ quan quản lý ngành đô thị,gov:org:cum_co_quan_quan_ly_nganh_o_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+bo so phong do thi,variant,Cụm cơ quan quản lý ngành đô thị,Cụm cơ quan quản lý ngành đô thị,gov:org:cum_co_quan_quan_ly_nganh_o_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+hạ tầng đô thị,variant,Cụm cơ quan quản lý ngành đô thị,Cụm cơ quan quản lý ngành đô thị,gov:org:cum_co_quan_quan_ly_nganh_o_thi,organization,REGULATOR,Đô thị,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành bất động sản,official,Cụm cơ quan quản lý ngành bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:org:cum_co_quan_quan_ly_nganh_bat_ong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh bat dong san,variant,Cụm cơ quan quản lý ngành bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:org:cum_co_quan_quan_ly_nganh_bat_ong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+quản lý bất động sản,variant,Cụm cơ quan quản lý ngành bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:org:cum_co_quan_quan_ly_nganh_bat_ong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+quản lý thị trường nhà đất,variant,Cụm cơ quan quản lý ngành bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:org:cum_co_quan_quan_ly_nganh_bat_ong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+bo so phong nha dat,variant,Cụm cơ quan quản lý ngành bất động sản,Cụm cơ quan quản lý ngành bất động sản,gov:org:cum_co_quan_quan_ly_nganh_bat_ong_san,organization,REGULATOR,Bất động sản,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành nông nghiệp,official,Cụm cơ quan quản lý ngành nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:org:cum_co_quan_quan_ly_nganh_nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh nong nghiep,variant,Cụm cơ quan quản lý ngành nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:org:cum_co_quan_quan_ly_nganh_nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+quản lý nông nghiệp,variant,Cụm cơ quan quản lý ngành nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:org:cum_co_quan_quan_ly_nganh_nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+bo so phong nong nghiep,variant,Cụm cơ quan quản lý ngành nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:org:cum_co_quan_quan_ly_nganh_nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản nông nghiệp,variant,Cụm cơ quan quản lý ngành nông nghiệp,Cụm cơ quan quản lý ngành nông nghiệp,gov:org:cum_co_quan_quan_ly_nganh_nong_nghiep,organization,REGULATOR,Nông nghiệp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành môi trường,official,Cụm cơ quan quản lý ngành môi trường,Cụm cơ quan quản lý ngành môi trường,gov:org:cum_co_quan_quan_ly_nganh_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh moi truong,variant,Cụm cơ quan quản lý ngành môi trường,Cụm cơ quan quản lý ngành môi trường,gov:org:cum_co_quan_quan_ly_nganh_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+quản lý môi trường,variant,Cụm cơ quan quản lý ngành môi trường,Cụm cơ quan quản lý ngành môi trường,gov:org:cum_co_quan_quan_ly_nganh_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+bo so phong moi truong,variant,Cụm cơ quan quản lý ngành môi trường,Cụm cơ quan quản lý ngành môi trường,gov:org:cum_co_quan_quan_ly_nganh_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản môi trường,variant,Cụm cơ quan quản lý ngành môi trường,Cụm cơ quan quản lý ngành môi trường,gov:org:cum_co_quan_quan_ly_nganh_moi_truong,organization,REGULATOR,Môi trường,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tài nguyên,official,Cụm cơ quan quản lý ngành tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:org:cum_co_quan_quan_ly_nganh_tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tai nguyen,variant,Cụm cơ quan quản lý ngành tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:org:cum_co_quan_quan_ly_nganh_tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+quản lý tài nguyên,variant,Cụm cơ quan quản lý ngành tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:org:cum_co_quan_quan_ly_nganh_tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+bo so phong tai nguyen,variant,Cụm cơ quan quản lý ngành tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:org:cum_co_quan_quan_ly_nganh_tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+đất đai khoáng sản môi trường,variant,Cụm cơ quan quản lý ngành tài nguyên,Cụm cơ quan quản lý ngành tài nguyên,gov:org:cum_co_quan_quan_ly_nganh_tai_nguyen,organization,REGULATOR,Tài nguyên,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành khoáng sản,official,Cụm cơ quan quản lý ngành khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:org:cum_co_quan_quan_ly_nganh_khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh khoang san,variant,Cụm cơ quan quản lý ngành khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:org:cum_co_quan_quan_ly_nganh_khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+quản lý khoáng sản,variant,Cụm cơ quan quản lý ngành khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:org:cum_co_quan_quan_ly_nganh_khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+bo so phong khoang san,variant,Cụm cơ quan quản lý ngành khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:org:cum_co_quan_quan_ly_nganh_khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản khoáng sản,variant,Cụm cơ quan quản lý ngành khoáng sản,Cụm cơ quan quản lý ngành khoáng sản,gov:org:cum_co_quan_quan_ly_nganh_khoang_san,organization,REGULATOR,Khoáng sản,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tài chính,official,Cụm cơ quan quản lý ngành tài chính,Cụm cơ quan quản lý ngành tài chính,gov:org:cum_co_quan_quan_ly_nganh_tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tai chinh,variant,Cụm cơ quan quản lý ngành tài chính,Cụm cơ quan quản lý ngành tài chính,gov:org:cum_co_quan_quan_ly_nganh_tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+quản lý tài chính,variant,Cụm cơ quan quản lý ngành tài chính,Cụm cơ quan quản lý ngành tài chính,gov:org:cum_co_quan_quan_ly_nganh_tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+bo so phong tai chinh,variant,Cụm cơ quan quản lý ngành tài chính,Cụm cơ quan quản lý ngành tài chính,gov:org:cum_co_quan_quan_ly_nganh_tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản tài chính,variant,Cụm cơ quan quản lý ngành tài chính,Cụm cơ quan quản lý ngành tài chính,gov:org:cum_co_quan_quan_ly_nganh_tai_chinh,organization,REGULATOR,Tài chính,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành ngân hàng,official,Cụm cơ quan quản lý ngành ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:org:cum_co_quan_quan_ly_nganh_ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ngan hang,variant,Cụm cơ quan quản lý ngành ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:org:cum_co_quan_quan_ly_nganh_ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+quản lý ngân hàng,variant,Cụm cơ quan quản lý ngành ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:org:cum_co_quan_quan_ly_nganh_ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+co quan chu quan ngan hang,variant,Cụm cơ quan quản lý ngành ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:org:cum_co_quan_quan_ly_nganh_ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+hệ thống giám sát ngân hàng,variant,Cụm cơ quan quản lý ngành ngân hàng,Cụm cơ quan quản lý ngành ngân hàng,gov:org:cum_co_quan_quan_ly_nganh_ngan_hang,organization,REGULATOR,Ngân hàng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành chứng khoán,official,Cụm cơ quan quản lý ngành chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:org:cum_co_quan_quan_ly_nganh_chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh chung khoan,variant,Cụm cơ quan quản lý ngành chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:org:cum_co_quan_quan_ly_nganh_chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+quản lý chứng khoán,variant,Cụm cơ quan quản lý ngành chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:org:cum_co_quan_quan_ly_nganh_chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+giám sát chứng khoán,variant,Cụm cơ quan quản lý ngành chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:org:cum_co_quan_quan_ly_nganh_chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản chứng khoán,variant,Cụm cơ quan quản lý ngành chứng khoán,Cụm cơ quan quản lý ngành chứng khoán,gov:org:cum_co_quan_quan_ly_nganh_chung_khoan,organization,REGULATOR,Chứng khoán,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành bảo hiểm,official,Cụm cơ quan quản lý ngành bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:org:cum_co_quan_quan_ly_nganh_bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh bao hiem,variant,Cụm cơ quan quản lý ngành bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:org:cum_co_quan_quan_ly_nganh_bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+quản lý bảo hiểm,variant,Cụm cơ quan quản lý ngành bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:org:cum_co_quan_quan_ly_nganh_bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+giám sát bảo hiểm,variant,Cụm cơ quan quản lý ngành bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:org:cum_co_quan_quan_ly_nganh_bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản bảo hiểm,variant,Cụm cơ quan quản lý ngành bảo hiểm,Cụm cơ quan quản lý ngành bảo hiểm,gov:org:cum_co_quan_quan_ly_nganh_bao_hiem,organization,REGULATOR,Bảo hiểm,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành lao động,official,Cụm cơ quan quản lý ngành lao động,Cụm cơ quan quản lý ngành lao động,gov:org:cum_co_quan_quan_ly_nganh_lao_ong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh lao dong,variant,Cụm cơ quan quản lý ngành lao động,Cụm cơ quan quản lý ngành lao động,gov:org:cum_co_quan_quan_ly_nganh_lao_ong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+quản lý lao động,variant,Cụm cơ quan quản lý ngành lao động,Cụm cơ quan quản lý ngành lao động,gov:org:cum_co_quan_quan_ly_nganh_lao_ong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+bo so phong lao dong,variant,Cụm cơ quan quản lý ngành lao động,Cụm cơ quan quản lý ngành lao động,gov:org:cum_co_quan_quan_ly_nganh_lao_ong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản lao động,variant,Cụm cơ quan quản lý ngành lao động,Cụm cơ quan quản lý ngành lao động,gov:org:cum_co_quan_quan_ly_nganh_lao_ong,organization,REGULATOR,Lao động,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an sinh xã hội,official,Cụm cơ quan quản lý ngành an sinh xã hội,Cụm cơ quan quản lý ngành an sinh xã hội,gov:org:cum_co_quan_quan_ly_nganh_an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+co quan quan ly an sinh xa hoi,variant,Cụm cơ quan quản lý ngành an sinh xã hội,Cụm cơ quan quản lý ngành an sinh xã hội,gov:org:cum_co_quan_quan_ly_nganh_an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+quản lý an sinh xã hội,variant,Cụm cơ quan quản lý ngành an sinh xã hội,Cụm cơ quan quản lý ngành an sinh xã hội,gov:org:cum_co_quan_quan_ly_nganh_an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+bo so phong bao tro xa hoi,variant,Cụm cơ quan quản lý ngành an sinh xã hội,Cụm cơ quan quản lý ngành an sinh xã hội,gov:org:cum_co_quan_quan_ly_nganh_an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản an sinh,variant,Cụm cơ quan quản lý ngành an sinh xã hội,Cụm cơ quan quản lý ngành an sinh xã hội,gov:org:cum_co_quan_quan_ly_nganh_an_sinh_xa_hoi,organization,REGULATOR,An sinh,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành khoa học công nghệ,official,Cụm cơ quan quản lý ngành khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:org:cum_co_quan_quan_ly_nganh_khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh khoa hoc cong nghe,variant,Cụm cơ quan quản lý ngành khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:org:cum_co_quan_quan_ly_nganh_khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+quản lý khoa học công nghệ,variant,Cụm cơ quan quản lý ngành khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:org:cum_co_quan_quan_ly_nganh_khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+bo so phong khcn,variant,Cụm cơ quan quản lý ngành khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:org:cum_co_quan_quan_ly_nganh_khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản khoa học công nghệ,variant,Cụm cơ quan quản lý ngành khoa học công nghệ,Cụm cơ quan quản lý ngành khoa học công nghệ,gov:org:cum_co_quan_quan_ly_nganh_khoa_hoc_cong_nghe,organization,REGULATOR,Khoa học công nghệ,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành thông tin truyền thông,official,Cụm cơ quan quản lý ngành thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:org:cum_co_quan_quan_ly_nganh_thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh thong tin truyen thong,variant,Cụm cơ quan quản lý ngành thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:org:cum_co_quan_quan_ly_nganh_thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+quản lý thông tin truyền thông,variant,Cụm cơ quan quản lý ngành thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:org:cum_co_quan_quan_ly_nganh_thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+bo so phong tttt,variant,Cụm cơ quan quản lý ngành thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:org:cum_co_quan_quan_ly_nganh_thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản truyền thông,variant,Cụm cơ quan quản lý ngành thông tin truyền thông,Cụm cơ quan quản lý ngành thông tin truyền thông,gov:org:cum_co_quan_quan_ly_nganh_thong_tin_truyen_thong,organization,REGULATOR,Thông tin truyền thông,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành ngoại giao,official,Cụm cơ quan quản lý ngành ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:org:cum_co_quan_quan_ly_nganh_ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ngoai giao,variant,Cụm cơ quan quản lý ngành ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:org:cum_co_quan_quan_ly_nganh_ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+quản lý đối ngoại,variant,Cụm cơ quan quản lý ngành ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:org:cum_co_quan_quan_ly_nganh_ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+bo so phong doi ngoai,variant,Cụm cơ quan quản lý ngành ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:org:cum_co_quan_quan_ly_nganh_ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản ngoại giao,variant,Cụm cơ quan quản lý ngành ngoại giao,Cụm cơ quan quản lý ngành ngoại giao,gov:org:cum_co_quan_quan_ly_nganh_ngoai_giao,organization,REGULATOR,Ngoại giao,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành quốc phòng,official,Cụm cơ quan quản lý ngành quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:org:cum_co_quan_quan_ly_nganh_quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh quoc phong,variant,Cụm cơ quan quản lý ngành quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:org:cum_co_quan_quan_ly_nganh_quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+quản lý quốc phòng,variant,Cụm cơ quan quản lý ngành quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:org:cum_co_quan_quan_ly_nganh_quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+bo chi huy quan su,variant,Cụm cơ quan quản lý ngành quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:org:cum_co_quan_quan_ly_nganh_quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản quốc phòng,variant,Cụm cơ quan quản lý ngành quốc phòng,Cụm cơ quan quản lý ngành quốc phòng,gov:org:cum_co_quan_quan_ly_nganh_quoc_phong,organization,REGULATOR,Quốc phòng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an ninh,official,Cụm cơ quan quản lý ngành an ninh,Cụm cơ quan quản lý ngành an ninh,gov:org:cum_co_quan_quan_ly_nganh_an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh an ninh,variant,Cụm cơ quan quản lý ngành an ninh,Cụm cơ quan quản lý ngành an ninh,gov:org:cum_co_quan_quan_ly_nganh_an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+quản lý an ninh,variant,Cụm cơ quan quản lý ngành an ninh,Cụm cơ quan quản lý ngành an ninh,gov:org:cum_co_quan_quan_ly_nganh_an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+công an các cấp,variant,Cụm cơ quan quản lý ngành an ninh,Cụm cơ quan quản lý ngành an ninh,gov:org:cum_co_quan_quan_ly_nganh_an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản an ninh,variant,Cụm cơ quan quản lý ngành an ninh,Cụm cơ quan quản lý ngành an ninh,gov:org:cum_co_quan_quan_ly_nganh_an_ninh,organization,REGULATOR,An ninh,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành tư pháp,official,Cụm cơ quan quản lý ngành tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:org:cum_co_quan_quan_ly_nganh_tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh tu phap,variant,Cụm cơ quan quản lý ngành tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:org:cum_co_quan_quan_ly_nganh_tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+quản lý tư pháp,variant,Cụm cơ quan quản lý ngành tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:org:cum_co_quan_quan_ly_nganh_tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+bo so phong tu phap,variant,Cụm cơ quan quản lý ngành tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:org:cum_co_quan_quan_ly_nganh_tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản tư pháp,variant,Cụm cơ quan quản lý ngành tư pháp,Cụm cơ quan quản lý ngành tư pháp,gov:org:cum_co_quan_quan_ly_nganh_tu_phap,organization,REGULATOR,Tư pháp,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành nội vụ,official,Cụm cơ quan quản lý ngành nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:org:cum_co_quan_quan_ly_nganh_noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh noi vu,variant,Cụm cơ quan quản lý ngành nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:org:cum_co_quan_quan_ly_nganh_noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+quản lý nội vụ,variant,Cụm cơ quan quản lý ngành nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:org:cum_co_quan_quan_ly_nganh_noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+bo so phong noi vu,variant,Cụm cơ quan quản lý ngành nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:org:cum_co_quan_quan_ly_nganh_noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản nội vụ,variant,Cụm cơ quan quản lý ngành nội vụ,Cụm cơ quan quản lý ngành nội vụ,gov:org:cum_co_quan_quan_ly_nganh_noi_vu,organization,REGULATOR,Nội vụ,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành quy hoạch,official,Cụm cơ quan quản lý ngành quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:org:cum_co_quan_quan_ly_nganh_quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh quy hoach,variant,Cụm cơ quan quản lý ngành quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:org:cum_co_quan_quan_ly_nganh_quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+quản lý quy hoạch,variant,Cụm cơ quan quản lý ngành quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:org:cum_co_quan_quan_ly_nganh_quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+quản lý kế hoạch quy hoạch,variant,Cụm cơ quan quản lý ngành quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:org:cum_co_quan_quan_ly_nganh_quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản quy hoạch,variant,Cụm cơ quan quản lý ngành quy hoạch,Cụm cơ quan quản lý ngành quy hoạch,gov:org:cum_co_quan_quan_ly_nganh_quy_hoach,organization,REGULATOR,Quy hoạch,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành đầu tư,official,Cụm cơ quan quản lý ngành đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:org:cum_co_quan_quan_ly_nganh_au_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh dau tu,variant,Cụm cơ quan quản lý ngành đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:org:cum_co_quan_quan_ly_nganh_au_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+quản lý đầu tư,variant,Cụm cơ quan quản lý ngành đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:org:cum_co_quan_quan_ly_nganh_au_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+bo so phong dau tu,variant,Cụm cơ quan quản lý ngành đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:org:cum_co_quan_quan_ly_nganh_au_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản đầu tư,variant,Cụm cơ quan quản lý ngành đầu tư,Cụm cơ quan quản lý ngành đầu tư,gov:org:cum_co_quan_quan_ly_nganh_au_tu,organization,REGULATOR,Đầu tư,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành hạ tầng,official,Cụm cơ quan quản lý ngành hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:org:cum_co_quan_quan_ly_nganh_ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+co quan quan ly nganh ha tang,variant,Cụm cơ quan quản lý ngành hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:org:cum_co_quan_quan_ly_nganh_ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+quản lý hạ tầng,variant,Cụm cơ quan quản lý ngành hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:org:cum_co_quan_quan_ly_nganh_ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+bo so phong ha tang,variant,Cụm cơ quan quản lý ngành hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:org:cum_co_quan_quan_ly_nganh_ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+hệ thống hạ tầng kỹ thuật,variant,Cụm cơ quan quản lý ngành hạ tầng,Cụm cơ quan quản lý ngành hạ tầng,gov:org:cum_co_quan_quan_ly_nganh_ha_tang,organization,REGULATOR,Hạ tầng,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành cấp thoát nước,official,Cụm cơ quan quản lý ngành cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:org:cum_co_quan_quan_ly_nganh_cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+co quan quan ly cap thoat nuoc,variant,Cụm cơ quan quản lý ngành cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:org:cum_co_quan_quan_ly_nganh_cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+quản lý cấp thoát nước,variant,Cụm cơ quan quản lý ngành cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:org:cum_co_quan_quan_ly_nganh_cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+hạ tầng nước sạch,variant,Cụm cơ quan quản lý ngành cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:org:cum_co_quan_quan_ly_nganh_cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+bo so phong nuoc sach,variant,Cụm cơ quan quản lý ngành cấp thoát nước,Cụm cơ quan quản lý ngành cấp thoát nước,gov:org:cum_co_quan_quan_ly_nganh_cap_thoat_nuoc,organization,REGULATOR,Cấp thoát nước,trung_uong,ENERGY,contains,TRUE
+cơ quan quản lý ngành an toàn thực phẩm,official,Cụm cơ quan quản lý ngành an toàn thực phẩm,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:org:cum_co_quan_quan_ly_nganh_an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+co quan quan ly an toan thuc pham,variant,Cụm cơ quan quản lý ngành an toàn thực phẩm,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:org:cum_co_quan_quan_ly_nganh_an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+quản lý an toàn thực phẩm,variant,Cụm cơ quan quản lý ngành an toàn thực phẩm,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:org:cum_co_quan_quan_ly_nganh_an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+bo so phong attp,variant,Cụm cơ quan quản lý ngành an toàn thực phẩm,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:org:cum_co_quan_quan_ly_nganh_an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+cơ quan chủ quản thực phẩm,variant,Cụm cơ quan quản lý ngành an toàn thực phẩm,Cụm cơ quan quản lý ngành an toàn thực phẩm,gov:org:cum_co_quan_quan_ly_nganh_an_toan_thuc_pham,organization,REGULATOR,ATTP,trung_uong,ENERGY,contains,TRUE
+chính quyền các cấp,canonical,chính quyền các cấp,chính quyền các cấp,gov:org:chinh_quyen_cac_cap,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+chinh quyen cac cap,variant,chính quyền các cấp,chính quyền các cấp,gov:org:chinh_quyen_cac_cap,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+hệ thống chính trị,canonical,hệ thống chính trị,hệ thống chính trị,gov:org:he_thong_chinh_tri,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+he thong chinh tri,variant,hệ thống chính trị,hệ thống chính trị,gov:org:he_thong_chinh_tri,organization,REGULATOR,Generic,trung_uong,ENERGY,contains,TRUE
+bộ ngành địa phương,canonical,bộ ngành địa phương,bộ ngành địa phương,gov:org:bo_nganh_ia_phuong,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+bo nganh dia phuong,variant,bộ ngành địa phương,bộ ngành địa phương,gov:org:bo_nganh_ia_phuong,organization,REGULATOR,Generic,tinh,ENERGY,contains,TRUE
+Tòa án nhân dân tối cao,canonical,Tòa án nhân dân tối cao,Tòa án nhân dân tối cao,gov:org:toa_an_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+TANDTC,abbrev,Tòa án nhân dân tối cao,Tòa án nhân dân tối cao,gov:org:toa_an_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+toa an nhan dan toi cao,variant,Tòa án nhân dân tối cao,Tòa án nhân dân tối cao,gov:org:toa_an_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+Viện Kiểm sát nhân dân tối cao,canonical,Viện Kiểm sát nhân dân tối cao,Viện Kiểm sát nhân dân tối cao,gov:org:vien_kiem_sat_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+VKSNDTC,variant,Viện Kiểm sát nhân dân tối cao,Viện Kiểm sát nhân dân tối cao,gov:org:vien_kiem_sat_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+vien kiem sat nhan dan toi cao,variant,Viện Kiểm sát nhân dân tối cao,Viện Kiểm sát nhân dân tối cao,gov:org:vien_kiem_sat_nhan_dan_toi_cao,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+Kiểm toán Nhà nước,canonical,Kiểm toán Nhà nước,Kiểm toán Nhà nước,gov:org:kiem_toan_nha_nuoc,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+KTTNN,abbrev,Kiểm toán Nhà nước,Kiểm toán Nhà nước,gov:org:kiem_toan_nha_nuoc,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE
+kiem toan nha nuoc,variant,Kiểm toán Nhà nước,Kiểm toán Nhà nước,gov:org:kiem_toan_nha_nuoc,organization,REGULATOR,Tư pháp/Kiểm toán,trung_uong,ENERGY,contains,TRUE

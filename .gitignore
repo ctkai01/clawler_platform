@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+secrets/*
+!secrets/.gitkeep
+.env
+crawling_facebook/.venv/
+crawling_facebook/build/
+crawling_facebook/*.egg-info/
+crawling_facebook/output/
+crawling_facebook/__pycache__/
