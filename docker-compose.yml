@@ -63,6 +63,23 @@ services:
       postgres:
         condition: service_healthy
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: http-worker
+    env_file:
+      - .env
+    environment:
+      CRAWL_PLATFORM_DSN: postgresql://crawler:crawler@postgres/crawl_platform
+      API_CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8083:8000"
+    command: uvicorn platform_app.api.app:app --host 0.0.0.0 --port 8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash

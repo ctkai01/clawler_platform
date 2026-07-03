@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* Body/heading text uses the OS's own UI font instead of a downloaded
+ * webfont — every platform (Windows/macOS/Linux) ships its default UI font
+ * with Vietnamese diacritics already hinted and tested by the OS vendor.
+ * A prior attempt at custom webfonts (Be Vietnam Pro / IBM Plex Sans)
+ * rendered stacked Vietnamese tone marks ("ồ", "ở"...) slightly warped on
+ * some systems — not worth the risk for body copy. IBM Plex Mono is kept
+ * for tabular numbers/identifiers only, which are Latin-only so carry none
+ * of that risk. */
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+@theme {
+  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* Neutrals — cool, blue-grey biased (this is a "listening console" tool,
+   * not a warm editorial page), picked rather than defaulted. */
+  --color-paper: #eef0f3;
+  --color-surface: #ffffff;
+  --color-ink: #171b23;
+  --color-muted: #5c6472;
+  --color-faint: #8990a0;
+  --color-line: #dbe0e6;
+
+  /* Accent: amber signal-lamp, distinct hue from the semantic red/green
+   * below so status pills never get mistaken for the brand color. */
+  --color-accent: #c78a1f;
+  --color-accent-ink: #8f6110;
+  --color-accent-soft: #f7ecd4;
+
+  /* Semantic — independent of accent. */
+  --color-good: #1f8a5f;
+  --color-good-soft: #e0f3ea;
+  --color-bad: #c0392b;
+  --color-bad-soft: #fbe6e3;
+  --color-flag: #8f6110;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

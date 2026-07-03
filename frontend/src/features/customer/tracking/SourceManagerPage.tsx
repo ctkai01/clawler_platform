@@ -1,0 +1,249 @@
+import { useRef, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Download, Trash2, Upload } from 'lucide-react'
+import { orgApi } from '@/features/customer/orgApi'
+import { useAuthStore } from '@/store/authStore'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Banner } from '@/components/ui/banner'
+import { Badge } from '@/components/ui/badge'
+import { PageHeader } from '@/components/PageHeader'
+import { PLATFORM_LABEL } from '@/lib/platform'
+import { ApiError } from '@/lib/apiClient'
+import type { SourceImportResult } from '@/types/org'
+
+const PLATFORM_TYPES = ['facebook_group', 'facebook_page', 'forum', 'news']
+
+const CSV_TEMPLATE = `platform_type,url,display_name
+facebook_group,https://facebook.com/groups/vi-du,Ví dụ FB Group
+facebook_page,https://facebook.com/vi-du,Ví dụ FB Page
+forum,https://forum.vi-du.com/board,Ví dụ Forum
+news,https://vi-du.vn,Ví dụ News
+`
+
+function downloadCsvTemplate() {
+  const blob = new Blob([CSV_TEMPLATE], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'nguon-crawl-mau.csv'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+export function SourceManagerPage() {
+  const user = useAuthStore((s) => s.user)
+  const queryClient = useQueryClient()
+  const { data: sources, isLoading } = useQuery({ queryKey: ['org', 'sources'], queryFn: orgApi.listSources })
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const [platformType, setPlatformType] = useState(PLATFORM_TYPES[0])
+  const [url, setUrl] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [formError, setFormError] = useState<string | null>(null)
+  const [importResult, setImportResult] = useState<SourceImportResult | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['org', 'sources'] })
+
+  const createMutation = useMutation({
+    mutationFn: () => orgApi.createSource({ platform_type: platformType, url, display_name: displayName || undefined }),
+    onSuccess: () => {
+      setUrl('')
+      setDisplayName('')
+      setFormError(null)
+      invalidate()
+    },
+    onError: (err) => setFormError(err instanceof ApiError ? err.message : 'Thêm nguồn crawl thất bại'),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => orgApi.deleteSource(id),
+    onSuccess: invalidate,
+  })
+
+  const importMutation = useMutation({
+    mutationFn: (file: File) => orgApi.importSources(file),
+    onSuccess: (result) => {
+      setImportResult(result)
+      setImportError(null)
+      invalidate()
+    },
+    onError: (err) => {
+      setImportError(err instanceof ApiError ? err.message : 'Import CSV thất bại')
+      setImportResult(null)
+    },
+  })
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) importMutation.mutate(file)
+    e.target.value = '' // allow re-selecting the same file later
+  }
+
+  return (
+    <div className="mx-auto max-w-3xl">
+      <PageHeader
+        title="Nguồn crawl"
+        description={
+          user?.role === 'org_sub'
+            ? 'Chỉ hiển thị các nguồn bạn được cấp quyền.'
+            : `${sources?.length ?? 0} nguồn đang theo dõi`
+        }
+      />
+
+      <Card>
+        <form
+          className="flex flex-wrap items-end gap-3"
+          onSubmit={(e) => {
+            e.preventDefault()
+            createMutation.mutate()
+          }}
+        >
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="platform_type">Nền tảng</Label>
+            <select
+              id="platform_type"
+              className="h-9 rounded-md border border-line bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
+              value={platformType}
+              onChange={(e) => setPlatformType(e.target.value)}
+            >
+              {PLATFORM_TYPES.map((p) => (
+                <option key={p} value={p}>
+                  {PLATFORM_LABEL[p]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex min-w-52 flex-1 flex-col gap-1.5">
+            <Label htmlFor="url">URL</Label>
+            <Input id="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" required />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="display_name">Tên hiển thị</Label>
+            <Input
+              id="display_name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Tuỳ chọn"
+            />
+          </div>
+          <Button type="submit" disabled={createMutation.isPending}>
+            + Thêm nguồn
+          </Button>
+        </form>
+        {formError && (
+          <div className="mt-3">
+            <Banner tone="error">{formError}</Banner>
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted">Hoặc nhập hàng loạt</span>
+          <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleFileSelected} />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={importMutation.isPending}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            {importMutation.isPending ? 'Đang import…' : 'Import CSV'}
+          </Button>
+          <Button type="button" variant="ghost" size="sm" onClick={downloadCsvTemplate}>
+            <Download className="h-3.5 w-3.5" />
+            Tải file mẫu
+          </Button>
+        </div>
+
+        {importError && (
+          <div className="mt-3">
+            <Banner tone="error">{importError}</Banner>
+          </div>
+        )}
+        {importResult && (
+          <div className="mt-3 rounded-md border border-line bg-paper p-3 text-sm">
+            <div className="flex flex-wrap gap-3">
+              <span>
+                Đã đọc <strong className="tabular">{importResult.total_rows}</strong> dòng
+              </span>
+              <span className="text-good">
+                Thêm mới <strong className="tabular">{importResult.inserted}</strong>
+              </span>
+              {importResult.skipped > 0 && (
+                <span className="text-muted">
+                  Bỏ qua <strong className="tabular">{importResult.skipped}</strong>
+                </span>
+              )}
+            </div>
+            {importResult.errors.length > 0 && (
+              <ul className="mt-2 list-disc space-y-0.5 pl-4 text-xs text-muted">
+                {importResult.errors.map((err, i) => (
+                  <li key={i}>{err}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+        <p className="mt-3 text-xs text-muted">
+          File CSV cần cột <code className="rounded bg-paper px-1 py-0.5">platform_type</code> (facebook_group /
+          facebook_page / forum / news) và <code className="rounded bg-paper px-1 py-0.5">url</code>, cột{' '}
+          <code className="rounded bg-paper px-1 py-0.5">display_name</code> tuỳ chọn.
+        </p>
+      </Card>
+
+      <Card className="mt-4 overflow-hidden p-0">
+        {isLoading ? (
+          <p className="p-5 text-sm text-muted">Đang tải…</p>
+        ) : sources && sources.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-muted">
+                  <th className="px-5 py-3 font-semibold">Tên</th>
+                  <th className="px-5 py-3 font-semibold">Nền tảng</th>
+                  <th className="px-5 py-3 font-semibold">URL</th>
+                  <th className="px-5 py-3 font-semibold">Trạng thái</th>
+                  <th className="px-5 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {sources.map((s) => (
+                  <tr key={s.id} className="border-b border-line transition-colors last:border-0 hover:bg-paper/60">
+                    <td className="px-5 py-3 font-medium text-ink">{s.display_name ?? '—'}</td>
+                    <td className="px-5 py-3">
+                      <Badge tone="neutral">{PLATFORM_LABEL[s.platform_type] ?? s.platform_type}</Badge>
+                    </td>
+                    <td className="max-w-56 truncate px-5 py-3 text-muted" title={s.url}>
+                      {s.url}
+                    </td>
+                    <td className="px-5 py-3">
+                      <Badge tone={s.last_status === 'ok' ? 'good' : 'neutral'} dot>
+                        {s.last_status ?? 'chưa crawl'}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-3 text-right">
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        aria-label={`Xoá ${s.display_name ?? s.url}`}
+                        onClick={() => deleteMutation.mutate(s.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="p-5 text-sm text-muted">Chưa có nguồn crawl nào.</p>
+        )}
+      </Card>
+    </div>
+  )
+}
