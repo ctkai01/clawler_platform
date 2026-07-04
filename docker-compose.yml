@@ -7,13 +7,13 @@ x-airflow-common: &airflow-common
     - .env
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:${POSTGRES_PASSWORD:-airflow}@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:${POSTGRES_PASSWORD:-airflow}@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ""
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
-    CRAWL_PLATFORM_DSN: postgresql://crawler:crawler@postgres/crawl_platform
+    CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
     FB_SESSION_PATH: /opt/app/secrets/fb_session.json
   volumes:
     - ./airflow/dags:/opt/airflow/dags
@@ -30,13 +30,17 @@ services:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
       POSTGRES_DB: airflow
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-crawler}
     ports:
-      - "5432:5432"  # dev convenience: lets host tools (pytest, psql) reach crawl_platform directly
+      # Bound to loopback only — host tools (pytest, psql) still reach it via
+      # localhost, but it's never reachable from outside this machine. Do NOT
+      # widen this to "5432:5432" on a host with a public IP.
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./scripts/init-postgres.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./scripts/init-postgres.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 5s
@@ -46,16 +50,31 @@ services:
   redis:
     image: redis:7-alpine
 
+  # Production-only static build of the customer portal. Local dev doesn't
+  # use this service — keep running `npm run dev` in frontend/ instead
+  # (hot-reloads, and avoids a port-5173 clash with this container). A bare
+  # `docker compose up` with no service names WILL try to start this one
+  # too; on a dev machine, bring up services by name instead
+  # (`docker compose up -d api postgres ...`) or `docker compose stop frontend`
+  # if it collides with a running `npm run dev`.
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8083}
+    ports:
+      - "5173:80"
+
   dashboard:
     build:
       context: .
       dockerfile: Dockerfile
       target: http-worker
     environment:
-      CRAWL_PLATFORM_DSN: postgresql://crawler:crawler@postgres/crawl_platform
+      CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
       AIRFLOW_API_BASE: http://airflow-webserver:8080
       AIRFLOW_API_USER: admin
-      AIRFLOW_API_PASSWORD: admin
+      AIRFLOW_API_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
     ports:
       - "8082:8000"
     command: uvicorn platform_app.dashboard.app:app --host 0.0.0.0 --port 8000
@@ -71,8 +90,8 @@ services:
     env_file:
       - .env
     environment:
-      CRAWL_PLATFORM_DSN: postgresql://crawler:crawler@postgres/crawl_platform
-      API_CORS_ORIGINS: http://localhost:5173
+      CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
+      API_CORS_ORIGINS: ${API_CORS_ORIGINS:-http://localhost:5173}
     ports:
       - "8083:8000"
     command: uvicorn platform_app.api.app:app --host 0.0.0.0 --port 8000
@@ -87,7 +106,7 @@ services:
       - -c
       - |
         airflow db migrate
-        airflow users create --username admin --password admin --firstname Admin --lastname Admin --role Admin --email admin@example.com || true
+        airflow users create --username admin --password "${AIRFLOW_ADMIN_PASSWORD:-admin}" --firstname Admin --lastname Admin --role Admin --email admin@example.com || true
         airflow pools set fb_playwright_pool 3 "Concurrent Playwright/Chromium sessions for FB crawling"
         airflow pools set http_pool 30 "Concurrent lightweight HTTP crawls (forum/news)"
         python -m platform_app.db.migrate
