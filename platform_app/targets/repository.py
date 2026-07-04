@@ -124,7 +124,7 @@ def seed_target(
             """
             INSERT INTO crawl_targets (platform_type, url, parser_key, display_name, crawl_interval_sec, config, enabled)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (platform_type, url) DO UPDATE SET
+            ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO UPDATE SET
                 parser_key = EXCLUDED.parser_key,
                 display_name = COALESCE(EXCLUDED.display_name, crawl_targets.display_name),
                 crawl_interval_sec = EXCLUDED.crawl_interval_sec,

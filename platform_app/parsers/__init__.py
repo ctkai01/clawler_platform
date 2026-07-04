@@ -4,6 +4,9 @@ import importlib
 import pkgutil
 
 from platform_app.parsers import generic_css  # noqa: F401 - registers "generic_css"
+from platform_app.parsers import rss_news  # noqa: F401 - registers "rss_news"
+from platform_app.parsers import xenforo  # noqa: F401 - registers "xenforo"
+from platform_app.parsers import tinhte  # noqa: F401 - registers "tinhte"
 from platform_app.parsers import sites
 
 

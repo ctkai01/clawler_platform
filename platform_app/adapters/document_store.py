@@ -35,7 +35,7 @@ def save_document(
                 %(url)s, %(author)s, %(topic)s, %(content)s, %(content_hash)s,
                 %(published_at)s, %(edited_at)s, %(images)s, %(videos)s, %(extra)s, %(comment_count)s
             )
-            ON CONFLICT (platform_type, external_doc_id) DO UPDATE SET
+            ON CONFLICT (target_id, external_doc_id) DO UPDATE SET
                 url = EXCLUDED.url,
                 author = EXCLUDED.author,
                 topic = EXCLUDED.topic,
@@ -71,6 +71,14 @@ def save_document(
             },
         ).fetchone()
         document_id = row["id"]
+
+        conn.execute(
+            """
+            INSERT INTO document_engagement_snapshots (document_id, comment_count)
+            VALUES (%s, %s)
+            """,
+            (document_id, len(doc.comments)),
+        )
 
         for i, comment in enumerate(doc.comments):
             conn.execute(

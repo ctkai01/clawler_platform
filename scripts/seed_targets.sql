@@ -5,11 +5,11 @@
 -- Facebook group / page: no parser_key needed, crawler is fixed (crawling_facebook).
 INSERT INTO crawl_targets (platform_type, url, display_name, crawl_interval_sec)
 VALUES ('facebook_group', 'https://www.facebook.com/groups/REPLACE_ME', 'Ví dụ FB group', 3600)
-ON CONFLICT (platform_type, url) DO NOTHING;
+ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO NOTHING;
 
 INSERT INTO crawl_targets (platform_type, url, display_name, crawl_interval_sec)
 VALUES ('facebook_page', 'https://www.facebook.com/REPLACE_ME', 'Ví dụ FB page', 3600)
-ON CONFLICT (platform_type, url) DO NOTHING;
+ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO NOTHING;
 
 -- Forum: generic_css parser, selectors describe the listing + thread page markup.
 INSERT INTO crawl_targets (platform_type, url, parser_key, display_name, crawl_interval_sec, config)
@@ -31,12 +31,12 @@ VALUES (
         "comment_text_selector": ".comment-text"
     }'::jsonb
 )
-ON CONFLICT (platform_type, url) DO NOTHING;
+ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO NOTHING;
 
 -- Forum running on Discourse: bespoke JSON-API parser, no selectors needed.
 INSERT INTO crawl_targets (platform_type, url, parser_key, display_name, crawl_interval_sec)
 VALUES ('forum', 'https://discuss.example.com', 'discourse_json', 'Ví dụ Discourse forum', 900)
-ON CONFLICT (platform_type, url) DO NOTHING;
+ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO NOTHING;
 
 -- News site: generic_css parser also covers most static article pages.
 INSERT INTO crawl_targets (platform_type, url, parser_key, display_name, crawl_interval_sec, config)
@@ -55,4 +55,4 @@ VALUES (
         "date_attr": "datetime"
     }'::jsonb
 )
-ON CONFLICT (platform_type, url) DO NOTHING;
+ON CONFLICT (platform_type, url) WHERE organization_id IS NULL DO NOTHING;

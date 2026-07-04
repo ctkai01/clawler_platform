@@ -9,6 +9,7 @@ import { AppShell } from '@/app/AppShell'
 import { EntityCatalogPage } from '@/features/admin/entities/EntityCatalogPage'
 import { KeywordCatalogPage } from '@/features/admin/keywords/KeywordCatalogPage'
 import { ReportDashboardPage } from '@/features/customer/dashboard/ReportDashboardPage'
+import { DocumentsPage } from '@/features/customer/documents/DocumentsPage'
 import { EntityKeywordPicker } from '@/features/customer/tracking/EntityKeywordPicker'
 import { SourceManagerPage } from '@/features/customer/tracking/SourceManagerPage'
 import { SubAccountListPage } from '@/features/customer/members/SubAccountListPage'
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
             element: <RequireRole allow={['org_main', 'org_sub']} />,
             children: [
               { path: 'dashboard', element: <ReportDashboardPage /> },
+              { path: 'documents', element: <DocumentsPage /> },
               {
                 element: <RequireFunctionalPermission allow={['configurator']} />, // lớp 3
                 children: [

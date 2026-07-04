@@ -19,7 +19,10 @@ function useNavItems(): NavItem[] {
     ]
   }
 
-  const items: NavItem[] = [{ to: '/dashboard', label: 'Tổng quan' }]
+  const items: NavItem[] = [
+    { to: '/dashboard', label: 'Tổng quan' },
+    { to: '/documents', label: 'Bài viết' },
+  ]
   const canConfigure = user.role === 'org_main' || user.functional_role === 'configurator'
   if (canConfigure) {
     items.push(

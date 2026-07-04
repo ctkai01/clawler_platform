@@ -109,9 +109,9 @@ class PgStorage:
                        images, videos, reaction_count, comment_count, like_count,
                        reactions, first_seen_at, last_seen_at
                 FROM documents
-                WHERE platform_type = %s AND external_doc_id = %s
+                WHERE target_id = %s AND platform_type = %s AND external_doc_id = %s
                 """,
-                (self.platform_type, post_id),
+                (self.target_id, self.platform_type, post_id),
             ).fetchone()
         if not row:
             return None
@@ -148,7 +148,7 @@ class PgStorage:
         source_type = post.source_type or "group"
 
         with self.pool.connection() as conn:
-            conn.execute(
+            row = conn.execute(
                 """
                 INSERT INTO documents (
                     target_id, platform_type, source_type, external_doc_id, owner_external_id,
@@ -161,7 +161,7 @@ class PgStorage:
                     %(published_at)s, %(edited_at)s, %(is_edited)s, %(images)s, %(videos)s,
                     %(like_count)s, %(comment_count)s, %(reaction_count)s, %(share_count)s, %(reactions)s
                 )
-                ON CONFLICT (platform_type, external_doc_id) DO UPDATE SET
+                ON CONFLICT (target_id, external_doc_id) DO UPDATE SET
                     url = EXCLUDED.url,
                     author = EXCLUDED.author,
                     author_id = EXCLUDED.author_id,
@@ -179,6 +179,7 @@ class PgStorage:
                     share_count = EXCLUDED.share_count,
                     reactions = EXCLUDED.reactions,
                     last_seen_at = now()
+                RETURNING id
                 """,
                 {
                     "target_id": self.target_id,
@@ -203,6 +204,14 @@ class PgStorage:
                     "share_count": eng.share_count,
                     "reactions": Jsonb(eng.reactions or {}),
                 },
+            ).fetchone()
+            conn.execute(
+                """
+                INSERT INTO document_engagement_snapshots
+                    (document_id, like_count, comment_count, reaction_count, share_count)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (row["id"], eng.like_count, eng.comment_count, eng.reaction_count, eng.share_count),
             )
 
     def update_extra(self, post_id: str, extra: dict) -> None:
@@ -213,17 +222,17 @@ class PgStorage:
             conn.execute(
                 """
                 UPDATE documents SET extra = extra || %s::jsonb
-                WHERE platform_type = %s AND external_doc_id = %s
+                WHERE target_id = %s AND platform_type = %s AND external_doc_id = %s
                 """,
-                (Jsonb(extra), self.platform_type, post_id),
+                (Jsonb(extra), self.target_id, self.platform_type, post_id),
             )
 
     def upsert_comments(self, post_id: str, comments: list[Comment]) -> list[Comment]:
         new_comments: list[Comment] = []
         with self.pool.connection() as conn:
             doc = conn.execute(
-                "SELECT id FROM documents WHERE platform_type = %s AND external_doc_id = %s",
-                (self.platform_type, post_id),
+                "SELECT id FROM documents WHERE target_id = %s AND platform_type = %s AND external_doc_id = %s",
+                (self.target_id, self.platform_type, post_id),
             ).fetchone()
             if not doc:
                 return new_comments
@@ -315,7 +324,7 @@ class PgStorage:
                 """
                 SELECT external_doc_id AS post_id, url
                 FROM documents
-                WHERE platform_type = %s AND owner_external_id = %s AND source_type = %s
+                WHERE target_id = %s AND platform_type = %s AND owner_external_id = %s AND source_type = %s
                   AND comment_count > 0
                   AND (
                       published_at >= %s
@@ -324,7 +333,7 @@ class PgStorage:
                 ORDER BY last_seen_at DESC
                 LIMIT 25
                 """,
-                (self.platform_type, owner_id, source_type, since, since),
+                (self.target_id, self.platform_type, owner_id, source_type, since, since),
             ).fetchall()
         return list(rows)
 
@@ -335,9 +344,9 @@ class PgStorage:
                 SELECT dc.external_comment_id
                 FROM document_comments dc
                 JOIN documents d ON d.id = dc.document_id
-                WHERE d.platform_type = %s AND d.external_doc_id = %s
+                WHERE d.target_id = %s AND d.platform_type = %s AND d.external_doc_id = %s
                 """,
-                (self.platform_type, post_id),
+                (self.target_id, self.platform_type, post_id),
             ).fetchall()
         return {r["external_comment_id"] for r in rows}
 

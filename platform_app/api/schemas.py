@@ -79,7 +79,7 @@ class SourceCreate(BaseModel):
     platform_type: str = Field(min_length=1)
     url: str = Field(min_length=1)
     display_name: str | None = None
-    crawl_interval_sec: int = Field(default=3600, ge=60)
+    crawl_interval_sec: int = Field(default=900, ge=60)
 
 
 class SourceOut(BaseModel):
@@ -123,6 +123,7 @@ class SubAccountOut(BaseModel):
 
 class OrgEntitySelection(BaseModel):
     canonical_name: str
+    industry_code: str | None
     is_selected: bool
 
 
@@ -135,3 +136,113 @@ class OrgKeywordSelection(BaseModel):
     category: str
     term: str
     is_selected: bool
+
+
+class DocumentListItem(BaseModel):
+    id: int
+    platform_type: str
+    source_type: str
+    target_name: str | None
+    author: str | None
+    topic: str | None
+    content_snippet: str
+    url: str
+    published_at: datetime | None
+    like_count: int
+    comment_count: int
+    reaction_count: int
+    share_count: int
+    keyword_status: str
+    matched_keywords: list[str]
+    classification_category: str | None
+    classification_sentiment: str | None
+    classification_severity: int | None
+    entities: list[str]
+
+
+class DocumentListResponse(BaseModel):
+    items: list[DocumentListItem]
+    total: int
+
+
+class DocumentDetailOut(BaseModel):
+    id: int
+    platform_type: str
+    source_type: str
+    target_name: str | None
+    author: str | None
+    topic: str | None
+    content: str
+    url: str
+    published_at: datetime | None
+    images: list[str]
+    videos: list[str]
+    like_count: int
+    comment_count: int
+    reaction_count: int
+    share_count: int
+    keyword_status: str
+    matched_keywords: list[str]
+    classification_category: str | None
+    classification_sentiment: str | None
+    classification_sentiment_source: str | None
+    classification_severity: int | None
+    classification_reasoning: str | None
+    entities: list[str]
+
+
+class DocumentCommentOut(BaseModel):
+    author: str | None
+    text: str
+    created_at: datetime | None
+    depth: int
+
+
+class AccordionCategoryCounts(BaseModel):
+    facebook_group: int = 0
+    facebook_page: int = 0
+    forum: int = 0
+    news: int = 0
+
+
+class AccordionSentimentCounts(BaseModel):
+    positive: int = 0
+    negative: int = 0
+    neutral: int = 0
+    unclassified: int = 0
+
+
+class EngagementGrowthPoint(BaseModel):
+    bucket: datetime
+    like_count: int
+    comment_count: int
+    reaction_count: int
+    share_count: int
+
+
+class EntityNetworkNode(BaseModel):
+    canonical_name: str
+    post_count: int
+
+
+class EntityNetworkEdge(BaseModel):
+    source: str
+    target: str
+    weight: int
+
+
+class EntityNetworkResponse(BaseModel):
+    nodes: list[EntityNetworkNode]
+    edges: list[EntityNetworkEdge]
+    focus_canonical_name: str | None = None
+
+
+class RelatedDocumentItem(BaseModel):
+    id: int
+    platform_type: str
+    target_name: str | None
+    topic: str | None
+    content_snippet: str
+    published_at: datetime | None
+    classification_sentiment: str | None
+    shared_entities: int

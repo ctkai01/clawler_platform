@@ -36,7 +36,7 @@ def _insert_document(target_id: int, external_doc_id: str, topic: str, content: 
             """
             INSERT INTO documents (target_id, platform_type, source_type, external_doc_id, url, topic, content, content_hash)
             VALUES (%s, 'forum', 'forum_thread', %s, %s, %s, %s, %s)
-            ON CONFLICT (platform_type, external_doc_id) DO UPDATE SET topic = EXCLUDED.topic, content = EXCLUDED.content
+            ON CONFLICT (target_id, external_doc_id) DO UPDATE SET topic = EXCLUDED.topic, content = EXCLUDED.content
             RETURNING id
             """,
             (target_id, external_doc_id, f"https://forum.example.com/{external_doc_id}", topic, content, external_doc_id),

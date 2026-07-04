@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Download, Trash2, Upload } from 'lucide-react'
+import { Download, Search, Trash2, Upload } from 'lucide-react'
 import { orgApi } from '@/features/customer/orgApi'
 import { useAuthStore } from '@/store/authStore'
 import { Card } from '@/components/ui/card'
@@ -9,12 +9,15 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Banner } from '@/components/ui/banner'
 import { Badge } from '@/components/ui/badge'
+import { Pagination } from '@/components/ui/pagination'
 import { PageHeader } from '@/components/PageHeader'
-import { PLATFORM_LABEL } from '@/lib/platform'
+import { PLATFORM_LABEL, SOURCE_STATUS_LABEL, sourceStatusTone } from '@/lib/platform'
 import { ApiError } from '@/lib/apiClient'
 import type { SourceImportResult } from '@/types/org'
 
 const PLATFORM_TYPES = ['facebook_group', 'facebook_page', 'forum', 'news']
+const ALL_PLATFORMS = '__all__'
+const PAGE_SIZE = 10
 
 const CSV_TEMPLATE = `platform_type,url,display_name
 facebook_group,https://facebook.com/groups/vi-du,Ví dụ FB Group
@@ -39,6 +42,9 @@ export function SourceManagerPage() {
   const { data: sources, isLoading } = useQuery({ queryKey: ['org', 'sources'], queryFn: orgApi.listSources })
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [platformFilter, setPlatformFilter] = useState(ALL_PLATFORMS)
   const [platformType, setPlatformType] = useState(PLATFORM_TYPES[0])
   const [url, setUrl] = useState('')
   const [displayName, setDisplayName] = useState('')
@@ -82,6 +88,19 @@ export function SourceManagerPage() {
     if (file) importMutation.mutate(file)
     e.target.value = '' // allow re-selecting the same file later
   }
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return (sources ?? []).filter((s) => {
+      if (platformFilter !== ALL_PLATFORMS && s.platform_type !== platformFilter) return false
+      if (q && !(s.display_name?.toLowerCase().includes(q) || s.url.toLowerCase().includes(q))) return false
+      return true
+    })
+  }, [sources, search, platformFilter])
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, pageCount)
+  const visible = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -153,7 +172,7 @@ export function SourceManagerPage() {
             <Upload className="h-3.5 w-3.5" />
             {importMutation.isPending ? 'Đang import…' : 'Import CSV'}
           </Button>
-          <Button type="button" variant="ghost" size="sm" onClick={downloadCsvTemplate}>
+          <Button type="button" variant="outline" size="sm" onClick={downloadCsvTemplate}>
             <Download className="h-3.5 w-3.5" />
             Tải file mẫu
           </Button>
@@ -195,10 +214,43 @@ export function SourceManagerPage() {
         </p>
       </Card>
 
+      <Card className="mt-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-64 flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
+            <Input
+              className="pl-9"
+              placeholder="Tìm theo tên hoặc URL…"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
+            />
+          </div>
+          <select
+            className="h-9 rounded-md border border-line bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
+            value={platformFilter}
+            onChange={(e) => {
+              setPlatformFilter(e.target.value)
+              setPage(1)
+            }}
+          >
+            <option value={ALL_PLATFORMS}>Tất cả nền tảng</option>
+            {PLATFORM_TYPES.map((p) => (
+              <option key={p} value={p}>
+                {PLATFORM_LABEL[p]}
+              </option>
+            ))}
+          </select>
+          <span className="text-xs text-muted">{filtered.length.toLocaleString('vi-VN')} kết quả</span>
+        </div>
+      </Card>
+
       <Card className="mt-4 overflow-hidden p-0">
         {isLoading ? (
           <p className="p-5 text-sm text-muted">Đang tải…</p>
-        ) : sources && sources.length > 0 ? (
+        ) : visible.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -211,18 +263,25 @@ export function SourceManagerPage() {
                 </tr>
               </thead>
               <tbody>
-                {sources.map((s) => (
+                {visible.map((s) => (
                   <tr key={s.id} className="border-b border-line transition-colors last:border-0 hover:bg-paper/60">
                     <td className="px-5 py-3 font-medium text-ink">{s.display_name ?? '—'}</td>
                     <td className="px-5 py-3">
                       <Badge tone="neutral">{PLATFORM_LABEL[s.platform_type] ?? s.platform_type}</Badge>
                     </td>
-                    <td className="max-w-56 truncate px-5 py-3 text-muted" title={s.url}>
-                      {s.url}
+                    <td className="max-w-56 truncate px-5 py-3" title={s.url}>
+                      <a
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent-ink hover:underline"
+                      >
+                        {s.url}
+                      </a>
                     </td>
                     <td className="px-5 py-3">
-                      <Badge tone={s.last_status === 'ok' ? 'good' : 'neutral'} dot>
-                        {s.last_status ?? 'chưa crawl'}
+                      <Badge tone={sourceStatusTone(s.last_status)} dot>
+                        {s.last_status ? (SOURCE_STATUS_LABEL[s.last_status] ?? s.last_status) : 'chưa crawl'}
                       </Badge>
                     </td>
                     <td className="px-5 py-3 text-right">
@@ -241,8 +300,11 @@ export function SourceManagerPage() {
             </table>
           </div>
         ) : (
-          <p className="p-5 text-sm text-muted">Chưa có nguồn crawl nào.</p>
+          <p className="p-5 text-sm text-muted">
+            {sources && sources.length > 0 ? 'Không có nguồn nào khớp.' : 'Chưa có nguồn crawl nào.'}
+          </p>
         )}
+        <Pagination page={currentPage} pageCount={pageCount} onPageChange={setPage} />
       </Card>
     </div>
   )
