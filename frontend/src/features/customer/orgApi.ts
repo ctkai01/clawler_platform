@@ -19,11 +19,22 @@ import type {
   SubAccount,
 } from '@/types/org'
 
+export interface ClassifyModeSetting {
+  mode: string
+  modes: string[]
+}
+
 function accordionQuery(params: AccordionFilterParams, extra?: Record<string, string | number>): string {
   const search = new URLSearchParams()
   if (params.search) search.set('search', params.search)
   if (params.entity) search.set('entity', params.entity)
   search.set('entity_exact', String(params.entity_exact ?? false))
+  if (params.date_from || params.date_to) {
+    if (params.date_from) search.set('date_from', params.date_from)
+    if (params.date_to) search.set('date_to', params.date_to)
+  } else if (params.days) {
+    search.set('days', String(params.days))
+  }
   if (extra) {
     for (const [key, value] of Object.entries(extra)) search.set(key, String(value))
   }
@@ -36,6 +47,12 @@ export const orgApi = {
     search.set('days', String(days))
     if (entity) search.set('entity', entity)
     return apiClient.get<OrgReport>(`/org/report?${search.toString()}`)
+  },
+  exportReport: (days: number, entity?: string) => {
+    const search = new URLSearchParams()
+    search.set('days', String(days))
+    if (entity) search.set('entity', entity)
+    return apiClient.download(`/org/report/export?${search.toString()}`, `bao-cao-${days}ngay.xlsx`)
   },
   getReportPosts: (params: {
     sentiment: 'positive' | 'negative'
@@ -82,6 +99,12 @@ export const orgApi = {
     if (params.platform_type) search.set('platform_type', params.platform_type)
     if (params.sentiment) search.set('sentiment', params.sentiment)
     if (params.search) search.set('search', params.search)
+    if (params.date_from || params.date_to) {
+      if (params.date_from) search.set('date_from', params.date_from)
+      if (params.date_to) search.set('date_to', params.date_to)
+    } else if (params.days) {
+      search.set('days', String(params.days))
+    }
     return apiClient.get<DocumentListResponse>(`/org/documents?${search.toString()}`)
   },
   getDocument: (id: number) => apiClient.get<DocumentDetail>(`/org/documents/${id}`),
@@ -113,6 +136,10 @@ export const orgApi = {
     if (focusExact !== undefined) search.set('focus_exact', String(focusExact))
     return apiClient.get<EntityNetworkResponse>(`/org/documents/${id}/entity-network?${search.toString()}`)
   },
+
+  getClassifyMode: () => apiClient.get<ClassifyModeSetting>('/org/settings/classify-mode'),
+  updateClassifyMode: (mode: string) =>
+    apiClient.patch<ClassifyModeSetting>('/org/settings/classify-mode', { mode }),
 
   listMembers: () => apiClient.get<SubAccount[]>('/org/users'),
   createMember: (body: { email: string; password: string; functional_role: string; target_ids: number[] }) =>

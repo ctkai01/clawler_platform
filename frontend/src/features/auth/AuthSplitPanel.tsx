@@ -12,9 +12,9 @@ export function AuthSplitPanel({ children }: { children: React.ReactNode }) {
         />
         <div className="relative">
           <div className="font-display flex items-baseline gap-1.5 text-lg font-semibold tracking-tight">
-            <span className="text-accent">◈</span> Listening Post
+            <span className="text-accent">◈</span> Monitoring Post
           </div>
-          <div className="mt-0.5 text-xs uppercase tracking-wider text-white/40">Crawl Platform</div>
+          <div className="mt-0.5 text-xs uppercase tracking-wider text-white/40">Reputation Management Platform</div>
         </div>
 
         <div className="relative max-w-sm">
@@ -27,7 +27,7 @@ export function AuthSplitPanel({ children }: { children: React.ReactNode }) {
           </p>
         </div>
 
-        <div className="relative text-xs text-white/30">© {new Date().getFullYear()} Crawl Platform</div>
+        <div className="relative text-xs text-white/30">© {new Date().getFullYear()} Reputation Management Platform</div>
       </div>
 
       <div className="flex flex-1 items-center justify-center bg-paper px-6 py-12">

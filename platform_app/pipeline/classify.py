@@ -195,6 +195,52 @@ def _classify_llm_image(text: str, images: list[str]) -> dict:
     return _call_openai(content)
 
 
+def _classify_rows(conn, rows: list[dict], mode: str) -> tuple[int, int]:
+    completed = failed = 0
+    for row in rows:
+        text = f"{row['topic'] or ''}\n{row['content'] or ''}".strip()
+        try:
+            if mode == "normal":
+                result = _classify_normal(text)
+            elif mode == "llm_image" and row.get("images"):
+                result = _classify_llm_image(text, row["images"])
+            else:
+                result = _classify_llm_text(text)
+        except Exception:
+            logger.exception("Classify thất bại cho document id=%s", row["id"])
+            conn.execute(
+                "UPDATE documents SET classification_status = 'failed' WHERE id = %s",
+                (row["id"],),
+            )
+            failed += 1
+            continue
+
+        conn.execute(
+            """
+            UPDATE documents SET
+                classification_status = 'completed',
+                classification_category = %s,
+                classification_sentiment = %s,
+                classification_sentiment_source = %s,
+                classification_severity = %s,
+                classification_reasoning = %s,
+                classification_cost_usd = classification_cost_usd + %s
+            WHERE id = %s
+            """,
+            (
+                result["category"],
+                result["sentiment"],
+                result["sentiment_source"],
+                result["severity"],
+                result["reasoning"],
+                result["cost_usd"],
+                row["id"],
+            ),
+        )
+        completed += 1
+    return completed, failed
+
+
 def run_classify(
     *,
     batch_size: int = 20,
@@ -204,76 +250,90 @@ def run_classify(
     """Only runs on documents keyword_filter already flagged as 'matched' —
     that gate is what keeps LLM spend bounded. `document_ids` narrows to a
     specific set (used by tests, and for on-demand reclassification).
-    `mode` overrides the dashboard-configured pipeline_settings.classify_mode
-    (normal / llm_text / llm_image) for this call only."""
-    mode = mode or get_classify_mode()
-    if mode in ("llm_text", "llm_image") and not _api_key():
-        logger.warning("OPENAI_API_KEY chưa cấu hình — bỏ qua bước classify (mode=%s)", mode)
-        return {"completed": 0, "failed": 0, "skipped_no_key": True}
+
+    `mode` explicitly overrides the configured classify_mode for this call
+    only (used by tests and on-demand reclassification) — one flat batch
+    across whatever `document_ids`/pending backlog matches, same as before.
+
+    With no override (the normal scheduled-DAG call), each organization is
+    classified separately using THAT org's own configured classify_mode
+    (pipeline_settings — see the "Cài đặt" page), since orgs no longer share
+    one global mode."""
+    if mode is not None:
+        if mode in ("llm_text", "llm_image") and not _api_key():
+            logger.warning("OPENAI_API_KEY chưa cấu hình — bỏ qua bước classify (mode=%s)", mode)
+            return {"completed": 0, "failed": 0, "skipped_no_key": True}
+
+        select_cols = "id, topic, content" + (", images" if mode == "llm_image" else "")
+        with get_pool().connection() as conn:
+            if document_ids is not None:
+                rows = conn.execute(
+                    f"""
+                    SELECT {select_cols} FROM documents
+                    WHERE keyword_status = 'matched' AND classification_status = 'pending'
+                      AND id = ANY(%s)
+                    LIMIT %s
+                    """,
+                    (document_ids, batch_size),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    f"""
+                    SELECT {select_cols} FROM documents
+                    WHERE keyword_status = 'matched' AND classification_status = 'pending'
+                    LIMIT %s
+                    """,
+                    (batch_size,),
+                ).fetchall()
+            completed, failed = _classify_rows(conn, rows, mode)
+        return {"completed": completed, "failed": failed, "mode": mode}
+
+    with get_pool().connection() as conn:
+        org_ids = [
+            r["organization_id"]
+            for r in conn.execute(
+                """
+                SELECT DISTINCT ct.organization_id
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE d.keyword_status = 'matched' AND d.classification_status = 'pending'
+                """
+            ).fetchall()
+        ]
 
     completed = failed = 0
-    with get_pool().connection() as conn:
-        select_cols = "id, topic, content" + (", images" if mode == "llm_image" else "")
-        if document_ids is not None:
-            rows = conn.execute(
-                f"""
-                SELECT {select_cols} FROM documents
-                WHERE keyword_status = 'matched' AND classification_status = 'pending'
-                  AND id = ANY(%s)
-                LIMIT %s
-                """,
-                (document_ids, batch_size),
-            ).fetchall()
-        else:
-            rows = conn.execute(
-                f"""
-                SELECT {select_cols} FROM documents
-                WHERE keyword_status = 'matched' AND classification_status = 'pending'
-                LIMIT %s
-                """,
-                (batch_size,),
-            ).fetchall()
-
-        for row in rows:
-            text = f"{row['topic'] or ''}\n{row['content'] or ''}".strip()
-            try:
-                if mode == "normal":
-                    result = _classify_normal(text)
-                elif mode == "llm_image" and row.get("images"):
-                    result = _classify_llm_image(text, row["images"])
-                else:
-                    result = _classify_llm_text(text)
-            except Exception:
-                logger.exception("Classify thất bại cho document id=%s", row["id"])
-                conn.execute(
-                    "UPDATE documents SET classification_status = 'failed' WHERE id = %s",
-                    (row["id"],),
-                )
-                failed += 1
-                continue
-
-            conn.execute(
-                """
-                UPDATE documents SET
-                    classification_status = 'completed',
-                    classification_category = %s,
-                    classification_sentiment = %s,
-                    classification_sentiment_source = %s,
-                    classification_severity = %s,
-                    classification_reasoning = %s,
-                    classification_cost_usd = classification_cost_usd + %s
-                WHERE id = %s
-                """,
-                (
-                    result["category"],
-                    result["sentiment"],
-                    result["sentiment_source"],
-                    result["severity"],
-                    result["reasoning"],
-                    result["cost_usd"],
-                    row["id"],
-                ),
+    skipped_orgs = 0
+    modes_used: dict[str, int] = {}
+    for org_id in org_ids:
+        org_mode = get_classify_mode(org_id)
+        if org_mode in ("llm_text", "llm_image") and not _api_key():
+            logger.warning(
+                "OPENAI_API_KEY chưa cấu hình — bỏ qua classify cho organization_id=%s (mode=%s)", org_id, org_mode
             )
-            completed += 1
+            skipped_orgs += 1
+            continue
 
-    return {"completed": completed, "failed": failed, "mode": mode}
+        select_cols = "d.id, d.topic, d.content" + (", d.images" if org_mode == "llm_image" else "")
+        with get_pool().connection() as conn:
+            rows = conn.execute(
+                f"""
+                SELECT {select_cols}
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE d.keyword_status = 'matched' AND d.classification_status = 'pending'
+                  AND ct.organization_id IS NOT DISTINCT FROM %s
+                LIMIT %s
+                """,
+                (org_id, batch_size),
+            ).fetchall()
+            c, f = _classify_rows(conn, rows, org_mode)
+        completed += c
+        failed += f
+        modes_used[org_mode] = modes_used.get(org_mode, 0) + c + f
+
+    return {
+        "completed": completed,
+        "failed": failed,
+        "modes_used": modes_used,
+        "skipped_no_key_orgs": skipped_orgs,
+    }

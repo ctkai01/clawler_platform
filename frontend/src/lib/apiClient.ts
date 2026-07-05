@@ -70,6 +70,28 @@ async function requestForm<T>(path: string, formData: FormData): Promise<T> {
   return (await res.json()) as T
 }
 
+async function requestBlob(path: string): Promise<{ blob: Blob; filename: string | null }> {
+  const token = getToken()
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  })
+
+  if (!res.ok) {
+    let message = res.statusText
+    try {
+      const body = await res.json()
+      message = body.detail ?? message
+    } catch {
+      // response had no JSON body — keep statusText
+    }
+    throw new ApiError(res.status, message)
+  }
+
+  const disposition = res.headers.get('Content-Disposition') ?? ''
+  const match = /filename="?([^"]+)"?/.exec(disposition)
+  return { blob: await res.blob(), filename: match ? match[1] : null }
+}
+
 export const apiClient = {
   get: <T>(path: string) => request<T>(path, { method: 'GET' }),
   post: <T>(path: string, body?: unknown) =>
@@ -78,4 +100,15 @@ export const apiClient = {
   patch: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'PATCH', body: body ? JSON.stringify(body) : undefined }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
+  download: async (path: string, fallbackFilename: string) => {
+    const { blob, filename } = await requestBlob(path)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename ?? fallbackFilename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  },
 }

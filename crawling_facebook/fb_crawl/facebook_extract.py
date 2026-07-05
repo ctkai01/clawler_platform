@@ -683,8 +683,11 @@ EXTRACT_POST_PAGE_JS = """
   }
 
   // --- Author: từ aria-label "bài viết của X" ---
+  // Scoped to postRoot, not document — same class of bug as the content
+  // extraction below: scanning the whole page can pick up an unrelated
+  // "bài viết của X" aria-label from a sidebar/suggested-post module.
   const authorCounts = {};
-  document.querySelectorAll('[aria-label]').forEach((el) => {
+  postRoot.querySelectorAll('[aria-label]').forEach((el) => {
     const label = el.getAttribute('aria-label') || '';
     const m = label.match(/bài viết của (.+)$/i) || label.match(/post by (.+)$/i);
     if (m) {
@@ -746,8 +749,17 @@ EXTRACT_POST_PAGE_JS = """
   });
 
   // --- Nội dung bài: div[dir=auto] dài nhất, không trùng comment ---
+  // Scoped to postRoot (the article), NOT the whole document — real bug
+  // found in production: scanning the whole page let a comment that
+  // parseCommentLabel failed to recognize (so it never landed in
+  // commentTexts) get picked up as a "candidate" alongside the post's own
+  // text, and since selection is "longest div wins", a long-ish spam
+  // comment (a common bot-posted ad, byte-for-byte identical across 100+
+  // unrelated posts/pages) beat a short real caption that Facebook split
+  // across several shorter divs. Every other extraction in this file
+  // (images, engagement) is already scoped to postRoot — this one wasn't.
   const candidates = [];
-  document.querySelectorAll('div[dir="auto"]').forEach((el) => {
+  postRoot.querySelectorAll('div[dir="auto"]').forEach((el) => {
     const t = (el.innerText || '').trim();
     if (t.length < 40) return;
     if (/xem thêm$/i.test(t) && t.length < 120) return;
@@ -792,6 +804,14 @@ EXTRACT_POST_PAGE_JS = """
       topic = topic.slice(0, 150).trim() + '…';
     }
 
+    // Walk up from the content div looking for a profile link, but never past
+    // postRoot — real bug found in production: Page posts link to the page
+    // via /PageName/ (doesn't match /user/ or profile.php), so this walk
+    // found nothing nearby and kept climbing past the post's own boundary
+    // into page-wide chrome (top nav / account switcher), where it picked up
+    // a link to the CRAWLER'S OWN LOGGED-IN SESSION ACCOUNT and misattributed
+    // dozens of unrelated posts across many different pages to that one
+    // account. Stop the walk at postRoot itself.
     const anchor = candidates[0];
     let node = anchor.el;
     for (let i = 0; i < 15 && node; i++) {
@@ -807,7 +827,7 @@ EXTRACT_POST_PAGE_JS = """
           break;
         }
       }
-      if (author) break;
+      if (author || node === postRoot) break;
       node = node.parentElement;
     }
   }

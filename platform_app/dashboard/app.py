@@ -13,7 +13,7 @@ from platform_app.dashboard import report_data
 from platform_app.db.pool import get_pool
 from platform_app.pipeline.settings import VALID_MODES, get_classify_mode, set_classify_mode
 
-app = FastAPI(title="Crawl Platform Dashboard")
+app = FastAPI(title="Reputation Management Platform Dashboard")
 templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 
 PAGE_SIZE = 30

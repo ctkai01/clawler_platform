@@ -31,7 +31,7 @@ function useNavItems(): NavItem[] {
     )
   }
   if (user.role === 'org_main') {
-    items.push({ to: '/members', label: 'Thành viên' })
+    items.push({ to: '/members', label: 'Thành viên' }, { to: '/settings', label: 'Cài đặt' })
   }
   return items
 }
@@ -54,13 +54,15 @@ export function AppShell() {
   }
 
   return (
-    <div className="flex min-h-svh bg-paper">
-      <aside className="flex w-60 shrink-0 flex-col bg-ink text-white">
+    <div className="flex h-svh overflow-hidden bg-paper">
+      <aside className="flex w-60 shrink-0 flex-col overflow-y-auto bg-ink text-white">
         <div className="px-5 py-6">
           <div className="font-display flex items-baseline gap-1.5 text-[1.05rem] font-semibold tracking-tight">
-            <span className="text-accent">◈</span> Listening Post
+            <span className="text-accent">◈</span> Monitoring Post
           </div>
-          <div className="mt-0.5 text-[0.7rem] uppercase tracking-wider text-white/40">Crawl Platform</div>
+          <div className="mt-0.5 text-[0.62rem] uppercase leading-tight tracking-wide text-white/40">
+            Reputation Management Platform
+          </div>
         </div>
 
         <nav className="flex-1 px-3">

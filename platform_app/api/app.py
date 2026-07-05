@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from platform_app.api.routers import admin, auth, members, org
 
-app = FastAPI(title="Crawl Platform API")
+app = FastAPI(title="Reputation Management Platform API")
 
 _origins = [o.strip() for o in os.environ.get("API_CORS_ORIGINS", "http://localhost:5173").split(",")]
 app.add_middleware(

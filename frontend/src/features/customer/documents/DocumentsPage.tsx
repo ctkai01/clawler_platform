@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Search } from 'lucide-react'
 import { orgApi } from '@/features/customer/orgApi'
@@ -12,13 +13,24 @@ import { DetailPanel } from '@/features/customer/documents/DetailPanel'
 import type { AccordionFilterParams } from '@/types/org'
 
 const CATEGORIES = ['facebook_group', 'facebook_page', 'forum', 'news']
+const DAY_OPTIONS = [0, 1, 7, 14, 30, 90, 365]
+const CUSTOM_RANGE = -1
 
 export function DocumentsPage() {
+  const [searchParams] = useSearchParams()
   const [searchInput, setSearchInput] = useState('')
   const [entityInput, setEntityInput] = useState('')
   const [entityExact, setEntityExact] = useState(false)
+  const [days, setDays] = useState(0)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
   const [filters, setFilters] = useState<AccordionFilterParams>({})
-  const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [selectedId, setSelectedId] = useState<number | null>(() => {
+    const idParam = searchParams.get('id')
+    return idParam ? Number(idParam) : null
+  })
+
+  const isCustomRange = days === CUSTOM_RANGE
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -26,10 +38,13 @@ export function DocumentsPage() {
         search: searchInput.trim() || undefined,
         entity: entityInput.trim() || undefined,
         entity_exact: entityExact,
+        days: isCustomRange ? undefined : days || undefined,
+        date_from: isCustomRange ? dateFrom || undefined : undefined,
+        date_to: isCustomRange ? dateTo || undefined : undefined,
       })
     }, 350)
     return () => clearTimeout(t)
-  }, [searchInput, entityInput, entityExact])
+  }, [searchInput, entityInput, entityExact, days, isCustomRange, dateFrom, dateTo])
 
   const { data: counts } = useQuery({
     queryKey: ['org', 'documents', 'accordion', 'counts', filters],
@@ -67,6 +82,48 @@ export function DocumentsPage() {
               onChange={(e) => setEntityInput(e.target.value)}
             />
           </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="doc-days">Thời gian</Label>
+            <select
+              id="doc-days"
+              className="h-9 rounded-md border border-line bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+            >
+              {DAY_OPTIONS.map((d) => (
+                <option key={d} value={d}>
+                  {d === 0 ? 'Toàn bộ thời gian' : `${d} ngày gần nhất`}
+                </option>
+              ))}
+              <option value={CUSTOM_RANGE}>Tùy chỉnh…</option>
+            </select>
+          </div>
+          {isCustomRange && (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="doc-date-from">Từ ngày</Label>
+                <Input
+                  id="doc-date-from"
+                  type="date"
+                  className="h-9"
+                  value={dateFrom}
+                  max={dateTo || undefined}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="doc-date-to">Đến ngày</Label>
+                <Input
+                  id="doc-date-to"
+                  type="date"
+                  className="h-9"
+                  value={dateTo}
+                  min={dateFrom || undefined}
+                  onChange={(e) => setDateTo(e.target.value)}
+                />
+              </div>
+            </>
+          )}
           <Switch checked={entityExact} onChange={setEntityExact} label="Khớp chính xác" />
         </div>
       </Card>

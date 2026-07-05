@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ExternalLink, Search } from 'lucide-react'
+import { Download, ExternalLink, FileSearch, Search } from 'lucide-react'
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { orgApi } from '@/features/customer/orgApi'
 import { useAuthStore } from '@/store/authStore'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -31,11 +33,23 @@ export function ReportDashboardPage() {
   const [days, setDays] = useState(7)
   const [entityInput, setEntityInput] = useState('')
   const [entity, setEntity] = useState('')
+  const [exporting, setExporting] = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => setEntity(entityInput.trim()), 350)
     return () => clearTimeout(t)
   }, [entityInput])
+
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      await orgApi.exportReport(days, entity || undefined)
+    } catch {
+      window.alert('Xuất Excel thất bại, vui lòng thử lại.')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ['org', 'report', days, entity],
@@ -61,7 +75,15 @@ export function ReportDashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader title={`Tổng quan — ${user?.organization_name ?? ''}`} />
+      <PageHeader
+        title={`Tổng quan — ${user?.organization_name ?? ''}`}
+        action={
+          <Button variant="outline" onClick={handleExport} disabled={exporting || isLoading}>
+            <Download className="h-4 w-4" />
+            {exporting ? 'Đang xuất…' : 'Xuất Excel'}
+          </Button>
+        }
+      />
 
       <Card>
         <div className="flex flex-wrap items-end gap-4">
@@ -259,7 +281,9 @@ function PaginatedPostTable({
             <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-muted">
               <th className="px-5 py-3 font-semibold">Tiêu đề bài đăng</th>
               <th className="px-5 py-3 font-semibold">Kênh</th>
+              <th className="px-5 py-3 font-semibold">Người đăng</th>
               <th className="px-5 py-3 font-semibold">Tổng số tương tác</th>
+              <th className="px-5 py-3 font-semibold"></th>
             </tr>
           </thead>
           <tbody>
@@ -277,7 +301,17 @@ function PaginatedPostTable({
                   </a>
                 </td>
                 <td className="px-5 py-3 text-muted">{p.channel_label}</td>
+                <td className="px-5 py-3 text-muted">{p.author || '—'}</td>
                 <td className="tabular px-5 py-3">{p.engagement_total.toLocaleString('vi-VN')}</td>
+                <td className="px-5 py-3 text-right">
+                  <Link
+                    to={`/documents?id=${p.id}`}
+                    className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-medium text-accent-ink hover:underline"
+                  >
+                    <FileSearch className="h-3.5 w-3.5" />
+                    Chi tiết
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

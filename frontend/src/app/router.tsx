@@ -10,6 +10,7 @@ import { EntityCatalogPage } from '@/features/admin/entities/EntityCatalogPage'
 import { KeywordCatalogPage } from '@/features/admin/keywords/KeywordCatalogPage'
 import { ReportDashboardPage } from '@/features/customer/dashboard/ReportDashboardPage'
 import { DocumentsPage } from '@/features/customer/documents/DocumentsPage'
+import { SettingsPage } from '@/features/customer/settings/SettingsPage'
 import { EntityKeywordPicker } from '@/features/customer/tracking/EntityKeywordPicker'
 import { SourceManagerPage } from '@/features/customer/tracking/SourceManagerPage'
 import { SubAccountListPage } from '@/features/customer/members/SubAccountListPage'
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'dashboard', element: <ReportDashboardPage /> },
               { path: 'documents', element: <DocumentsPage /> },
+              { path: 'settings', element: <SettingsPage /> },
               {
                 element: <RequireFunctionalPermission allow={['configurator']} />, // lớp 3
                 children: [

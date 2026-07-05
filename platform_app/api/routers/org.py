@@ -5,6 +5,10 @@ import io
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from fastapi.responses import StreamingResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 
 from platform_app.api.deps import get_current_user, require_roles
 from platform_app.api.schemas import (
@@ -24,6 +28,7 @@ from platform_app.api.schemas import (
     SourceOut,
 )
 from platform_app.db.pool import get_pool
+from platform_app.pipeline.settings import VALID_MODES, get_classify_mode, set_classify_mode
 
 VALID_PLATFORM_TYPES = {"facebook_group", "facebook_page", "forum", "news"}
 
@@ -321,12 +326,13 @@ def _report_scope(user: dict, days: int, entity: str | None) -> tuple[list[str],
 def _report_post_row(row: dict) -> dict:
     title = row["topic"] or (row["content"][:80] + "…" if len(row["content"]) > 80 else row["content"])
     channel_prefix = _REPORT_CHANNEL_PREFIX.get(row["platform_type"], row["platform_type"])
-    channel_label = f"{channel_prefix}: {row['author'] or row['target_name']}"
+    channel_label = f"{channel_prefix}: {row['target_name']}"
     return {
         "id": row["id"],
         "title": title,
         "url": row["url"],
         "channel_label": channel_label,
+        "author": row["author"],
         "engagement_total": row["engagement_total"],
     }
 
@@ -380,21 +386,12 @@ def report_posts(
     return {"items": [_report_post_row(r) for r in rows], "total": total}
 
 
-@router.get("/report")
-def org_report(
-    days: int = Query(default=7, ge=1, le=365),
-    entity: str | None = Query(default=None),
-    user: dict = Depends(get_current_user),
-) -> dict:
-    """Same shape/sections as the internal /report dashboard (KPIs + sentiment
-    pie, topic/entity breakdown table, sentiment-by-topic stacked bar,
-    top negative/positive posts) but scoped to the caller's organization (and
-    further to their granted targets if org_sub), and "topic" rows are
-    restricted to entities THIS org tracks (see _tracked_entity_condition) —
-    not the internal report's free-text match against the full gazetteer."""
+def _build_report(user: dict, days: int, entity: str | None) -> dict | None:
+    """Shared by /report and /report/export — returns None when an org_sub
+    has no granted targets (caller should fall back to _EMPTY_REPORT)."""
     scope = _report_scope(user, days, entity)
     if scope is None:
-        return _EMPTY_REPORT
+        return None
     conditions, params, entity_clause, entity_params = scope
 
     where_clause = " AND ".join(conditions)
@@ -511,6 +508,140 @@ def org_report(
     }
 
 
+@router.get("/report")
+def org_report(
+    days: int = Query(default=7, ge=1, le=365),
+    entity: str | None = Query(default=None),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """Same shape/sections as the internal /report dashboard (KPIs + sentiment
+    pie, topic/entity breakdown table, sentiment-by-topic stacked bar,
+    top negative/positive posts) but scoped to the caller's organization (and
+    further to their granted targets if org_sub), and "topic" rows are
+    restricted to entities THIS org tracks (see _tracked_entity_condition) —
+    not the internal report's free-text match against the full gazetteer."""
+    report = _build_report(user, days, entity)
+    return report if report is not None else _EMPTY_REPORT
+
+
+_EXPORT_POST_CAP = 5000
+
+
+def _all_report_posts(user: dict, days: int, entity: str | None, sentiment: str) -> list[dict]:
+    """Every matching post (not just the report's top-5 preview) — used for
+    Excel export, which needs the full list rather than a UI-sized sample."""
+    scope = _report_scope(user, days, entity)
+    if scope is None:
+        return []
+    conditions, params, entity_clause, entity_params = scope
+    post_conditions = [*conditions, "d.classification_sentiment = %s"]
+    post_params = [*params, sentiment]
+    with get_pool().connection() as conn:
+        rows = conn.execute(
+            f"""
+            SELECT d.id, d.topic, d.content, d.url, d.author, d.platform_type,
+                   ct.display_name AS target_name,
+                   (COALESCE(d.reaction_count, 0) + COALESCE(d.comment_count, 0)) AS engagement_total
+            FROM documents d
+            JOIN crawl_targets ct ON ct.id = d.target_id
+            WHERE {" AND ".join(post_conditions)} {entity_clause}
+            ORDER BY engagement_total DESC, d.published_at DESC
+            LIMIT %s
+            """,
+            [*post_params, *entity_params, _EXPORT_POST_CAP],
+        ).fetchall()
+    return [_report_post_row(r) for r in rows]
+
+
+def _autosize_columns(ws) -> None:
+    for col_cells in ws.columns:
+        length = max((len(str(c.value)) if c.value is not None else 0) for c in col_cells)
+        ws.column_dimensions[get_column_letter(col_cells[0].column)].width = min(max(length + 2, 10), 80)
+
+
+def _write_header(ws, headers: list[str]) -> None:
+    ws.append(headers)
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+
+
+@router.get("/report/export")
+def export_report(
+    days: int = Query(default=7, ge=1, le=365),
+    entity: str | None = Query(default=None),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Excel export of the report currently shown on screen (same days/entity
+    filters), with full negative/positive post lists (up to _EXPORT_POST_CAP)
+    instead of the UI's top-5 preview."""
+    report = _build_report(user, days, entity) or _EMPTY_REPORT
+    negative_posts = _all_report_posts(user, days, entity, "negative")
+    positive_posts = _all_report_posts(user, days, entity, "positive")
+
+    wb = Workbook()
+
+    ws = wb.active
+    ws.title = "Tổng quan"
+    ws.append(["Chỉ số", "Giá trị"])
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+    ws.append(["Tổng số tin", report["total_posts"]])
+    ws.append(["Bình luận", report["total_comments"]])
+    ws.append(["Tổng reaction", report["total_reactions"]])
+    ws.append(["Chia sẻ", report["total_shares"]])
+    ws.append(["Tích cực", report["sentiment_positive"]])
+    ws.append(["Trung tính", report["sentiment_neutral"]])
+    ws.append(["Tiêu cực", report["sentiment_negative"]])
+    _autosize_columns(ws)
+
+    ws = wb.create_sheet("Theo chủ đề")
+    _write_header(ws, ["Chủ đề", "Bài đăng", "Bình luận", "Tổng số tương tác"])
+    for row in report["topic_detail"]:
+        ws.append([row["topic"], row["posts"], row["comments"], row["total_engagement"]])
+    _autosize_columns(ws)
+
+    for sheet_name, posts in (("Tiêu cực", negative_posts), ("Tích cực", positive_posts)):
+        ws = wb.create_sheet(sheet_name)
+        _write_header(ws, ["Tiêu đề bài đăng", "Kênh", "Người đăng", "Tổng số tương tác", "Link"])
+        for p in posts:
+            ws.append([p["title"], p["channel_label"], p["author"] or "", p["engagement_total"], p["url"]])
+        _autosize_columns(ws)
+
+    buf = io.BytesIO()
+    wb.save(buf)
+    buf.seek(0)
+
+    filename = f"bao-cao-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M')}.xlsx"
+    return StreamingResponse(
+        buf,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Settings — classify_mode is per-organization (pipeline_settings.organization_id);
+# every member of the org can see the current mode, but only org_main (the
+# owner account) can change it, since it directly controls LLM spend.
+# ---------------------------------------------------------------------------
+
+
+@router.get("/settings/classify-mode")
+def get_org_classify_mode(user: dict = Depends(get_current_user)) -> dict:
+    return {"mode": get_classify_mode(user["organization_id"]), "modes": list(VALID_MODES)}
+
+
+@router.patch("/settings/classify-mode")
+def update_org_classify_mode(body: dict, user: dict = Depends(get_current_user)) -> dict:
+    if user["role"] != "org_main":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Chỉ Tài khoản Chủ mới có thể đổi cài đặt này")
+    mode = body.get("mode")
+    if mode not in VALID_MODES:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, f"classify_mode không hợp lệ: {mode}")
+    set_classify_mode(mode, user["organization_id"])
+    return {"mode": mode, "modes": list(VALID_MODES)}
+
+
 # ---------------------------------------------------------------------------
 # Documents — crawled posts from the caller's own crawl_targets, optionally
 # narrowed to their tracked entities/keywords (organization_entities /
@@ -555,6 +686,32 @@ def _apply_keyword_entity_filters(
         params.append(entity if entity_exact else f"%{entity}%")
 
 
+def _apply_days_filter(
+    conditions: list[str],
+    params: list,
+    days: int | None,
+    date_from: str | None = None,
+    date_to: str | None = None,
+) -> None:
+    """Restricts to documents published in a time window. An explicit
+    `date_from`/`date_to` (custom range, "YYYY-MM-DD") takes priority over
+    the `days` preset when both are supplied; with neither, no time filter
+    is applied (all-time) — matches the accordion/document list's default of
+    showing everything until the user opts into a window."""
+    if date_from or date_to:
+        if date_from:
+            conditions.append("d.published_at >= %s")
+            params.append(datetime.strptime(date_from, "%Y-%m-%d").replace(tzinfo=timezone.utc))
+        if date_to:
+            conditions.append("d.published_at < %s")
+            params.append(
+                datetime.strptime(date_to, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(days=1)
+            )
+    elif days:
+        conditions.append("d.published_at >= %s")
+        params.append(datetime.now(timezone.utc) - timedelta(days=days))
+
+
 @router.get("/documents", response_model=DocumentListResponse)
 def list_documents(
     page: int = Query(default=1, ge=1),
@@ -565,6 +722,9 @@ def list_documents(
     platform_type: str | None = Query(default=None),
     sentiment: str | None = Query(default=None),
     search: str | None = Query(default=None),
+    days: int | None = Query(default=None, ge=1, le=3650),
+    date_from: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    date_to: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     user: dict = Depends(get_current_user),
 ) -> dict:
     conditions, params = _document_list_conditions(user)
@@ -584,6 +744,7 @@ def list_documents(
         pattern = f"%{search}%"
         params.extend([pattern, pattern])
     _apply_keyword_entity_filters(conditions, params, None, entity, entity_exact)
+    _apply_days_filter(conditions, params, days, date_from, date_to)
     if keyword:
         conditions.append("d.matched_keywords ? %s")
         params.append(keyword)
@@ -704,12 +865,16 @@ def accordion_category_counts(
     search: str | None = Query(default=None),
     entity: str | None = Query(default=None),
     entity_exact: bool = Query(default=False),
+    days: int | None = Query(default=None, ge=1, le=3650),
+    date_from: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    date_to: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     user: dict = Depends(get_current_user),
 ) -> dict:
     conditions, params = _document_list_conditions(user)
     if user["role"] == "org_sub" and not (user["accessible_target_ids"] or []):
         return {p: 0 for p in VALID_PLATFORM_TYPES}
     _apply_keyword_entity_filters(conditions, params, search, entity, entity_exact)
+    _apply_days_filter(conditions, params, days, date_from, date_to)
     where_clause = " AND ".join(conditions)
 
     with get_pool().connection() as conn:
@@ -745,6 +910,9 @@ def accordion_sentiment_counts(
     search: str | None = Query(default=None),
     entity: str | None = Query(default=None),
     entity_exact: bool = Query(default=False),
+    days: int | None = Query(default=None, ge=1, le=3650),
+    date_from: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    date_to: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     user: dict = Depends(get_current_user),
 ) -> dict:
     if platform_type not in VALID_PLATFORM_TYPES:
@@ -756,6 +924,7 @@ def accordion_sentiment_counts(
     conditions.append("d.platform_type = %s")
     params.append(platform_type)
     _apply_keyword_entity_filters(conditions, params, search, entity, entity_exact)
+    _apply_days_filter(conditions, params, days, date_from, date_to)
     where_clause = " AND ".join(conditions)
 
     with get_pool().connection() as conn:
@@ -779,6 +948,9 @@ def accordion_engagement_growth(
     search: str | None = Query(default=None),
     entity: str | None = Query(default=None),
     entity_exact: bool = Query(default=False),
+    days: int | None = Query(default=None, ge=1, le=3650),
+    date_from: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    date_to: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     user: dict = Depends(get_current_user),
 ) -> list[dict]:
     """Combined engagement-growth curve (summed across every document
@@ -795,6 +967,7 @@ def accordion_engagement_growth(
     conditions.append("d.platform_type = %s")
     params.append(platform_type)
     _apply_keyword_entity_filters(conditions, params, search, entity, entity_exact)
+    _apply_days_filter(conditions, params, days, date_from, date_to)
     where_clause = " AND ".join(conditions)
 
     with get_pool().connection() as conn:
@@ -822,6 +995,9 @@ def accordion_entity_network(
     search: str | None = Query(default=None),
     entity: str | None = Query(default=None),
     entity_exact: bool = Query(default=False),
+    days: int | None = Query(default=None, ge=1, le=3650),
+    date_from: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    date_to: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     max_nodes: int = Query(default=20, ge=2, le=50),
     user: dict = Depends(get_current_user),
 ) -> dict:
@@ -838,6 +1014,7 @@ def accordion_entity_network(
     conditions.append("d.platform_type = %s")
     params.append(platform_type)
     _apply_keyword_entity_filters(conditions, params, search, entity, entity_exact)
+    _apply_days_filter(conditions, params, days, date_from, date_to)
     where_clause = " AND ".join(conditions)
 
     with get_pool().connection() as conn:

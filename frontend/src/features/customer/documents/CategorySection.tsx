@@ -79,6 +79,9 @@ export function CategorySection({
         search: filters.search,
         entity: filters.entity,
         entity_exact: filters.entity_exact,
+        days: filters.days,
+        date_from: filters.date_from,
+        date_to: filters.date_to,
       }),
     enabled: expanded,
   })

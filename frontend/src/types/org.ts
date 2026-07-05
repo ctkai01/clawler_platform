@@ -49,6 +49,7 @@ export interface ReportPostItem {
   title: string
   url: string
   channel_label: string
+  author: string | null
   engagement_total: number
 }
 
@@ -145,12 +146,18 @@ export interface DocumentListParams {
   platform_type?: string
   sentiment?: string
   search?: string
+  days?: number
+  date_from?: string
+  date_to?: string
 }
 
 export interface AccordionFilterParams {
   search?: string
   entity?: string
   entity_exact?: boolean
+  days?: number
+  date_from?: string
+  date_to?: string
 }
 
 export interface AccordionCategoryCounts {

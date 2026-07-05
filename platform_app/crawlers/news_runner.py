@@ -25,19 +25,32 @@ async def crawl_target(target_id: int) -> None:
 
     try:
         urls = await parser.discover_urls(target.url, target.config)
-        saved = 0
-        for url in urls:
-            doc = await parser.fetch_and_parse(url, target.config)
-            if doc is None:
-                continue
-            save_document(target_id, "news", "news_article", target.external_id, doc)
-            saved += 1
     except Exception as exc:  # noqa: BLE001 - must reach Airflow as a failed task
         repository.mark_failed(target_id, str(exc))
         raise
 
+    saved = 0
+    failed = 0
+    for url in urls:
+        try:
+            doc = await parser.fetch_and_parse(url, target.config)
+        except Exception:
+            # One article failing to fetch (flaky network, transient block, ...)
+            # must not discard every other article already fetched in this run
+            # or mark the whole source 'error' — only discover_urls failing is
+            # a real source-level problem.
+            logger.exception("Bỏ qua bài lỗi khi crawl news target %s: %s", target_id, url)
+            failed += 1
+            continue
+        if doc is None:
+            continue
+        save_document(target_id, "news", "news_article", target.external_id, doc)
+        saved += 1
+
     repository.mark_success(target_id)
-    logger.info("Crawled news target %s (%s): %d bài lưu", target_id, target.url, saved)
+    logger.info(
+        "Crawled news target %s (%s): %d bài lưu, %d bài lỗi (bỏ qua)", target_id, target.url, saved, failed
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -648,9 +648,15 @@ def parse_engagement(text: str) -> PostEngagement:
     comment_count = _parse_count(text, ["bình luận", "comment", "lượt bình luận"])
     reaction_count = sum(reactions.values()) if reactions else like_count
 
-    total_m = re.search(r"(\d[\d.,]*)\s*người", text, re.I)
-    if total_m and not reaction_count:
-        reaction_count = int(total_m.group(1).replace(".", "").replace(",", ""))
+    # Removed: a "<số> người" fallback used to backfill reaction_count when no
+    # reaction breakdown was found. Real bug found in production — "người"
+    # ("people") also appears in unrelated numbers scraped alongside a post
+    # (observed: a Facebook group's own member count, e.g. "406.085 người"),
+    # which got misread as that post's reaction count. Confirmed by real
+    # data: ~24% of crawled posts had like/reaction counts in the hundreds of
+    # thousands, clustered by source group rather than by post. Leaving
+    # reaction_count at like_count (set above) when no breakdown is found is
+    # the safe fallback — it may undercount but never fabricates a number.
 
     return normalize_post_engagement(
         PostEngagement(

@@ -25,19 +25,32 @@ async def crawl_target(target_id: int) -> None:
 
     try:
         urls = await parser.discover_urls(target.url, target.config)
-        saved = 0
-        for url in urls:
-            doc = await parser.fetch_and_parse(url, target.config)
-            if doc is None:
-                continue
-            save_document(target_id, "forum", "forum_thread", target.external_id, doc)
-            saved += 1
     except Exception as exc:  # noqa: BLE001 - must reach Airflow as a failed task
         repository.mark_failed(target_id, str(exc))
         raise
 
+    saved = 0
+    failed = 0
+    for url in urls:
+        try:
+            doc = await parser.fetch_and_parse(url, target.config)
+        except Exception:
+            # One thread failing to fetch (flaky network, transient block, ...)
+            # must not discard every other thread already fetched in this run
+            # or mark the whole source 'error' — only discover_urls failing is
+            # a real source-level problem.
+            logger.exception("Bỏ qua thread lỗi khi crawl forum target %s: %s", target_id, url)
+            failed += 1
+            continue
+        if doc is None:
+            continue
+        save_document(target_id, "forum", "forum_thread", target.external_id, doc)
+        saved += 1
+
     repository.mark_success(target_id)
-    logger.info("Crawled forum target %s (%s): %d thread lưu", target_id, target.url, saved)
+    logger.info(
+        "Crawled forum target %s (%s): %d thread lưu, %d thread lỗi (bỏ qua)", target_id, target.url, saved, failed
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
