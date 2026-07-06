@@ -120,6 +120,7 @@ export interface DocumentDetail {
   comment_count: number
   reaction_count: number
   share_count: number
+  reactions: Record<string, number>
   keyword_status: string
   matched_keywords: string[]
   classification_category: string | null

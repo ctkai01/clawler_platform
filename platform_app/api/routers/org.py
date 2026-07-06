@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import io
+import re
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
@@ -565,15 +566,10 @@ def _write_header(ws, headers: list[str]) -> None:
         cell.font = Font(bold=True)
 
 
-@router.get("/report/export")
-def export_report(
-    days: int = Query(default=7, ge=1, le=365),
-    entity: str | None = Query(default=None),
-    user: dict = Depends(get_current_user),
-) -> StreamingResponse:
-    """Excel export of the report currently shown on screen (same days/entity
-    filters), with full negative/positive post lists (up to _EXPORT_POST_CAP)
-    instead of the UI's top-5 preview."""
+def build_report_workbook_bytes(user: dict, days: int, entity: str | None) -> bytes:
+    """Builds the same Excel workbook /report/export streams to the browser
+    — shared with the daily report-email job (platform_app.pipeline.report_email)
+    so both paths produce byte-identical files from one code path."""
     report = _build_report(user, days, entity) or _EMPTY_REPORT
     negative_posts = _all_report_posts(user, days, entity, "negative")
     positive_posts = _all_report_posts(user, days, entity, "positive")
@@ -609,11 +605,22 @@ def export_report(
 
     buf = io.BytesIO()
     wb.save(buf)
-    buf.seek(0)
+    return buf.getvalue()
 
+
+@router.get("/report/export")
+def export_report(
+    days: int = Query(default=7, ge=1, le=365),
+    entity: str | None = Query(default=None),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Excel export of the report currently shown on screen (same days/entity
+    filters), with full negative/positive post lists (up to _EXPORT_POST_CAP)
+    instead of the UI's top-5 preview."""
+    content = build_report_workbook_bytes(user, days, entity)
     filename = f"bao-cao-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M')}.xlsx"
     return StreamingResponse(
-        buf,
+        io.BytesIO(content),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
@@ -640,6 +647,96 @@ def update_org_classify_mode(body: dict, user: dict = Depends(get_current_user))
         raise HTTPException(status.HTTP_400_BAD_REQUEST, f"classify_mode không hợp lệ: {mode}")
     set_classify_mode(mode, user["organization_id"])
     return {"mode": mode, "modes": list(VALID_MODES)}
+
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+@router.get("/settings/report-email")
+def get_report_email_setting(user: dict = Depends(get_current_user)) -> dict:
+    with get_pool().connection() as conn:
+        row = conn.execute(
+            "SELECT recipient_email, cc_emails, enabled FROM organization_report_email WHERE organization_id = %s",
+            (user["organization_id"],),
+        ).fetchone()
+    if row is None:
+        return {"recipient_email": None, "cc_emails": [], "enabled": False}
+    return row
+
+
+@router.patch("/settings/report-email")
+def update_report_email_setting(body: dict, user: dict = Depends(get_current_user)) -> dict:
+    if user["role"] != "org_main":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Chỉ Tài khoản Chủ mới có thể đổi cài đặt này")
+
+    recipient_email = (body.get("recipient_email") or "").strip()
+    cc_emails = [e.strip() for e in (body.get("cc_emails") or []) if e.strip()]
+    enabled = bool(body.get("enabled", True))
+
+    if enabled or recipient_email:
+        if not _EMAIL_RE.match(recipient_email):
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, f"Email người nhận không hợp lệ: {recipient_email}")
+        for cc in cc_emails:
+            if not _EMAIL_RE.match(cc):
+                raise HTTPException(status.HTTP_400_BAD_REQUEST, f"Email CC không hợp lệ: {cc}")
+
+    with get_pool().connection() as conn:
+        row = conn.execute(
+            """
+            INSERT INTO organization_report_email (organization_id, recipient_email, cc_emails, enabled)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (organization_id) DO UPDATE SET
+                recipient_email = EXCLUDED.recipient_email,
+                cc_emails = EXCLUDED.cc_emails,
+                enabled = EXCLUDED.enabled,
+                updated_at = now()
+            RETURNING recipient_email, cc_emails, enabled
+            """,
+            (user["organization_id"], recipient_email, cc_emails, enabled),
+        ).fetchone()
+    return row
+
+
+@router.post("/report/send-email")
+def send_report_email_now(
+    days: int = Query(default=7, ge=1, le=365),
+    entity: str | None = Query(default=None),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """Manual "send now" — uses whatever recipient/cc is already saved in
+    Settings, regardless of the `enabled` toggle (that toggle only gates the
+    automated daily job, not an explicit manual trigger)."""
+    from platform_app.notifications.email import EmailNotConfigured, send_email_with_attachment
+
+    with get_pool().connection() as conn:
+        row = conn.execute(
+            "SELECT recipient_email, cc_emails FROM organization_report_email WHERE organization_id = %s",
+            (user["organization_id"],),
+        ).fetchone()
+    if row is None or not row["recipient_email"]:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Chưa cấu hình email nhận báo cáo trong Cài đặt")
+
+    content = build_report_workbook_bytes(user, days, entity)
+    date_label = datetime.now(timezone.utc).strftime("%d/%m/%Y")
+    try:
+        send_email_with_attachment(
+            to=row["recipient_email"],
+            cc=row["cc_emails"],
+            subject=f"[{user['organization_name']}] Báo cáo mạng xã hội ngày {date_label}",
+            body_text=(
+                f"Chào {user['organization_name']},\n\n"
+                f"Đính kèm là báo cáo tổng hợp mạng xã hội ({days} ngày gần nhất, gửi thủ công).\n\n"
+                "Email này được gửi tự động, vui lòng không trả lời."
+            ),
+            attachment_bytes=content,
+            attachment_filename=f"bao-cao-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M')}.xlsx",
+        )
+    except EmailNotConfigured as exc:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "SMTP chưa được cấu hình trên hệ thống") from exc
+    except Exception as exc:
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, f"Gửi email thất bại: {exc}") from exc
+
+    return {"sent_to": row["recipient_email"], "cc": row["cc_emails"]}
 
 
 # ---------------------------------------------------------------------------
@@ -798,7 +895,7 @@ def get_document(document_id: int, user: dict = Depends(get_current_user)) -> di
                    ct.organization_id,
                    d.author, d.topic, d.content, d.url, d.published_at,
                    d.images, d.videos,
-                   d.like_count, d.comment_count, d.reaction_count, d.share_count,
+                   d.like_count, d.comment_count, d.reaction_count, d.share_count, d.reactions,
                    d.keyword_status, d.matched_keywords,
                    d.classification_category, d.classification_sentiment, d.classification_sentiment_source,
                    d.classification_severity, d.classification_reasoning,

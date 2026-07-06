@@ -181,6 +181,7 @@ class DocumentDetailOut(BaseModel):
     comment_count: int
     reaction_count: int
     share_count: int
+    reactions: dict[str, int]
     keyword_status: str
     matched_keywords: list[str]
     classification_category: str | None

@@ -18,6 +18,16 @@ function formatDate(iso: string | null) {
   return new Date(iso).toLocaleString('vi-VN', { dateStyle: 'medium', timeStyle: 'short' })
 }
 
+const REACTION_LABEL: Record<string, string> = {
+  like: '👍 Thích',
+  love: '❤️ Yêu thích',
+  haha: '😆 Haha',
+  wow: '😮 Wow',
+  sad: '😢 Buồn',
+  angry: '😠 Phẫn nộ',
+  care: '🥰 Thương thương',
+}
+
 function EmptyState({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle: string }) {
   return (
     <div className="flex flex-col items-center rounded-xl border border-dashed border-line p-12 text-center">
@@ -128,6 +138,19 @@ export function DetailPanel({
             <Share2 className="h-3.5 w-3.5" /> {doc.share_count.toLocaleString('vi-VN')} chia sẻ
           </span>
         </div>
+
+        {Object.values(doc.reactions ?? {}).some((n) => n > 0) && (
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
+            {Object.entries(doc.reactions)
+              .filter(([, n]) => n > 0)
+              .sort(([, a], [, b]) => b - a)
+              .map(([type, n]) => (
+                <span key={type} className="tabular">
+                  {REACTION_LABEL[type] ?? type} {n.toLocaleString('vi-VN')}
+                </span>
+              ))}
+          </div>
+        )}
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {doc.classification_sentiment && (

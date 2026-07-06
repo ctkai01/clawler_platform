@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Download, ExternalLink, FileSearch, Search } from 'lucide-react'
+import { Download, ExternalLink, FileSearch, Mail, Search } from 'lucide-react'
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { orgApi } from '@/features/customer/orgApi'
 import { useAuthStore } from '@/store/authStore'
+import { ApiError } from '@/lib/apiClient'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Pagination } from '@/components/ui/pagination'
+import { useToast } from '@/components/ui/toast'
 import { PageHeader } from '@/components/PageHeader'
 
 const DAY_OPTIONS = [1, 7, 14, 30, 90, 365]
@@ -30,10 +32,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 export function ReportDashboardPage() {
   const user = useAuthStore((s) => s.user)
+  const { toast } = useToast()
   const [days, setDays] = useState(7)
   const [entityInput, setEntityInput] = useState('')
   const [entity, setEntity] = useState('')
   const [exporting, setExporting] = useState(false)
+  const [sendingEmail, setSendingEmail] = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => setEntity(entityInput.trim()), 350)
@@ -45,9 +49,21 @@ export function ReportDashboardPage() {
     try {
       await orgApi.exportReport(days, entity || undefined)
     } catch {
-      window.alert('Xuất Excel thất bại, vui lòng thử lại.')
+      toast('Xuất Excel thất bại, vui lòng thử lại.', 'error')
     } finally {
       setExporting(false)
+    }
+  }
+
+  const handleSendEmailNow = async () => {
+    setSendingEmail(true)
+    try {
+      const result = await orgApi.sendReportEmailNow(days, entity || undefined)
+      toast(`Đã gửi báo cáo tới ${result.sent_to}${result.cc.length ? ` (cc: ${result.cc.join(', ')})` : ''}.`)
+    } catch (err) {
+      toast(err instanceof ApiError ? err.message : 'Gửi email thất bại, vui lòng thử lại.', 'error')
+    } finally {
+      setSendingEmail(false)
     }
   }
 
@@ -78,10 +94,16 @@ export function ReportDashboardPage() {
       <PageHeader
         title={`Tổng quan — ${user?.organization_name ?? ''}`}
         action={
-          <Button variant="outline" onClick={handleExport} disabled={exporting || isLoading}>
-            <Download className="h-4 w-4" />
-            {exporting ? 'Đang xuất…' : 'Xuất Excel'}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleSendEmailNow} disabled={sendingEmail || isLoading}>
+              <Mail className="h-4 w-4" />
+              {sendingEmail ? 'Đang gửi…' : 'Gửi email ngay'}
+            </Button>
+            <Button variant="outline" onClick={handleExport} disabled={exporting || isLoading}>
+              <Download className="h-4 w-4" />
+              {exporting ? 'Đang xuất…' : 'Xuất Excel'}
+            </Button>
+          </div>
         }
       />
 

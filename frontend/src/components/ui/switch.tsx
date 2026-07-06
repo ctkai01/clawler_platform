@@ -4,19 +4,25 @@ export function Switch({
   checked,
   onChange,
   label,
+  disabled,
 }: {
   checked: boolean
   onChange: (checked: boolean) => void
   label?: string
+  disabled?: boolean
 }) {
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2">
+    <label
+      className={cn('inline-flex items-center gap-2', disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer')}
+    >
       <span
         role="switch"
         aria-checked={checked}
-        tabIndex={0}
-        onClick={() => onChange(!checked)}
+        aria-disabled={disabled}
+        tabIndex={disabled ? -1 : 0}
+        onClick={() => !disabled && onChange(!checked)}
         onKeyDown={(e) => {
+          if (disabled) return
           if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault()
             onChange(!checked)
@@ -24,6 +30,7 @@ export function Switch({
         }}
         className={cn(
           'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
+          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
           checked ? 'bg-good' : 'bg-line',
         )}
       >

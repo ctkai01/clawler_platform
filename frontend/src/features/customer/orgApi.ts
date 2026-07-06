@@ -24,6 +24,12 @@ export interface ClassifyModeSetting {
   modes: string[]
 }
 
+export interface ReportEmailSetting {
+  recipient_email: string | null
+  cc_emails: string[]
+  enabled: boolean
+}
+
 function accordionQuery(params: AccordionFilterParams, extra?: Record<string, string | number>): string {
   const search = new URLSearchParams()
   if (params.search) search.set('search', params.search)
@@ -53,6 +59,12 @@ export const orgApi = {
     search.set('days', String(days))
     if (entity) search.set('entity', entity)
     return apiClient.download(`/org/report/export?${search.toString()}`, `bao-cao-${days}ngay.xlsx`)
+  },
+  sendReportEmailNow: (days: number, entity?: string) => {
+    const search = new URLSearchParams()
+    search.set('days', String(days))
+    if (entity) search.set('entity', entity)
+    return apiClient.post<{ sent_to: string; cc: string[] }>(`/org/report/send-email?${search.toString()}`)
   },
   getReportPosts: (params: {
     sentiment: 'positive' | 'negative'
@@ -140,6 +152,10 @@ export const orgApi = {
   getClassifyMode: () => apiClient.get<ClassifyModeSetting>('/org/settings/classify-mode'),
   updateClassifyMode: (mode: string) =>
     apiClient.patch<ClassifyModeSetting>('/org/settings/classify-mode', { mode }),
+
+  getReportEmail: () => apiClient.get<ReportEmailSetting>('/org/settings/report-email'),
+  updateReportEmail: (body: { recipient_email: string; cc_emails: string[]; enabled: boolean }) =>
+    apiClient.patch<ReportEmailSetting>('/org/settings/report-email', body),
 
   listMembers: () => apiClient.get<SubAccount[]>('/org/users'),
   createMember: (body: { email: string; password: string; functional_role: string; target_ids: number[] }) =>
