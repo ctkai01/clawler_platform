@@ -16,12 +16,14 @@ function useNavItems(): NavItem[] {
     return [
       { to: '/admin/entities', label: 'Entity' },
       { to: '/admin/keywords', label: 'Keyword' },
+      { to: '/admin/topics', label: 'Chủ đề' },
     ]
   }
 
   const items: NavItem[] = [
     { to: '/dashboard', label: 'Tổng quan' },
     { to: '/documents', label: 'Bài viết' },
+    { to: '/topics', label: 'Chủ đề' },
   ]
   const canConfigure = user.role === 'org_main' || user.functional_role === 'configurator'
   if (canConfigure) {

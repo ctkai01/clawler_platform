@@ -1,11 +1,19 @@
 from __future__ import annotations
 
 import logging
+import mimetypes
 import os
 import smtplib
 from email.message import EmailMessage
 
 logger = logging.getLogger(__name__)
+
+mimetypes.add_type(
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx"
+)
+mimetypes.add_type(
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"
+)
 
 
 class EmailNotConfigured(RuntimeError):
@@ -46,10 +54,12 @@ def send_email_with_attachment(
     if cc:
         msg["Cc"] = ", ".join(cc)
     msg.set_content(body_text)
+    content_type, _ = mimetypes.guess_type(attachment_filename)
+    maintype, _, subtype = (content_type or "application/octet-stream").partition("/")
     msg.add_attachment(
         attachment_bytes,
-        maintype="application",
-        subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        maintype=maintype,
+        subtype=subtype,
         filename=attachment_filename,
     )
 

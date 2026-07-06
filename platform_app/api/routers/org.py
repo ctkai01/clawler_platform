@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import StreamingResponse
@@ -27,6 +27,7 @@ from platform_app.api.schemas import (
     SourceCreate,
     SourceImportResult,
     SourceOut,
+    TopicOut,
 )
 from platform_app.db.pool import get_pool
 from platform_app.pipeline.settings import VALID_MODES, get_classify_mode, set_classify_mode
@@ -203,6 +204,32 @@ def list_org_entities(user: dict = Depends(get_current_user)) -> list[dict]:
         ).fetchall()
 
 
+@router.get("/topics", response_model=list[TopicOut])
+def list_org_topics(user: dict = Depends(get_current_user)) -> list[dict]:
+    """Read-only view of the chủ đề/keyword taxonomy admin has set up for
+    this org (see /admin/topics) — orgs don't manage this themselves, but
+    need to be able to see what's already configured."""
+    with get_pool().connection() as conn:
+        topics = conn.execute(
+            "SELECT id, name FROM organization_topics WHERE organization_id = %s ORDER BY name",
+            (user["organization_id"],),
+        ).fetchall()
+        keywords = conn.execute(
+            """
+            SELECT otk.id, otk.topic_id, otk.keyword
+            FROM organization_topic_keywords otk
+            JOIN organization_topics ot ON ot.id = otk.topic_id
+            WHERE ot.organization_id = %s
+            ORDER BY otk.keyword
+            """,
+            (user["organization_id"],),
+        ).fetchall()
+    keywords_by_topic: dict[int, list[dict]] = {}
+    for kw in keywords:
+        keywords_by_topic.setdefault(kw["topic_id"], []).append({"id": kw["id"], "keyword": kw["keyword"]})
+    return [{"id": t["id"], "name": t["name"], "keywords": keywords_by_topic.get(t["id"], [])} for t in topics]
+
+
 @router.post("/entities/select", status_code=status.HTTP_204_NO_CONTENT)
 def select_entity(body: OrgEntitySelectRequest, user: dict = Depends(_require_configurator)) -> None:
     with get_pool().connection() as conn:
@@ -282,6 +309,8 @@ _EMPTY_REPORT = {
     "sentiment_negative": 0,
     "sentiment_neutral": 0,
     "topic_detail": [],
+    "keyword_topic_detail": [],
+    "keyword_topic_sentiment": [],
     "topics": [],
     "topic_positive_counts": [],
     "topic_neutral_counts": [],
@@ -300,7 +329,16 @@ def _report_scope(user: dict, days: int, entity: str | None) -> tuple[list[str],
     entity_clause, entity_params)."""
     period_end = datetime.now(timezone.utc)
     period_start = period_end - timedelta(days=days)
+    return _report_scope_between(user, period_start, period_end, entity)
 
+
+def _report_scope_between(
+    user: dict, period_start: datetime, period_end: datetime, entity: str | None
+) -> tuple[list[str], list, str, list] | None:
+    """Same as _report_scope but takes an explicit [period_start, period_end)
+    window instead of a rolling `days` count — used by the Word daily report
+    (fixed 08:00-to-08:00 window) instead of the dashboard's flexible
+    "last N days" picker."""
     conditions = ["ct.organization_id = %s"]
     params: list = [user["organization_id"]]
     if user["role"] == "org_sub":
@@ -393,6 +431,23 @@ def _build_report(user: dict, days: int, entity: str | None) -> dict | None:
     scope = _report_scope(user, days, entity)
     if scope is None:
         return None
+    return _build_report_from_scope(user, scope, entity)
+
+
+def _build_report_between(
+    user: dict, period_start: datetime, period_end: datetime, entity: str | None
+) -> dict | None:
+    """Same as _build_report but for an explicit [period_start, period_end)
+    window — used by the Word daily report's fixed 08:00-to-08:00 window."""
+    scope = _report_scope_between(user, period_start, period_end, entity)
+    if scope is None:
+        return None
+    return _build_report_from_scope(user, scope, entity)
+
+
+def _build_report_from_scope(
+    user: dict, scope: tuple[list[str], list, str, list], entity: str | None
+) -> dict:
     conditions, params, entity_clause, entity_params = scope
 
     where_clause = " AND ".join(conditions)
@@ -470,6 +525,39 @@ def _build_report(user: dict, days: int, entity: str | None) -> dict | None:
                 if row["topic"] in topic_sentiment_map:
                     topic_sentiment_map[row["topic"]][row["sentiment"]] = row["count"]
 
+        keyword_topic_detail = conn.execute(
+            f"""
+            SELECT COALESCE(ot.name, 'KHÁC') AS topic,
+                   COUNT(*) AS posts,
+                   COALESCE(SUM(d.comment_count), 0) AS comments,
+                   COALESCE(SUM(d.reaction_count) + SUM(d.comment_count), 0) AS total_engagement
+            FROM documents d
+            JOIN crawl_targets ct ON ct.id = d.target_id
+            LEFT JOIN organization_topics ot ON ot.id = d.topic_tag_id
+            WHERE {where_clause} {entity_clause}
+            GROUP BY ot.name
+            ORDER BY posts DESC
+            """,
+            full_params,
+        ).fetchall()
+
+        keyword_topic_sentiment = conn.execute(
+            f"""
+            SELECT COALESCE(ot.name, 'KHÁC') AS topic,
+                   COUNT(*) FILTER (WHERE d.classification_sentiment = 'positive') AS positive,
+                   COUNT(*) FILTER (WHERE d.classification_sentiment = 'neutral') AS neutral,
+                   COUNT(*) FILTER (WHERE d.classification_sentiment = 'negative') AS negative
+            FROM documents d
+            JOIN crawl_targets ct ON ct.id = d.target_id
+            LEFT JOIN organization_topics ot ON ot.id = d.topic_tag_id
+            WHERE {where_clause} {entity_clause}
+              AND d.classification_status = 'completed' AND d.classification_sentiment IS NOT NULL
+            GROUP BY ot.name
+            ORDER BY COUNT(*) DESC
+            """,
+            full_params,
+        ).fetchall()
+
         def _top_posts(sentiment: str, limit: int = 5) -> list[dict]:
             post_conditions = [*conditions, "d.classification_sentiment = %s"]
             post_params = [*params, sentiment]
@@ -498,6 +586,8 @@ def _build_report(user: dict, days: int, entity: str | None) -> dict | None:
         "sentiment_negative": sentiment_map.get("negative", 0),
         "sentiment_neutral": sentiment_map.get("neutral", 0),
         "topic_detail": topic_detail,
+        "keyword_topic_detail": keyword_topic_detail,
+        "keyword_topic_sentiment": keyword_topic_sentiment,
         "topics": topics,
         "topic_positive_counts": [topic_sentiment_map[t]["positive"] for t in topics],
         "topic_neutral_counts": [topic_sentiment_map[t]["neutral"] for t in topics],
@@ -534,6 +624,21 @@ def _all_report_posts(user: dict, days: int, entity: str | None, sentiment: str)
     scope = _report_scope(user, days, entity)
     if scope is None:
         return []
+    return _all_report_posts_from_scope(scope, sentiment)
+
+
+def _all_report_posts_between(
+    user: dict, period_start: datetime, period_end: datetime, entity: str | None, sentiment: str
+) -> list[dict]:
+    """Same as _all_report_posts but for an explicit [period_start, period_end)
+    window — used by the Word daily report."""
+    scope = _report_scope_between(user, period_start, period_end, entity)
+    if scope is None:
+        return []
+    return _all_report_posts_from_scope(scope, sentiment)
+
+
+def _all_report_posts_from_scope(scope: tuple[list[str], list, str, list], sentiment: str) -> list[dict]:
     conditions, params, entity_clause, entity_params = scope
     post_conditions = [*conditions, "d.classification_sentiment = %s"]
     post_params = [*params, sentiment]
@@ -573,7 +678,62 @@ def build_report_workbook_bytes(user: dict, days: int, entity: str | None) -> by
     report = _build_report(user, days, entity) or _EMPTY_REPORT
     negative_posts = _all_report_posts(user, days, entity, "negative")
     positive_posts = _all_report_posts(user, days, entity, "positive")
+    return _build_workbook_bytes(report, negative_posts, positive_posts)
 
+
+def build_report_workbook_bytes_between(
+    user: dict, period_start: datetime, period_end: datetime, entity: str | None
+) -> bytes:
+    """Same as build_report_workbook_bytes but for an explicit [period_start,
+    period_end) window — used by the automated daily report-email job, which
+    anchors to a fixed schedule window (e.g. 8am-to-8am) rather than a rolling
+    "now minus N days" window."""
+    report = _build_report_between(user, period_start, period_end, entity) or _EMPTY_REPORT
+    negative_posts = _all_report_posts_between(user, period_start, period_end, entity, "negative")
+    positive_posts = _all_report_posts_between(user, period_start, period_end, entity, "positive")
+    return _build_workbook_bytes(report, negative_posts, positive_posts)
+
+
+def build_daily_word_report_bytes_between(user: dict, org_name: str, report_date: date) -> bytes:
+    """Builds the same Word (.docx) daily report /report/export-word streams
+    to the browser — shared with the daily report-email job
+    (platform_app.pipeline.report_email) so both paths produce byte-identical
+    files from one code path. Always uses the fixed 08:00-to-08:00 (Vietnam
+    time) window ending on `report_date`."""
+    from platform_app.reporting.word_report import daily_window
+
+    period_start, period_end = daily_window(report_date)
+    return build_word_report_bytes_between(user, org_name, report_date, period_start, period_end, None)
+
+
+def build_word_report_bytes_between(
+    user: dict,
+    org_name: str,
+    report_date: date,
+    period_start: datetime,
+    period_end: datetime,
+    entity: str | None,
+) -> bytes:
+    """Same Word (.docx) template as build_daily_word_report_bytes_between but
+    for an explicit [period_start, period_end) window — used by the manual
+    "Gửi email ngay" button, which follows the dashboard's flexible "last N
+    days" picker rather than the fixed 08:00-to-08:00 window."""
+    from platform_app.reporting.word_report import build_daily_word_report_bytes
+
+    report = _build_report_between(user, period_start, period_end, entity) or _EMPTY_REPORT
+    negative_posts = _all_report_posts_between(user, period_start, period_end, entity, "negative")
+    positive_posts = _all_report_posts_between(user, period_start, period_end, entity, "positive")
+    return build_daily_word_report_bytes(
+        org_name=org_name,
+        report_date=report_date,
+        report=report,
+        topic_sentiment_rows=report["keyword_topic_sentiment"],
+        negative_posts=negative_posts,
+        positive_posts=positive_posts,
+    )
+
+
+def _build_workbook_bytes(report: dict, negative_posts: list[dict], positive_posts: list[dict]) -> bytes:
     wb = Workbook()
 
     ws = wb.active
@@ -590,9 +750,15 @@ def build_report_workbook_bytes(user: dict, days: int, entity: str | None) -> by
     ws.append(["Tiêu cực", report["sentiment_negative"]])
     _autosize_columns(ws)
 
-    ws = wb.create_sheet("Theo chủ đề")
+    ws = wb.create_sheet("Theo chủ đề (entity)")
     _write_header(ws, ["Chủ đề", "Bài đăng", "Bình luận", "Tổng số tương tác"])
     for row in report["topic_detail"]:
+        ws.append([row["topic"], row["posts"], row["comments"], row["total_engagement"]])
+    _autosize_columns(ws)
+
+    ws = wb.create_sheet("Theo chủ đề (từ khóa)")
+    _write_header(ws, ["Chủ đề", "Bài đăng", "Bình luận", "Tổng số tương tác"])
+    for row in report["keyword_topic_detail"]:
         ws.append([row["topic"], row["posts"], row["comments"], row["total_engagement"]])
     _autosize_columns(ws)
 
@@ -622,6 +788,23 @@ def export_report(
     return StreamingResponse(
         io.BytesIO(content),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/report/export-word")
+def export_report_word(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) daily report matching the org's existing manual report
+    template — fixed 08:00-to-08:00 (Vietnam time) window ending on
+    `report_date`, not the dashboard's flexible "last N days" picker."""
+    content = build_daily_word_report_bytes_between(user, user["organization_name"], report_date)
+    filename = f"bao-cao-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
@@ -716,8 +899,12 @@ def send_report_email_now(
     if row is None or not row["recipient_email"]:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Chưa cấu hình email nhận báo cáo trong Cài đặt")
 
-    content = build_report_workbook_bytes(user, days, entity)
-    date_label = datetime.now(timezone.utc).strftime("%d/%m/%Y")
+    period_end = datetime.now(timezone.utc)
+    period_start = period_end - timedelta(days=days)
+    content = build_word_report_bytes_between(
+        user, user["organization_name"], period_end.date(), period_start, period_end, entity
+    )
+    date_label = period_end.strftime("%d/%m/%Y")
     try:
         send_email_with_attachment(
             to=row["recipient_email"],
@@ -729,7 +916,7 @@ def send_report_email_now(
                 "Email này được gửi tự động, vui lòng không trả lời."
             ),
             attachment_bytes=content,
-            attachment_filename=f"bao-cao-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M')}.xlsx",
+            attachment_filename=f"bao-cao-{period_end.strftime('%Y%m%d-%H%M')}.docx",
         )
     except EmailNotConfigured as exc:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "SMTP chưa được cấu hình trên hệ thống") from exc

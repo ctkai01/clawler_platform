@@ -8,9 +8,11 @@ import { RegisterPage } from '@/features/auth/RegisterPage'
 import { AppShell } from '@/app/AppShell'
 import { EntityCatalogPage } from '@/features/admin/entities/EntityCatalogPage'
 import { KeywordCatalogPage } from '@/features/admin/keywords/KeywordCatalogPage'
+import { TopicsPage } from '@/features/admin/topics/TopicsPage'
 import { ReportDashboardPage } from '@/features/customer/dashboard/ReportDashboardPage'
 import { DocumentsPage } from '@/features/customer/documents/DocumentsPage'
 import { SettingsPage } from '@/features/customer/settings/SettingsPage'
+import { TopicsViewPage } from '@/features/customer/topics/TopicsViewPage'
 import { EntityKeywordPicker } from '@/features/customer/tracking/EntityKeywordPicker'
 import { SourceManagerPage } from '@/features/customer/tracking/SourceManagerPage'
 import { SubAccountListPage } from '@/features/customer/members/SubAccountListPage'
@@ -33,6 +35,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'admin/entities', element: <EntityCatalogPage /> },
               { path: 'admin/keywords', element: <KeywordCatalogPage /> },
+              { path: 'admin/topics', element: <TopicsPage /> },
             ],
           },
           {
@@ -41,6 +44,7 @@ export const router = createBrowserRouter([
               { path: 'dashboard', element: <ReportDashboardPage /> },
               { path: 'documents', element: <DocumentsPage /> },
               { path: 'settings', element: <SettingsPage /> },
+              { path: 'topics', element: <TopicsViewPage /> },
               {
                 element: <RequireFunctionalPermission allow={['configurator']} />, // lớp 3
                 children: [

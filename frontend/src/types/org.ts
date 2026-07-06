@@ -62,6 +62,7 @@ export interface OrgReport {
   sentiment_negative: number
   sentiment_neutral: number
   topic_detail: TopicDetailRow[]
+  keyword_topic_detail: TopicDetailRow[]
   topics: string[]
   topic_positive_counts: number[]
   topic_neutral_counts: number[]

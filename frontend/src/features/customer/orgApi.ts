@@ -18,6 +18,7 @@ import type {
   SourceItem,
   SubAccount,
 } from '@/types/org'
+import type { TopicItem } from '@/types/catalog'
 
 export interface ClassifyModeSetting {
   mode: string
@@ -60,6 +61,14 @@ export const orgApi = {
     if (entity) search.set('entity', entity)
     return apiClient.download(`/org/report/export?${search.toString()}`, `bao-cao-${days}ngay.xlsx`)
   },
+  exportReportWord: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.download(
+      `/org/report/export-word?${search.toString()}`,
+      `bao-cao-${(reportDate ?? new Date().toISOString().slice(0, 10)).replaceAll('-', '')}.docx`,
+    )
+  },
   sendReportEmailNow: (days: number, entity?: string) => {
     const search = new URLSearchParams()
     search.set('days', String(days))
@@ -98,6 +107,8 @@ export const orgApi = {
     apiClient.post<void>('/org/entities/deselect', { canonical_name: canonicalName }),
 
   listKeywords: () => apiClient.get<OrgKeywordSelection[]>('/org/keywords'),
+
+  listTopics: () => apiClient.get<TopicItem[]>('/org/topics'),
   selectKeyword: (id: number) => apiClient.post<void>(`/org/keywords/${id}/select`),
   deselectKeyword: (id: number) => apiClient.delete<void>(`/org/keywords/${id}/select`),
 

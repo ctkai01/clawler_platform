@@ -100,6 +100,37 @@ class SourceImportResult(BaseModel):
     errors: list[str]
 
 
+class OrganizationOut(BaseModel):
+    id: int
+    name: str
+
+
+class TopicKeywordOut(BaseModel):
+    id: int
+    keyword: str
+
+
+class TopicCreate(BaseModel):
+    name: str = Field(min_length=1)
+
+
+class TopicOut(BaseModel):
+    id: int
+    name: str
+    keywords: list[TopicKeywordOut]
+
+
+class TopicKeywordCreate(BaseModel):
+    keyword: str = Field(min_length=1)
+
+
+class TopicImportResult(BaseModel):
+    total_rows: int
+    topics: int
+    keywords: int
+    errors: list[str]
+
+
 class SubAccountCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)

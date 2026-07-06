@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Download, ExternalLink, FileSearch, Mail, Search } from 'lucide-react'
+import { Download, ExternalLink, FileSearch, FileText, Mail, Search } from 'lucide-react'
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { orgApi } from '@/features/customer/orgApi'
 import { useAuthStore } from '@/store/authStore'
@@ -33,10 +33,11 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 export function ReportDashboardPage() {
   const user = useAuthStore((s) => s.user)
   const { toast } = useToast()
-  const [days, setDays] = useState(7)
+  const [days, setDays] = useState(1)
   const [entityInput, setEntityInput] = useState('')
   const [entity, setEntity] = useState('')
   const [exporting, setExporting] = useState(false)
+  const [exportingWord, setExportingWord] = useState(false)
   const [sendingEmail, setSendingEmail] = useState(false)
 
   useEffect(() => {
@@ -52,6 +53,17 @@ export function ReportDashboardPage() {
       toast('Xuất Excel thất bại, vui lòng thử lại.', 'error')
     } finally {
       setExporting(false)
+    }
+  }
+
+  const handleExportWord = async () => {
+    setExportingWord(true)
+    try {
+      await orgApi.exportReportWord()
+    } catch {
+      toast('Xuất Word thất bại, vui lòng thử lại.', 'error')
+    } finally {
+      setExportingWord(false)
     }
   }
 
@@ -102,6 +114,10 @@ export function ReportDashboardPage() {
             <Button variant="outline" onClick={handleExport} disabled={exporting || isLoading}>
               <Download className="h-4 w-4" />
               {exporting ? 'Đang xuất…' : 'Xuất Excel'}
+            </Button>
+            <Button variant="outline" onClick={handleExportWord} disabled={exportingWord}>
+              <FileText className="h-4 w-4" />
+              {exportingWord ? 'Đang xuất…' : 'Xuất Word'}
             </Button>
           </div>
         }
@@ -199,7 +215,35 @@ export function ReportDashboardPage() {
             )}
           </Card>
 
-          <SectionTitle>III. So sánh sắc thái theo chủ đề</SectionTitle>
+          <SectionTitle>III. Thông tin theo chủ đề (từ khóa)</SectionTitle>
+          <Card className="overflow-x-auto p-0">
+            {data.keyword_topic_detail.length > 0 ? (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-line text-left text-xs uppercase tracking-wide text-muted">
+                    <th className="px-5 py-3 font-semibold">Chủ đề</th>
+                    <th className="px-5 py-3 font-semibold">Bài đăng</th>
+                    <th className="px-5 py-3 font-semibold">Bình luận</th>
+                    <th className="px-5 py-3 font-semibold">Tổng số tương tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.keyword_topic_detail.map((row) => (
+                    <tr key={row.topic} className="border-b border-line last:border-0">
+                      <td className="px-5 py-3 font-medium text-ink">{row.topic}</td>
+                      <td className="tabular px-5 py-3">{row.posts.toLocaleString('vi-VN')}</td>
+                      <td className="tabular px-5 py-3">{row.comments.toLocaleString('vi-VN')}</td>
+                      <td className="tabular px-5 py-3">{row.total_engagement.toLocaleString('vi-VN')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="p-5 text-sm text-muted">Chưa cấu hình chủ đề/từ khóa cho tổ chức này.</p>
+            )}
+          </Card>
+
+          <SectionTitle>IV. So sánh sắc thái theo chủ đề</SectionTitle>
           <Card>
             {topicChartData.length > 0 ? (
               <div style={{ height: Math.max(220, topicChartData.length * 40) }}>
@@ -220,7 +264,7 @@ export function ReportDashboardPage() {
             )}
           </Card>
 
-          <SectionTitle>IV. Thông tin tiêu cực{entity ? ` về ${entity}` : ''}</SectionTitle>
+          <SectionTitle>V. Thông tin tiêu cực{entity ? ` về ${entity}` : ''}</SectionTitle>
           <Card className="p-0">
             <p className="px-5 pt-5 text-sm text-muted">
               Tổng bài viết tiêu cực: <strong className="tabular text-ink">{data.negative_count}</strong> bài viết
@@ -233,7 +277,7 @@ export function ReportDashboardPage() {
             />
           </Card>
 
-          <SectionTitle>V. Thông tin tích cực{entity ? ` về ${entity}` : ''}</SectionTitle>
+          <SectionTitle>VI. Thông tin tích cực{entity ? ` về ${entity}` : ''}</SectionTitle>
           <Card className="p-0">
             <p className="px-5 pt-5 text-sm text-muted">
               Tổng bài viết tích cực: <strong className="tabular text-ink">{data.positive_count}</strong> bài viết

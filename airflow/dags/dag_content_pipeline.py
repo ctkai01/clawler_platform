@@ -17,7 +17,8 @@ def content_pipeline():
     """Post-crawl processing, modeled after the opencrawler reference
     project: keyword_filter (free cost gate) -> classify (LLM, only on
     keyword matches) -> entity_match (free, runs on everything, independent
-    of the keyword gate)."""
+    of the keyword gate) -> topic_tag (free, admin-defined per-org topic
+    keywords, also independent of the keyword gate)."""
 
     @task(queue="http_crawler")
     def keyword_filter() -> dict:
@@ -37,8 +38,15 @@ def content_pipeline():
 
         return run_entity_match()
 
+    @task(queue="http_crawler")
+    def topic_tag() -> dict:
+        from platform_app.pipeline.topic_tag import run_topic_tag
+
+        return run_topic_tag()
+
     keyword_filter() >> classify()
     entity_match()
+    topic_tag()
 
 
 content_pipeline()

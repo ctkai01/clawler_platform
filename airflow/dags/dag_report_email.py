@@ -18,7 +18,7 @@ def report_email():
     def send_reports() -> dict:
         from platform_app.pipeline.report_email import send_daily_reports
 
-        return send_daily_reports(days=1)
+        return send_daily_reports()
 
     send_reports()
 
