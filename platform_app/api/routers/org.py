@@ -322,25 +322,32 @@ _EMPTY_REPORT = {
 }
 
 
-def _report_scope(user: dict, days: int, entity: str | None) -> tuple[list[str], list, str, list] | None:
+def _report_scope(
+    user: dict, days: int, entity: str | None, brand_focus: str = "own"
+) -> tuple[list[str], list, str, list] | None:
     """Shared org/date-range/entity scoping for /report and /report/posts.
     Returns None when an org_sub has no granted targets (caller should
     short-circuit to an empty result) — otherwise (conditions, params,
     entity_clause, entity_params)."""
     period_end = datetime.now(timezone.utc)
     period_start = period_end - timedelta(days=days)
-    return _report_scope_between(user, period_start, period_end, entity)
+    return _report_scope_between(user, period_start, period_end, entity, brand_focus)
 
 
 def _report_scope_between(
-    user: dict, period_start: datetime, period_end: datetime, entity: str | None
+    user: dict, period_start: datetime, period_end: datetime, entity: str | None, brand_focus: str = "own"
 ) -> tuple[list[str], list, str, list] | None:
     """Same as _report_scope but takes an explicit [period_start, period_end)
     window instead of a rolling `days` count — used by the Word daily report
     (fixed 08:00-to-08:00 window) instead of the dashboard's flexible
-    "last N days" picker."""
-    conditions = ["ct.organization_id = %s"]
-    params: list = [user["organization_id"]]
+    "last N days" picker.
+
+    `brand_focus` ('own' | 'competitor') scopes to documents keyword_filter
+    tagged as being about this org's own brand vs. only a competitor — the
+    condition lives here (not per-query) so every report query built from
+    the returned `conditions` inherits it for free."""
+    conditions = ["ct.organization_id = %s", "d.brand_focus = %s"]
+    params: list = [user["organization_id"], brand_focus]
     if user["role"] == "org_sub":
         ids = user["accessible_target_ids"] or []
         if not ids:
@@ -381,16 +388,17 @@ def report_posts(
     sentiment: str = Query(..., pattern="^(positive|negative)$"),
     days: int = Query(default=7, ge=1, le=365),
     entity: str | None = Query(default=None),
+    scope: str = Query(default="own", pattern="^(own|competitor)$"),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=10, ge=1, le=100),
     user: dict = Depends(get_current_user),
 ) -> dict:
     """Paginated version of /report's negative_posts/positive_posts (which
     only ever return a top-5 preview) — powers the "xem thêm" list."""
-    scope = _report_scope(user, days, entity)
-    if scope is None:
+    report_scope = _report_scope(user, days, entity, scope)
+    if report_scope is None:
         return {"items": [], "total": 0}
-    conditions, params, entity_clause, entity_params = scope
+    conditions, params, entity_clause, entity_params = report_scope
 
     post_conditions = [*conditions, "d.classification_sentiment = %s"]
     post_params = [*params, sentiment]
@@ -425,10 +433,10 @@ def report_posts(
     return {"items": [_report_post_row(r) for r in rows], "total": total}
 
 
-def _build_report(user: dict, days: int, entity: str | None) -> dict | None:
+def _build_report(user: dict, days: int, entity: str | None, brand_focus: str = "own") -> dict | None:
     """Shared by /report and /report/export — returns None when an org_sub
     has no granted targets (caller should fall back to _EMPTY_REPORT)."""
-    scope = _report_scope(user, days, entity)
+    scope = _report_scope(user, days, entity, brand_focus)
     if scope is None:
         return None
     return _build_report_from_scope(user, scope, entity)
@@ -463,7 +471,7 @@ def _build_report_from_scope(
                 COALESCE(SUM(d.share_count), 0) AS total_shares
             FROM documents d
             JOIN crawl_targets ct ON ct.id = d.target_id
-            WHERE {where_clause} {entity_clause}
+            WHERE {where_clause} AND d.keyword_status = 'matched' {entity_clause}
             """,
             full_params,
         ).fetchone()
@@ -497,7 +505,7 @@ def _build_report_from_scope(
             FROM documents d
             JOIN crawl_targets ct ON ct.id = d.target_id
             JOIN document_entities de ON de.document_id = d.id AND de.concept_id != '__none__'
-            WHERE {topic_where}
+            WHERE {topic_where} AND d.keyword_status = 'matched'
             GROUP BY de.canonical_name
             ORDER BY posts DESC
             LIMIT 15
@@ -516,6 +524,7 @@ def _build_report_from_scope(
                 JOIN crawl_targets ct ON ct.id = d.target_id
                 JOIN document_entities de ON de.document_id = d.id AND de.concept_id != '__none__'
                 WHERE {where_clause} AND de.canonical_name = ANY(%s)
+                  AND d.keyword_status = 'matched'
                   AND d.classification_status = 'completed' AND d.classification_sentiment IS NOT NULL
                 GROUP BY de.canonical_name, d.classification_sentiment
                 """,
@@ -534,7 +543,7 @@ def _build_report_from_scope(
             FROM documents d
             JOIN crawl_targets ct ON ct.id = d.target_id
             LEFT JOIN organization_topics ot ON ot.id = d.topic_tag_id
-            WHERE {where_clause} {entity_clause}
+            WHERE {where_clause} AND d.keyword_status = 'matched' {entity_clause}
             GROUP BY ot.name
             ORDER BY posts DESC
             """,
@@ -603,6 +612,7 @@ def _build_report_from_scope(
 def org_report(
     days: int = Query(default=7, ge=1, le=365),
     entity: str | None = Query(default=None),
+    scope: str = Query(default="own", pattern="^(own|competitor)$"),
     user: dict = Depends(get_current_user),
 ) -> dict:
     """Same shape/sections as the internal /report dashboard (KPIs + sentiment
@@ -610,18 +620,24 @@ def org_report(
     top negative/positive posts) but scoped to the caller's organization (and
     further to their granted targets if org_sub), and "topic" rows are
     restricted to entities THIS org tracks (see _tracked_entity_condition) —
-    not the internal report's free-text match against the full gazetteer."""
-    report = _build_report(user, days, entity)
+    not the internal report's free-text match against the full gazetteer.
+
+    `scope=own` (default) is this org's own brand — the main dashboard.
+    `scope=competitor` is content that only mentions a tracked competitor
+    (see keyword_filter.py's brand_focus tagging) — a separate "Đối thủ" tab,
+    kept out of the main aggregates so competitor buzz doesn't get counted
+    as if it were about this org."""
+    report = _build_report(user, days, entity, scope)
     return report if report is not None else _EMPTY_REPORT
 
 
 _EXPORT_POST_CAP = 5000
 
 
-def _all_report_posts(user: dict, days: int, entity: str | None, sentiment: str) -> list[dict]:
+def _all_report_posts(user: dict, days: int, entity: str | None, sentiment: str, brand_focus: str = "own") -> list[dict]:
     """Every matching post (not just the report's top-5 preview) — used for
     Excel export, which needs the full list rather than a UI-sized sample."""
-    scope = _report_scope(user, days, entity)
+    scope = _report_scope(user, days, entity, brand_focus)
     if scope is None:
         return []
     return _all_report_posts_from_scope(scope, sentiment)
@@ -802,6 +818,104 @@ def export_report_word(
     `report_date`, not the dashboard's flexible "last N days" picker."""
     content = build_daily_word_report_bytes_between(user, user["organization_name"], report_date)
     filename = f"bao-cao-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+def _event_sentiment_counts(matches: list[dict]) -> dict[str, int]:
+    counts = {"positive": 0, "neutral": 0, "negative": 0}
+    for m in matches:
+        counts[m["sentiment"]] = counts.get(m["sentiment"], 0) + 1
+    return counts
+
+
+def build_event_word_report_bytes(user: dict, event_key: str, report_date: date) -> bytes:
+    """Builds the "sự vụ" (topic-event) Word report — e.g. 5G MobiFone vs
+    đối thủ — distinct from build_daily_word_report_bytes_between: scoped to
+    one topic (not all org content), split báo chí/mạng xã hội, and includes
+    an LLM-written overview comparing MobiFone against its competitors."""
+    from platform_app.pipeline.event_report import (
+        EVENT_DEFINITIONS,
+        generate_overview_narrative,
+        get_competitor_brands,
+        run_event_match,
+    )
+    from platform_app.reporting.event_word_report import build_event_daily_word_report_bytes
+    from platform_app.reporting.word_report import daily_window
+
+    event = EVENT_DEFINITIONS[event_key]
+    org_name = user["organization_name"]
+    organization_id = user["organization_id"]
+    yesterday_date = report_date - timedelta(days=1)
+
+    today_start, today_end = daily_window(report_date)
+    yesterday_start, yesterday_end = daily_window(yesterday_date)
+
+    today_matches = run_event_match(event_key, organization_id, today_start, today_end)
+    yesterday_matches = run_event_match(event_key, organization_id, yesterday_start, yesterday_end)
+
+    today_news = [m for m in today_matches if m["platform_type"] == "news"]
+    today_social = [m for m in today_matches if m["platform_type"] != "news"]
+    yesterday_news = [m for m in yesterday_matches if m["platform_type"] == "news"]
+    yesterday_social = [m for m in yesterday_matches if m["platform_type"] != "news"]
+
+    comparison = {
+        "yesterday_label": f"{yesterday_date.day}/{yesterday_date.month}/{yesterday_date.year}",
+        "today_label": f"{report_date.day}/{report_date.month}/{report_date.year}",
+        "news": {
+            "yesterday_total": len(yesterday_news),
+            "today_total": len(today_news),
+            "yesterday_sentiment": _event_sentiment_counts(yesterday_news),
+            "today_sentiment": _event_sentiment_counts(today_news),
+        },
+        "social": {
+            "yesterday_total": len(yesterday_social),
+            "today_total": len(today_social),
+            "yesterday_sentiment": _event_sentiment_counts(yesterday_social),
+            "today_sentiment": _event_sentiment_counts(today_social),
+        },
+    }
+
+    mobifone_news = [m for m in today_news if m["brand"] == org_name]
+    competitor_news: dict[str, list[dict]] = {brand: [] for brand in get_competitor_brands(organization_id)}
+    for m in today_news:
+        if m["brand"] != org_name:
+            competitor_news.setdefault(m["brand"], []).append(m)
+    social_mobifone = [m for m in today_social if m["brand"] == org_name]
+
+    overview_narrative = generate_overview_narrative(org_name, today_news)
+
+    return build_event_daily_word_report_bytes(
+        org_name=org_name,
+        event_label=event["label"],
+        report_date=report_date,
+        comparison=comparison,
+        overview_narrative=overview_narrative,
+        mobifone_news=mobifone_news,
+        competitor_news=competitor_news,
+        social_matches=social_mobifone,
+    )
+
+
+@router.get("/report/event/{event_key}/export-word")
+def export_event_report_word(
+    event_key: str,
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) daily "sự vụ" (topic-event) report — e.g. 5G MobiFone vs
+    đối thủ — fixed 08:00-to-08:00 (Vietnam time) window ending on
+    `report_date`, plus the preceding day's window for the comparison table."""
+    from platform_app.pipeline.event_report import EVENT_DEFINITIONS
+
+    if event_key not in EVENT_DEFINITIONS:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Không tìm thấy sự vụ '{event_key}'")
+
+    content = build_event_word_report_bytes(user, event_key, report_date)
+    filename = f"bao-cao-{event_key}-{report_date.strftime('%Y%m%d')}.docx"
     return StreamingResponse(
         io.BytesIO(content),
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -1018,10 +1132,12 @@ def list_documents(
     if platform_type:
         conditions.append("d.platform_type = %s")
         params.append(platform_type)
-    if sentiment == "unclassified":
-        conditions.append("d.classification_sentiment IS NULL")
+    if sentiment == "competitor":
+        conditions.append("d.brand_focus = 'competitor'")
+    elif sentiment == "unclassified":
+        conditions.append(f"d.classification_sentiment IS NULL AND {_NOT_COMPETITOR}")
     elif sentiment:
-        conditions.append("d.classification_sentiment = %s")
+        conditions.append("d.classification_sentiment = %s AND " + _NOT_COMPETITOR)
         params.append(sentiment)
     if search:
         conditions.append("(d.topic ILIKE %s OR d.content ILIKE %s)")
@@ -1180,11 +1296,13 @@ def accordion_category_counts(
     return counts
 
 
+_NOT_COMPETITOR = "(d.brand_focus IS DISTINCT FROM 'competitor')"
 _SENTIMENT_BUCKET_SQL = {
-    "positive": "d.classification_sentiment = 'positive'",
-    "negative": "d.classification_sentiment = 'negative'",
-    "neutral": "d.classification_sentiment = 'neutral'",
-    "unclassified": "d.classification_sentiment IS NULL",
+    "positive": f"d.classification_sentiment = 'positive' AND {_NOT_COMPETITOR}",
+    "negative": f"d.classification_sentiment = 'negative' AND {_NOT_COMPETITOR}",
+    "neutral": f"d.classification_sentiment = 'neutral' AND {_NOT_COMPETITOR}",
+    "unclassified": f"d.classification_sentiment IS NULL AND {_NOT_COMPETITOR}",
+    "competitor": "d.brand_focus = 'competitor'",
 }
 
 

@@ -1,29 +1,15 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
-import yaml
 from psycopg.types.json import Jsonb
 
 from platform_app.db.pool import get_pool
 from platform_app.pipeline.text_normalize import fold
 
-DEFAULT_KEYWORDS_PATH = Path(__file__).resolve().parents[2] / "config" / "keywords.yaml"
-
-
-def _load_yaml_keywords(path: Path) -> dict[str, list[str]]:
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    return {str(k): [str(v) for v in vs] for k, vs in data.items()}
-
-
-def _compile_matchers(terms: list[str]) -> list[tuple[str, re.Pattern]]:
-    return [(term, re.compile(r"\b" + re.escape(fold(term)) + r"\b", re.IGNORECASE)) for term in terms]
-
 
 def run_keyword_filter(
     *,
-    keywords_path: Path = DEFAULT_KEYWORDS_PATH,
     batch_size: int = 200,
     document_ids: list[int] | None = None,
 ) -> dict:
@@ -31,40 +17,38 @@ def run_keyword_filter(
     'matched' (with which keywords hit) or 'no_match'. Only 'matched'
     documents proceed to classify().
 
-    Each real organization uses ITS OWN keyword selection
-    (organization_keywords -> keywords_catalog, managed via /admin/keywords
-    + the org's own Entity/Keyword picker) — this used to be a UI-only
-    preference with zero effect on the actual pipeline (every org silently
-    shared one global config/keywords.yaml file instead); it's now
-    load-bearing. An org with zero keywords selected gets zero matches
-    (nothing proceeds to classify) rather than silently falling back to
-    another org's — or an unrelated legacy domain's — keywords.
+    Each organization uses ITS OWN keyword selection (organization_keywords
+    -> keywords_catalog, managed via /admin/keywords + the org's own
+    Entity/Keyword picker) — an org with zero keywords selected gets zero
+    matches (nothing proceeds to classify) rather than falling back to
+    another org's keywords. Targets with no organization_id (or an
+    organization with no keywords configured) never match anything.
 
-    Legacy/internal targets (crawl_targets.organization_id IS NULL — the
-    separate internal ops dashboard, predates the multi-tenant org model and
-    has no organization_keywords selection at all) keep using the global
-    YAML file unchanged.
+    A document only counts as 'matched' if at least one hit is a 'brand'
+    (the org's own name) or 'competitor' keyword — a pure 'industry' match
+    (generic telecom term, no brand name at all) is too ambiguous ("about
+    whom?") to be worth classifying. `brand_focus` records WHICH kind of
+    match it was: 'own' (mentions this org) or 'competitor' (mentions a
+    competitor but not this org) — both get classified, but the org's main
+    dashboard only aggregates 'own' by default; 'competitor' is a separate
+    view (see brand_focus filtering in api/routers/org.py).
 
     `document_ids` narrows to a specific set (used by tests, and for
     on-demand re-filtering)."""
-    legacy_matchers = _compile_matchers(
-        [term for terms in _load_yaml_keywords(keywords_path).values() for term in terms]
-    )
-
     with get_pool().connection() as conn:
         org_kw_rows = conn.execute(
             """
-            SELECT ok.organization_id, kc.term
+            SELECT ok.organization_id, kc.term, kc.category
             FROM organization_keywords ok
             JOIN keywords_catalog kc ON kc.id = ok.keyword_id
             WHERE kc.is_active
             """
         ).fetchall()
 
-    matchers_by_org: dict[int, list[tuple[str, re.Pattern]]] = {}
+    matchers_by_org: dict[int, list[tuple[str, str, re.Pattern]]] = {}
     for row in org_kw_rows:
         matchers_by_org.setdefault(row["organization_id"], []).append(
-            (row["term"], re.compile(r"\b" + re.escape(fold(row["term"])) + r"\b", re.IGNORECASE))
+            (row["term"], row["category"], re.compile(r"\b" + re.escape(fold(row["term"])) + r"\b", re.IGNORECASE))
         )
 
     matched = no_match = 0
@@ -81,19 +65,24 @@ def run_keyword_filter(
             rows = conn.execute(base_query + " LIMIT %s", (batch_size,)).fetchall()
 
         for row in rows:
-            org_id = row["organization_id"]
-            matchers = legacy_matchers if org_id is None else matchers_by_org.get(org_id, [])
+            matchers = matchers_by_org.get(row["organization_id"], [])
             text = fold(f"{row['topic'] or ''} {row['content'] or ''}")
-            hits = [term for term, pattern in matchers if pattern.search(text)]
-            if hits:
+            hits = [(term, category) for term, category, pattern in matchers if pattern.search(text)]
+            has_brand_hit = any(category == "brand" for _, category in hits)
+            has_competitor_hit = any(category == "competitor" for _, category in hits)
+            if has_brand_hit or has_competitor_hit:
+                brand_focus = "own" if has_brand_hit else "competitor"
                 conn.execute(
-                    "UPDATE documents SET keyword_status = 'matched', matched_keywords = %s WHERE id = %s",
-                    (Jsonb(hits), row["id"]),
+                    """
+                    UPDATE documents SET keyword_status = 'matched', matched_keywords = %s, brand_focus = %s
+                    WHERE id = %s
+                    """,
+                    (Jsonb([term for term, _ in hits]), brand_focus, row["id"]),
                 )
                 matched += 1
             else:
                 conn.execute(
-                    "UPDATE documents SET keyword_status = 'no_match' WHERE id = %s",
+                    "UPDATE documents SET keyword_status = 'no_match', brand_focus = NULL WHERE id = %s",
                     (row["id"],),
                 )
                 no_match += 1

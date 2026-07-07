@@ -11,6 +11,7 @@ import { KeywordCatalogPage } from '@/features/admin/keywords/KeywordCatalogPage
 import { TopicsPage } from '@/features/admin/topics/TopicsPage'
 import { ReportDashboardPage } from '@/features/customer/dashboard/ReportDashboardPage'
 import { DocumentsPage } from '@/features/customer/documents/DocumentsPage'
+import { ReportsPage } from '@/features/customer/reports/ReportsPage'
 import { SettingsPage } from '@/features/customer/settings/SettingsPage'
 import { TopicsViewPage } from '@/features/customer/topics/TopicsViewPage'
 import { EntityKeywordPicker } from '@/features/customer/tracking/EntityKeywordPicker'
@@ -43,6 +44,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'dashboard', element: <ReportDashboardPage /> },
               { path: 'documents', element: <DocumentsPage /> },
+              { path: 'reports', element: <ReportsPage /> },
               { path: 'settings', element: <SettingsPage /> },
               { path: 'topics', element: <TopicsViewPage /> },
               {

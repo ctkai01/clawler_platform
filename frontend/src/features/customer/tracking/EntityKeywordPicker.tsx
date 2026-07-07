@@ -10,8 +10,10 @@ import { cn } from '@/lib/utils'
 import type { OrgEntitySelection, OrgKeywordSelection } from '@/types/org'
 
 const ALL_INDUSTRIES = '__all__'
+const ALL_KEYWORD_CATEGORIES = '__all__'
 const TRACKED_PAGE_SIZE = 20
 const BROWSE_PAGE_SIZE = 20
+const KEYWORD_PAGE_SIZE = 30
 
 // No bulk endpoint server-side, so "select all" fires one request per item.
 // Chunked (not one big Promise.all) so selecting hundreds of entities
@@ -30,6 +32,8 @@ export function EntityKeywordPicker() {
   const [trackedPage, setTrackedPage] = useState(1)
   const [browsePage, setBrowsePage] = useState(1)
   const [keywordSearch, setKeywordSearch] = useState('')
+  const [keywordCategoryFilter, setKeywordCategoryFilter] = useState(ALL_KEYWORD_CATEGORIES)
+  const [keywordPage, setKeywordPage] = useState(1)
 
   const { data: entities, isLoading: loadingEntities } = useQuery({
     queryKey: ['org', 'entities'],
@@ -72,11 +76,22 @@ export function EntityKeywordPicker() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['org', 'entities'] }),
   })
 
+  // Bounded (current page) — flat Promise.all is fine.
   const bulkToggleKeywords = useMutation({
     mutationFn: async ({ items, select }: { items: OrgKeywordSelection[]; select: boolean }) => {
       await Promise.all(
         items.map((k) => (select ? orgApi.selectKeyword(k.keyword_id) : orgApi.deselectKeyword(k.keyword_id))),
       )
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['org', 'keywords'] }),
+  })
+
+  // Every result matching the current search/category filter, across all
+  // pages (can be 1000+ now that keywords are bulk-imported from
+  // entity_gazetteer) — chunked like bulkToggleAllMatched for entities.
+  const bulkToggleAllMatchedKeywords = useMutation({
+    mutationFn: async ({ items, select }: { items: OrgKeywordSelection[]; select: boolean }) => {
+      await runChunked(items, (k) => (select ? orgApi.selectKeyword(k.keyword_id) : orgApi.deselectKeyword(k.keyword_id)))
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['org', 'keywords'] }),
   })
@@ -114,12 +129,26 @@ export function EntityKeywordPicker() {
   const browseResults = matched.slice((browseCurrentPage - 1) * BROWSE_PAGE_SIZE, browseCurrentPage * BROWSE_PAGE_SIZE)
   const allBrowseResultsSelected = browseResults.length > 0 && browseResults.every((e) => e.is_selected)
   const allMatchedSelected = matched.length > 0 && matched.every((e) => e.is_selected)
+  const keywordCategories = useMemo(() => {
+    const set = new Set((keywords ?? []).map((k) => k.category).filter((v): v is string => Boolean(v)))
+    return Array.from(set).sort()
+  }, [keywords])
   const filteredKeywords = useMemo(() => {
     const q = keywordSearch.trim().toLowerCase()
-    if (!q) return keywords ?? []
-    return (keywords ?? []).filter((k) => k.term.toLowerCase().includes(q))
-  }, [keywords, keywordSearch])
-  const allKeywordsSelected = filteredKeywords.length > 0 && filteredKeywords.every((k) => k.is_selected)
+    return (keywords ?? []).filter((k) => {
+      if (keywordCategoryFilter !== ALL_KEYWORD_CATEGORIES && k.category !== keywordCategoryFilter) return false
+      if (q && !k.term.toLowerCase().includes(q)) return false
+      return true
+    })
+  }, [keywords, keywordSearch, keywordCategoryFilter])
+  const keywordPageCount = Math.max(1, Math.ceil(filteredKeywords.length / KEYWORD_PAGE_SIZE))
+  const keywordCurrentPage = Math.min(keywordPage, keywordPageCount)
+  const visibleKeywords = filteredKeywords.slice(
+    (keywordCurrentPage - 1) * KEYWORD_PAGE_SIZE,
+    keywordCurrentPage * KEYWORD_PAGE_SIZE,
+  )
+  const allVisibleKeywordsSelected = visibleKeywords.length > 0 && visibleKeywords.every((k) => k.is_selected)
+  const allFilteredKeywordsSelected = filteredKeywords.length > 0 && filteredKeywords.every((k) => k.is_selected)
 
   const EntityPill = ({ name, industryCode, selected }: { name: string; industryCode: string | null; selected: boolean }) => (
     <button
@@ -275,52 +304,97 @@ export function EntityKeywordPicker() {
         <div className="flex items-center justify-between">
           <div className="text-xs font-semibold uppercase tracking-wide text-muted">Keyword</div>
           {filteredKeywords.length > 0 && (
-            <button
-              type="button"
-              disabled={bulkToggleKeywords.isPending}
-              onClick={() => bulkToggleKeywords.mutate({ items: filteredKeywords, select: !allKeywordsSelected })}
-              className="text-xs font-medium text-accent-ink hover:underline disabled:opacity-50"
-            >
-              {allKeywordsSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
-            </button>
+            <span className="text-xs text-muted">
+              {filteredKeywords.length.toLocaleString('vi-VN')} keyword
+              {bulkToggleAllMatchedKeywords.isPending && ' · đang chọn…'}
+            </span>
           )}
         </div>
         {keywords && keywords.length > 0 && (
-          <div className="relative mt-3 max-w-sm">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
-            <Input
-              className="pl-9"
-              placeholder="Tìm keyword…"
-              value={keywordSearch}
-              onChange={(e) => setKeywordSearch(e.target.value)}
-            />
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <div className="relative min-w-56 flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
+              <Input
+                className="pl-9"
+                placeholder="Tìm keyword…"
+                value={keywordSearch}
+                onChange={(e) => {
+                  setKeywordSearch(e.target.value)
+                  setKeywordPage(1)
+                }}
+              />
+            </div>
+            <select
+              className="h-9 rounded-md border border-line bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
+              value={keywordCategoryFilter}
+              onChange={(e) => {
+                setKeywordCategoryFilter(e.target.value)
+                setKeywordPage(1)
+              }}
+            >
+              <option value={ALL_KEYWORD_CATEGORIES}>Tất cả loại</option>
+              {keywordCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
           </div>
         )}
         {loadingKeywords ? (
           <p className="mt-2 text-sm text-muted">Đang tải…</p>
         ) : (
-          <div className="mt-3 flex flex-wrap gap-2">
-            {filteredKeywords.map((k) => (
-              <button
-                key={k.keyword_id}
-                type="button"
-                onClick={() => toggleKeyword.mutate({ id: k.keyword_id, selected: k.is_selected })}
-                className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
-                  k.is_selected
-                    ? 'border-accent-ink bg-accent-ink text-white'
-                    : 'border-line bg-surface text-muted hover:border-accent-ink hover:text-accent-ink',
+          <>
+            {visibleKeywords.length > 0 && (
+              <div className="mt-3 flex items-center gap-3">
+                <button
+                  type="button"
+                  disabled={bulkToggleKeywords.isPending || bulkToggleAllMatchedKeywords.isPending}
+                  onClick={() => bulkToggleKeywords.mutate({ items: visibleKeywords, select: !allVisibleKeywordsSelected })}
+                  className="text-xs font-medium text-accent-ink hover:underline disabled:opacity-50"
+                >
+                  {allVisibleKeywordsSelected ? 'Bỏ chọn (trang này)' : `Chọn trang này (${visibleKeywords.length})`}
+                </button>
+                {keywordPageCount > 1 && (
+                  <button
+                    type="button"
+                    disabled={bulkToggleKeywords.isPending || bulkToggleAllMatchedKeywords.isPending}
+                    onClick={() =>
+                      bulkToggleAllMatchedKeywords.mutate({ items: filteredKeywords, select: !allFilteredKeywordsSelected })
+                    }
+                    className="text-xs font-medium text-accent-ink hover:underline disabled:opacity-50"
+                  >
+                    {allFilteredKeywordsSelected
+                      ? 'Bỏ chọn toàn bộ'
+                      : `Chọn tất cả toàn bộ (${filteredKeywords.length.toLocaleString('vi-VN')})`}
+                  </button>
                 )}
-              >
-                {k.term}
-                <span className="ml-1.5 text-[10px] opacity-70">{k.category}</span>
-              </button>
-            ))}
-            {keywords?.length === 0 && <p className="text-sm text-muted">Chưa có keyword nào trong danh mục.</p>}
-            {keywords && keywords.length > 0 && filteredKeywords.length === 0 && (
-              <p className="text-sm text-muted">Không có keyword nào khớp tìm kiếm.</p>
+              </div>
             )}
-          </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {visibleKeywords.map((k) => (
+                <button
+                  key={k.keyword_id}
+                  type="button"
+                  onClick={() => toggleKeyword.mutate({ id: k.keyword_id, selected: k.is_selected })}
+                  className={cn(
+                    'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+                    k.is_selected
+                      ? 'border-accent-ink bg-accent-ink text-white'
+                      : 'border-line bg-surface text-muted hover:border-accent-ink hover:text-accent-ink',
+                  )}
+                >
+                  {k.term}
+                  <span className="ml-1.5 text-[10px] opacity-70">{k.category}</span>
+                </button>
+              ))}
+              {keywords?.length === 0 && <p className="text-sm text-muted">Chưa có keyword nào trong danh mục.</p>}
+              {keywords && keywords.length > 0 && filteredKeywords.length === 0 && (
+                <p className="text-sm text-muted">Không có keyword nào khớp tìm kiếm.</p>
+              )}
+            </div>
+            <Pagination page={keywordCurrentPage} pageCount={keywordPageCount} onPageChange={setKeywordPage} />
+          </>
         )}
       </Card>
     </div>

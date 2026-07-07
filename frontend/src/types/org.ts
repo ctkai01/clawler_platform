@@ -44,6 +44,13 @@ export interface TopicDetailRow {
   total_engagement: number
 }
 
+export interface TopicSentimentRow {
+  topic: string
+  positive: number
+  neutral: number
+  negative: number
+}
+
 export interface ReportPostItem {
   id: number
   title: string
@@ -63,6 +70,7 @@ export interface OrgReport {
   sentiment_neutral: number
   topic_detail: TopicDetailRow[]
   keyword_topic_detail: TopicDetailRow[]
+  keyword_topic_sentiment: TopicSentimentRow[]
   topics: string[]
   topic_positive_counts: number[]
   topic_neutral_counts: number[]
@@ -169,13 +177,14 @@ export interface AccordionCategoryCounts {
   news: number
 }
 
-export type AccordionSentimentKey = 'positive' | 'negative' | 'neutral' | 'unclassified'
+export type AccordionSentimentKey = 'positive' | 'negative' | 'neutral' | 'unclassified' | 'competitor'
 
 export interface AccordionSentimentCounts {
   positive: number
   negative: number
   neutral: number
   unclassified: number
+  competitor: number
 }
 
 export interface EngagementGrowthPoint {

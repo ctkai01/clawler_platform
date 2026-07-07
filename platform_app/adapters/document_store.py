@@ -23,7 +23,30 @@ def save_document(
     documents/document_comments tables — the same tables PgStorage writes FB
     posts into, but without any fb_crawl dependency."""
 
+    doc_content_hash = _content_hash(doc.content)
+
     with get_pool().connection() as conn:
+        # Same guard as fb_pg_storage.PgStorage.save_post: two crawl_targets
+        # pointing at the same real owner (e.g. a duplicated forum/news
+        # target) shouldn't produce two document rows for the same content.
+        if owner_external_id is not None:
+            duplicate = conn.execute(
+                """
+                SELECT id FROM documents
+                WHERE owner_external_id = %(owner_external_id)s AND content_hash = %(content_hash)s
+                  AND NOT (target_id = %(target_id)s AND external_doc_id = %(external_doc_id)s)
+                LIMIT 1
+                """,
+                {
+                    "owner_external_id": owner_external_id,
+                    "content_hash": doc_content_hash,
+                    "target_id": target_id,
+                    "external_doc_id": doc.external_doc_id,
+                },
+            ).fetchone()
+            if duplicate is not None:
+                return
+
         row = conn.execute(
             """
             INSERT INTO documents (
@@ -61,7 +84,7 @@ def save_document(
                 "author": doc.author,
                 "topic": doc.topic,
                 "content": doc.content,
-                "content_hash": _content_hash(doc.content),
+                "content_hash": doc_content_hash,
                 "published_at": doc.published_at,
                 "edited_at": doc.edited_at,
                 "images": Jsonb(doc.images or []),

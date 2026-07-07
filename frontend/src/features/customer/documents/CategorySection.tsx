@@ -25,6 +25,7 @@ const SENTIMENT_TABS: { key: AccordionSentimentKey | 'all'; label: string }[] = 
   { key: 'negative', label: 'Tiêu cực' },
   { key: 'neutral', label: 'Trung tính' },
   { key: 'unclassified', label: 'Chưa phân loại' },
+  { key: 'competitor', label: 'Đối thủ' },
 ]
 
 function formatDate(iso: string | null) {

@@ -13,6 +13,10 @@ from platform_app.pipeline.keyword_filter import run_keyword_filter
 
 @pytest.fixture
 def target_id() -> int:
+    """Every test document belongs to a throwaway organization with its own
+    "mobifone" keyword selected — keyword_filter is per-organization DB-driven
+    only (no global YAML fallback), so tests need a real organization_keywords
+    row to exercise a match rather than relying on a shared config file."""
     pool = get_pool()
     with pool.connection() as conn:
         conn.execute(
@@ -20,11 +24,28 @@ def target_id() -> int:
             ("https://forum.example.com/pipeline-test",),
         )
         conn.execute("DELETE FROM crawl_targets WHERE url = %s", ("https://forum.example.com/pipeline-test",))
-        row = conn.execute(
+        conn.execute("DELETE FROM organizations WHERE name = 'Pipeline Test Org'")
+        org_id = conn.execute(
+            "INSERT INTO organizations (name) VALUES ('Pipeline Test Org') RETURNING id"
+        ).fetchone()["id"]
+        keyword_id = conn.execute(
             """
-            INSERT INTO crawl_targets (platform_type, url, enabled) VALUES ('forum', 'https://forum.example.com/pipeline-test', false)
+            INSERT INTO keywords_catalog (category, term) VALUES ('brand', 'mobifone')
+            ON CONFLICT (category, term) DO UPDATE SET term = EXCLUDED.term
             RETURNING id
             """
+        ).fetchone()["id"]
+        conn.execute(
+            "INSERT INTO organization_keywords (organization_id, keyword_id) VALUES (%s, %s)",
+            (org_id, keyword_id),
+        )
+        row = conn.execute(
+            """
+            INSERT INTO crawl_targets (platform_type, url, enabled, organization_id)
+            VALUES ('forum', 'https://forum.example.com/pipeline-test', false, %s)
+            RETURNING id
+            """,
+            (org_id,),
         ).fetchone()
     return row["id"]
 

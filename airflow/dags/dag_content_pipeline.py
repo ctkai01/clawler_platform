@@ -7,7 +7,7 @@ from airflow.decorators import dag, task
 
 @dag(
     dag_id="content_pipeline",
-    schedule="*/10 * * * *",
+    schedule=None,  # triggered directly by each crawl DAG (facebook_groups/pages, forums, news) once it finishes
     start_date=datetime(2026, 1, 1),
     catchup=False,
     max_active_runs=1,

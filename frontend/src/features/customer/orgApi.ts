@@ -49,10 +49,11 @@ function accordionQuery(params: AccordionFilterParams, extra?: Record<string, st
 }
 
 export const orgApi = {
-  getReport: (days: number, entity?: string) => {
+  getReport: (days: number, entity?: string, scope: 'own' | 'competitor' = 'own') => {
     const search = new URLSearchParams()
     search.set('days', String(days))
     if (entity) search.set('entity', entity)
+    search.set('scope', scope)
     return apiClient.get<OrgReport>(`/org/report?${search.toString()}`)
   },
   exportReport: (days: number, entity?: string) => {
@@ -69,6 +70,15 @@ export const orgApi = {
       `bao-cao-${(reportDate ?? new Date().toISOString().slice(0, 10)).replaceAll('-', '')}.docx`,
     )
   },
+  exportEventReportWord: (eventKey: string, reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/event/${eventKey}/export-word?${search.toString()}`,
+      `bao-cao-${eventKey}-${date.replaceAll('-', '')}.docx`,
+    )
+  },
   sendReportEmailNow: (days: number, entity?: string) => {
     const search = new URLSearchParams()
     search.set('days', String(days))
@@ -79,6 +89,7 @@ export const orgApi = {
     sentiment: 'positive' | 'negative'
     days: number
     entity?: string
+    scope?: 'own' | 'competitor'
     page: number
     page_size?: number
   }) => {
@@ -86,6 +97,7 @@ export const orgApi = {
     search.set('sentiment', params.sentiment)
     search.set('days', String(params.days))
     if (params.entity) search.set('entity', params.entity)
+    search.set('scope', params.scope ?? 'own')
     search.set('page', String(params.page))
     search.set('page_size', String(params.page_size ?? 10))
     return apiClient.get<ReportPostsResponse>(`/org/report/posts?${search.toString()}`)

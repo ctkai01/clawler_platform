@@ -30,7 +30,15 @@ def forums_crawl():
 
         asyncio.run(crawl_target(target["id"]))
 
-    crawl_one.expand(target=get_due_targets())
+    @task(queue="http_crawler", trigger_rule="all_done")
+    def trigger_content_pipeline() -> None:
+        from datetime import datetime, timezone
+
+        from airflow.api.common.trigger_dag import trigger_dag
+
+        trigger_dag(dag_id="content_pipeline", run_id=f"forums_crawl__{datetime.now(timezone.utc).isoformat()}")
+
+    crawl_one.expand(target=get_due_targets()) >> trigger_content_pipeline()
 
 
 forums_crawl()

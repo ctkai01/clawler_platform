@@ -23,6 +23,7 @@ function useNavItems(): NavItem[] {
   const items: NavItem[] = [
     { to: '/dashboard', label: 'Tổng quan' },
     { to: '/documents', label: 'Bài viết' },
+    { to: '/reports', label: 'Báo cáo' },
     { to: '/topics', label: 'Chủ đề' },
   ]
   const canConfigure = user.role === 'org_main' || user.functional_role === 'configurator'

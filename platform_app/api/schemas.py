@@ -242,6 +242,7 @@ class AccordionSentimentCounts(BaseModel):
     negative: int = 0
     neutral: int = 0
     unclassified: int = 0
+    competitor: int = 0
 
 
 class EngagementGrowthPoint(BaseModel):

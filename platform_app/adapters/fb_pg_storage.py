@@ -146,8 +146,32 @@ class PgStorage:
             full_text = f"{post.topic}\n\n{post.content}".strip() if post.content else post.topic
         owner_id = post.page_id if post.source_type == "page" else post.group_id
         source_type = post.source_type or "group"
+        post_content_hash = content_hash(full_text)
 
         with self.pool.connection() as conn:
+            # Guards against the same real post being saved twice: either two
+            # crawl_targets pointing at the same FB group/page (owner_external_id
+            # matches, different target_id), or Facebook surfacing a different
+            # pfbid for what's byte-identical content on a re-scrape. Scoped to
+            # the owner (not global) so two different pages independently
+            # posting the same boilerplate text isn't treated as a duplicate.
+            duplicate = conn.execute(
+                """
+                SELECT id FROM documents
+                WHERE owner_external_id = %(owner_id)s AND content_hash = %(content_hash)s
+                  AND NOT (target_id = %(target_id)s AND external_doc_id = %(post_id)s)
+                LIMIT 1
+                """,
+                {
+                    "owner_id": owner_id,
+                    "content_hash": post_content_hash,
+                    "target_id": self.target_id,
+                    "post_id": post.post_id,
+                },
+            ).fetchone()
+            if duplicate is not None:
+                return
+
             row = conn.execute(
                 """
                 INSERT INTO documents (
@@ -192,7 +216,7 @@ class PgStorage:
                     "author_id": post.author_id,
                     "topic": post.topic,
                     "content": full_text,
-                    "content_hash": content_hash(full_text),
+                    "content_hash": post_content_hash,
                     "published_at": post.published_at,
                     "edited_at": post.edited_at,
                     "is_edited": bool(post.is_edited),
