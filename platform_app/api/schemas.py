@@ -220,6 +220,8 @@ class DocumentDetailOut(BaseModel):
     classification_sentiment_source: str | None
     classification_severity: int | None
     classification_reasoning: str | None
+    classification_text_summary: str | None
+    classification_image_summary: str | None
     entities: list[str]
 
 

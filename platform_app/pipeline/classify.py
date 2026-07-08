@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import csv
 import json
 import logging
@@ -30,7 +31,10 @@ SYSTEM_PROMPT = (
     "hoi_dap (hỏi thông tin), spam (quảng cáo/spam), khac (không thuộc loại trên). "
     "Chọn đúng 1 sentiment trong: positive, negative, neutral. "
     "severity: 1=bình thường, 2=cần chú ý, 3=khẩn cấp (khủng hoảng truyền thông, khiếu nại nghiêm trọng). "
-    'Trả lời CHỈ bằng JSON: {"category": "...", "sentiment": "...", "severity": 1, "reasoning": "..."}'
+    "text_summary: tóm tắt ngắn gọn (1-2 câu) nội dung văn bản của bài viết. "
+    "image_summary: nếu có ảnh đính kèm, tóm tắt ngắn gọn (1-2 câu) nội dung ảnh; nếu không có ảnh thì để null. "
+    'Trả lời CHỈ bằng JSON: {"category": "...", "sentiment": "...", "severity": 1, "reasoning": "...", '
+    '"text_summary": "...", "image_summary": "..." hoặc null}'
 )
 
 # "normal" mode: free, no LLM call — coarse keyword heuristics only. Meant as
@@ -141,8 +145,17 @@ def _classify_normal(text: str) -> dict:
         "sentiment_source": "default",
         "severity": severity,
         "reasoning": reasoning,
+        "text_summary": None,
+        "image_summary": None,
         "cost_usd": 0.0,
     }
+
+
+def _cost_from_usage(usage: dict) -> float:
+    return (
+        usage.get("prompt_tokens", 0) * _PRICE_PER_TOKEN_IN
+        + usage.get("completion_tokens", 0) * _PRICE_PER_TOKEN_OUT
+    )
 
 
 def _call_openai(content: list[dict] | str) -> dict:
@@ -162,11 +175,7 @@ def _call_openai(content: list[dict] | str) -> dict:
     )
     resp.raise_for_status()
     data = resp.json()
-    usage = data.get("usage", {})
-    cost = (
-        usage.get("prompt_tokens", 0) * _PRICE_PER_TOKEN_IN
-        + usage.get("completion_tokens", 0) * _PRICE_PER_TOKEN_OUT
-    )
+    cost = _cost_from_usage(data.get("usage", {}))
     parsed = json.loads(data["choices"][0]["message"]["content"])
     category = parsed.get("category")
     if category not in CATEGORIES:
@@ -180,6 +189,8 @@ def _call_openai(content: list[dict] | str) -> dict:
         "sentiment_source": "ai",
         "severity": int(parsed.get("severity") or 1),
         "reasoning": parsed.get("reasoning"),
+        "text_summary": parsed.get("text_summary"),
+        "image_summary": parsed.get("image_summary"),
         "cost_usd": cost,
     }
 
@@ -188,11 +199,95 @@ def _classify_llm_text(text: str) -> dict:
     return _call_openai(text[:4000])
 
 
+def _fetch_image_data_url(url: str) -> str | None:
+    """Download and base64-encode an image ourselves rather than passing the
+    raw URL to OpenAI — CDNs like Facebook's scontent.* reject fetches from
+    OpenAI's servers (hotlink protection) even though the URL is publicly
+    reachable from here, so a hosted image_url fails with invalid_image_url."""
+    try:
+        resp = httpx.get(url, timeout=15.0, follow_redirects=True)
+        resp.raise_for_status()
+        content_type = resp.headers.get("content-type", "image/jpeg").split(";")[0]
+        if not content_type.startswith("image/"):
+            return None
+        b64 = base64.b64encode(resp.content).decode()
+        return f"data:{content_type};base64,{b64}"
+    except Exception:
+        logger.warning("Không tải được ảnh %s để classify", url, exc_info=True)
+        return None
+
+
+# Stage-A prompt for llm_image mode — one caption per image, same wording as
+# opencrawler's ImageDescriber (opencrawler/classify/llm_classifier.py) so the
+# two crawlers stay consistent in how they read images.
+_IMAGE_DESCRIBE_PROMPT = (
+    "Mô tả ngắn gọn (1-2 câu mỗi ảnh, tiếng Việt) nội dung của TỪNG ảnh sau theo đúng thứ tự "
+    "({count} ảnh) — trả về đúng {count} mô tả, mỗi mô tả ứng với 1 ảnh, KHÔNG gộp chung. "
+    "Tập trung vào thông tin có thể liên quan tới đánh giá tích cực/tiêu cực của bài đăng "
+    "(vd: ảnh chụp văn bản, biểu đồ, sự kiện, sản phẩm, sự cố...). "
+    'Trả lời CHỈ bằng JSON: {{"descriptions": ["...", ...]}} với đúng {count} phần tử, cùng thứ tự ảnh.'
+)
+
+
+def _describe_images(images: list[str]) -> tuple[dict[str, str], float]:
+    """Stage A of llm_image mode: one multimodal call captioning EACH image
+    individually (mirrors opencrawler's ImageDescriber.describe()). Returns
+    ``{url: description}`` for whichever images were fetched AND described,
+    plus the USD cost of this call. Empty dict (zero cost) if no image could
+    be fetched or the LLM call itself fails — callers fall back to text-only
+    classification in that case."""
+    candidate_urls = images[:_MAX_IMAGES_PER_CALL]
+    fetched = [(url, data_url) for url in candidate_urls if (data_url := _fetch_image_data_url(url))]
+    if not fetched:
+        return {}, 0.0
+
+    content: list[dict] = [{"type": "text", "text": _IMAGE_DESCRIBE_PROMPT.format(count=len(fetched))}]
+    content.extend({"type": "image_url", "image_url": {"url": data_url}} for _, data_url in fetched)
+
+    try:
+        resp = httpx.post(
+            OPENAI_API_URL,
+            headers={"Authorization": f"Bearer {_api_key()}"},
+            json={
+                "model": _model(),
+                "messages": [{"role": "user", "content": content}],
+                "response_format": {"type": "json_object"},
+                "temperature": 0,
+            },
+            timeout=60.0,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        cost = _cost_from_usage(data.get("usage", {}))
+        descriptions = json.loads(data["choices"][0]["message"]["content"]).get("descriptions") or []
+    except Exception:
+        logger.warning("Mô tả ảnh thất bại", exc_info=True)
+        return {}, 0.0
+
+    # Told exactly how many descriptions to return, but nothing enforces
+    # it — zip on the shorter side rather than crashing if it returns
+    # too few/many; a trailing image without a caption beats failing the item.
+    return {
+        url: desc.strip()
+        for (url, _), desc in zip(fetched, descriptions)
+        if desc and desc.strip()
+    }, cost
+
+
 def _classify_llm_image(text: str, images: list[str]) -> dict:
-    content: list[dict] = [{"type": "text", "text": text[:4000]}]
-    for url in images[:_MAX_IMAGES_PER_CALL]:
-        content.append({"type": "image_url", "image_url": {"url": url}})
-    return _call_openai(content)
+    """Stage B: fold Stage A's per-image captions into the normal text
+    prompt and classify with the same schema as llm_text — matches
+    opencrawler's _build_llm_image_path. Items with no describable images
+    fall back to plain text-only classification, same as llm_text."""
+    descriptions, describe_cost = _describe_images(images)
+    if not descriptions:
+        return _classify_llm_text(text)
+
+    joined = "\n".join(f"{i}. {desc}" for i, desc in enumerate(descriptions.values(), start=1))
+    result = _classify_llm_text(f"{text}\n\n[Mô tả hình ảnh do AI trích xuất]:\n{joined}")
+    result["image_summary"] = joined
+    result["cost_usd"] += describe_cost
+    return result
 
 
 def _classify_rows(conn, rows: list[dict], mode: str) -> tuple[int, int]:
@@ -224,6 +319,8 @@ def _classify_rows(conn, rows: list[dict], mode: str) -> tuple[int, int]:
                 classification_sentiment_source = %s,
                 classification_severity = %s,
                 classification_reasoning = %s,
+                classification_text_summary = %s,
+                classification_image_summary = %s,
                 classification_cost_usd = classification_cost_usd + %s
             WHERE id = %s
             """,
@@ -233,6 +330,8 @@ def _classify_rows(conn, rows: list[dict], mode: str) -> tuple[int, int]:
                 result["sentiment_source"],
                 result["severity"],
                 result["reasoning"],
+                result["text_summary"],
+                result["image_summary"],
                 result["cost_usd"],
                 row["id"],
             ),

@@ -137,6 +137,8 @@ export interface DocumentDetail {
   classification_sentiment_source: string | null
   classification_severity: number | null
   classification_reasoning: string | null
+  classification_text_summary: string | null
+  classification_image_summary: string | null
   entities: string[]
 }
 

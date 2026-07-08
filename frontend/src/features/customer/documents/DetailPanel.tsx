@@ -167,6 +167,22 @@ export function DetailPanel({
             </Badge>
           )}
         </div>
+        {(doc.classification_text_summary || doc.classification_image_summary) && (
+          <div className="mt-3 space-y-1.5 rounded-md border border-line bg-paper p-3 text-xs text-muted">
+            {doc.classification_text_summary && (
+              <p>
+                <span className="font-medium text-ink">Tóm tắt nội dung: </span>
+                {doc.classification_text_summary}
+              </p>
+            )}
+            {doc.classification_image_summary && (
+              <p>
+                <span className="font-medium text-ink">Tóm tắt ảnh: </span>
+                {doc.classification_image_summary}
+              </p>
+            )}
+          </div>
+        )}
         {doc.entities.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {doc.entities.map((name) => (

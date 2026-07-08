@@ -1202,6 +1202,7 @@ def get_document(document_id: int, user: dict = Depends(get_current_user)) -> di
                    d.keyword_status, d.matched_keywords,
                    d.classification_category, d.classification_sentiment, d.classification_sentiment_source,
                    d.classification_severity, d.classification_reasoning,
+                   d.classification_text_summary, d.classification_image_summary,
                    COALESCE(
                        (SELECT array_agg(DISTINCT de.canonical_name)
                         FROM document_entities de WHERE de.document_id = d.id AND de.concept_id != '__none__'
