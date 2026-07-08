@@ -34,9 +34,26 @@ def facebook_groups_crawl():
     def trigger_content_pipeline() -> None:
         from datetime import datetime, timezone
 
-        from airflow.api.common.trigger_dag import trigger_dag
+        from airflow.api.common.trigger_dag import DagRunAlreadyExists, trigger_dag
 
-        trigger_dag(dag_id="content_pipeline", run_id=f"facebook_groups_crawl__{datetime.now(timezone.utc).isoformat()}")
+        now = datetime.now(timezone.utc)
+        try:
+            # replace_microseconds=False: the default (True) zeroes the
+            # execution_date down to whole seconds, which collides on the
+            # dag_run (dag_id, execution_date) unique constraint whenever
+            # another crawl DAG's trigger_content_pipeline fires in the
+            # same second (frequent — several crawl DAGs share overlapping
+            # schedule ticks).
+            trigger_dag(
+                dag_id="content_pipeline",
+                run_id=f"facebook_groups_crawl__{now.isoformat()}",
+                execution_date=now,
+                replace_microseconds=False,
+            )
+        except DagRunAlreadyExists:
+            # Another crawl DAG already triggered content_pipeline for this
+            # instant — the goal (content_pipeline runs) is satisfied either way.
+            pass
 
     crawl_one.expand(target=get_due_targets()) >> trigger_content_pipeline()
 
