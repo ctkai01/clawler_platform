@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Download, Search, Trash2, Upload } from 'lucide-react'
+import { Check, Download, Pencil, Search, Trash2, Upload, X } from 'lucide-react'
 import { orgApi } from '@/features/customer/orgApi'
 import { useAuthStore } from '@/store/authStore'
 import { Card } from '@/components/ui/card'
@@ -53,6 +53,8 @@ export function SourceManagerPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [importResult, setImportResult] = useState<SourceImportResult | null>(null)
   const [importError, setImportError] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editValue, setEditValue] = useState('')
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['org', 'sources'] })
 
@@ -72,6 +74,26 @@ export function SourceManagerPage() {
     onSuccess: invalidate,
     onError: (err) => toast(err instanceof ApiError ? err.message : 'Xoá nguồn crawl thất bại', 'error'),
   })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, displayName }: { id: number; displayName: string }) => orgApi.updateSource(id, displayName),
+    onSuccess: () => {
+      setEditingId(null)
+      invalidate()
+    },
+    onError: (err) => toast(err instanceof ApiError ? err.message : 'Sửa tên nguồn crawl thất bại', 'error'),
+  })
+
+  const startEdit = (id: number, currentName: string | null) => {
+    setEditingId(id)
+    setEditValue(currentName ?? '')
+  }
+  const cancelEdit = () => setEditingId(null)
+  const saveEdit = (id: number) => {
+    const trimmed = editValue.trim()
+    if (!trimmed) return
+    updateMutation.mutate({ id, displayName: trimmed })
+  }
 
   const importMutation = useMutation({
     mutationFn: (file: File) => orgApi.importSources(file),
@@ -268,7 +290,22 @@ export function SourceManagerPage() {
               <tbody>
                 {visible.map((s) => (
                   <tr key={s.id} className="border-b border-line transition-colors last:border-0 hover:bg-paper/60">
-                    <td className="px-5 py-3 font-medium text-ink">{s.display_name ?? '—'}</td>
+                    <td className="px-5 py-3 font-medium text-ink">
+                      {editingId === s.id ? (
+                        <Input
+                          autoFocus
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') saveEdit(s.id)
+                            if (e.key === 'Escape') cancelEdit()
+                          }}
+                          className="h-8 text-sm"
+                        />
+                      ) : (
+                        s.display_name ?? '—'
+                      )}
+                    </td>
                     <td className="px-5 py-3">
                       <Badge tone="neutral">{PLATFORM_LABEL[s.platform_type] ?? s.platform_type}</Badge>
                     </td>
@@ -288,15 +325,42 @@ export function SourceManagerPage() {
                       </Badge>
                     </td>
                     <td className="px-5 py-3 text-right">
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        aria-label={`Xoá ${s.display_name ?? s.url}`}
-                        disabled={deleteMutation.isPending && deleteMutation.variables === s.id}
-                        onClick={() => deleteMutation.mutate(s.id)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      {editingId === s.id ? (
+                        <div className="flex justify-end gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            aria-label="Lưu"
+                            disabled={updateMutation.isPending}
+                            onClick={() => saveEdit(s.id)}
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button variant="outline" size="sm" aria-label="Huỷ" onClick={cancelEdit}>
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex justify-end gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            aria-label={`Sửa ${s.display_name ?? s.url}`}
+                            onClick={() => startEdit(s.id, s.display_name)}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            aria-label={`Xoá ${s.display_name ?? s.url}`}
+                            disabled={deleteMutation.isPending && deleteMutation.variables === s.id}
+                            onClick={() => deleteMutation.mutate(s.id)}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

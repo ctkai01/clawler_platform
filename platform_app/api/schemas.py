@@ -82,6 +82,10 @@ class SourceCreate(BaseModel):
     crawl_interval_sec: int = Field(default=900, ge=60)
 
 
+class SourceUpdate(BaseModel):
+    display_name: str = Field(min_length=1)
+
+
 class SourceOut(BaseModel):
     id: int
     platform_type: str

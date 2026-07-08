@@ -111,6 +111,8 @@ export const orgApi = {
   listSources: () => apiClient.get<SourceItem[]>('/org/sources'),
   createSource: (body: { platform_type: string; url: string; display_name?: string }) =>
     apiClient.post<SourceItem>('/org/sources', body),
+  updateSource: (id: number, display_name: string) =>
+    apiClient.patch<SourceItem>(`/org/sources/${id}`, { display_name }),
   deleteSource: (id: number) => apiClient.delete<void>(`/org/sources/${id}`),
   importSources: (file: File) => {
     const formData = new FormData()

@@ -30,6 +30,7 @@ from platform_app.api.schemas import (
     SourceCreate,
     SourceImportResult,
     SourceOut,
+    SourceUpdate,
     SystemStats,
     TopicOut,
 )
@@ -172,6 +173,17 @@ def import_sources(file: UploadFile = File(...), user: dict = Depends(_require_c
         "skipped": total_rows - inserted,
         "errors": errors,
     }
+
+
+@router.patch("/sources/{target_id}", response_model=SourceOut)
+def update_source(target_id: int, body: SourceUpdate, user: dict = Depends(_require_configurator)) -> dict:
+    with get_pool().connection() as conn:
+        if not _owns_target(conn, user, target_id):
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy nguồn crawl")
+        return conn.execute(
+            "UPDATE crawl_targets SET display_name = %s, updated_at = now() WHERE id = %s RETURNING *",
+            (body.display_name, target_id),
+        ).fetchone()
 
 
 @router.delete("/sources/{target_id}", status_code=status.HTTP_204_NO_CONTENT)
