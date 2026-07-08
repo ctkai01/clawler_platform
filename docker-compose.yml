@@ -92,6 +92,9 @@ services:
     environment:
       CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
       API_CORS_ORIGINS: ${API_CORS_ORIGINS:-http://localhost:5173}
+      AIRFLOW_API_BASE: http://airflow-webserver:8080
+      AIRFLOW_API_USER: admin
+      AIRFLOW_API_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
     ports:
       - "8083:8000"
     command: uvicorn platform_app.api.app:app --host 0.0.0.0 --port 8000

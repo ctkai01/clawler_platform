@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Banner } from '@/components/ui/banner'
 import { Badge } from '@/components/ui/badge'
 import { Pagination } from '@/components/ui/pagination'
+import { useToast } from '@/components/ui/toast'
 import { PageHeader } from '@/components/PageHeader'
 import { PLATFORM_LABEL, SOURCE_STATUS_LABEL, sourceStatusTone } from '@/lib/platform'
 import { ApiError } from '@/lib/apiClient'
@@ -39,6 +40,7 @@ function downloadCsvTemplate() {
 export function SourceManagerPage() {
   const user = useAuthStore((s) => s.user)
   const queryClient = useQueryClient()
+  const { toast } = useToast()
   const { data: sources, isLoading } = useQuery({ queryKey: ['org', 'sources'], queryFn: orgApi.listSources })
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -68,6 +70,7 @@ export function SourceManagerPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => orgApi.deleteSource(id),
     onSuccess: invalidate,
+    onError: (err) => toast(err instanceof ApiError ? err.message : 'Xoá nguồn crawl thất bại', 'error'),
   })
 
   const importMutation = useMutation({
@@ -289,6 +292,7 @@ export function SourceManagerPage() {
                         variant="danger"
                         size="sm"
                         aria-label={`Xoá ${s.display_name ?? s.url}`}
+                        disabled={deleteMutation.isPending && deleteMutation.variables === s.id}
                         onClick={() => deleteMutation.mutate(s.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />

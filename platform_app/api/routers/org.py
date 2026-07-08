@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import csv
 import io
+import os
 import re
 from datetime import date, datetime, timedelta, timezone
 
+import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from fastapi.responses import StreamingResponse
 from openpyxl import Workbook
@@ -20,6 +22,7 @@ from platform_app.api.schemas import (
     DocumentListResponse,
     EngagementGrowthPoint,
     EntityNetworkResponse,
+    MonitoringOverview,
     OrgEntitySelectRequest,
     OrgEntitySelection,
     OrgKeywordSelection,
@@ -27,6 +30,7 @@ from platform_app.api.schemas import (
     SourceCreate,
     SourceImportResult,
     SourceOut,
+    SystemStats,
     TopicOut,
 )
 from platform_app.db.pool import get_pool
@@ -176,6 +180,178 @@ def delete_source(target_id: int, user: dict = Depends(_require_configurator)) -
         if not _owns_target(conn, user, target_id):
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Không tìm thấy nguồn crawl")
         conn.execute("DELETE FROM crawl_targets WHERE id = %s", (target_id,))
+
+
+# ---------------------------------------------------------------------------
+# Monitoring — crawl source health, Airflow DAG run history, document throughput
+# ---------------------------------------------------------------------------
+
+# The 5 DAGs behind crawling+classification, in the order shown on the
+# monitoring page — same list as platform_app.dashboard.app.CRAWL_DAGS.
+_MONITORED_DAGS = [
+    "facebook_groups_crawl",
+    "facebook_pages_crawl",
+    "forums_crawl",
+    "news_crawl",
+    "content_pipeline",
+]
+_AIRFLOW_API_BASE = os.environ.get("AIRFLOW_API_BASE", "http://airflow-webserver:8080")
+_AIRFLOW_API_USER = os.environ.get("AIRFLOW_API_USER", "admin")
+_AIRFLOW_API_PASSWORD = os.environ.get("AIRFLOW_API_PASSWORD", "admin")
+
+
+def _accessible_target_filter(user: dict) -> tuple[str, list]:
+    """WHERE-clause fragment + params scoping crawl_targets/documents to the
+    caller's org, additionally restricted to accessible_target_ids for
+    org_sub — mirrors the ad-hoc checks used throughout this router."""
+    if user["role"] == "org_sub":
+        return "ct.organization_id = %s AND ct.id = ANY(%s)", [user["organization_id"], user["accessible_target_ids"] or []]
+    return "ct.organization_id = %s", [user["organization_id"]]
+
+
+def _fetch_recent_dag_runs() -> tuple[list[dict], bool]:
+    """Last 5 runs per monitored DAG via Airflow's REST API (no direct DB
+    access to the separate `airflow` Postgres database). Returns
+    (runs, unreachable) — on any Airflow API failure, returns an empty list
+    with unreachable=True rather than failing the whole monitoring page."""
+    runs: list[dict] = []
+    try:
+        with httpx.Client(auth=(_AIRFLOW_API_USER, _AIRFLOW_API_PASSWORD), timeout=10.0) as client:
+            for dag_id in _MONITORED_DAGS:
+                resp = client.get(
+                    f"{_AIRFLOW_API_BASE}/api/v1/dags/{dag_id}/dagRuns",
+                    params={"order_by": "-execution_date", "limit": 5},
+                )
+                resp.raise_for_status()
+                for run in resp.json().get("dag_runs", []):
+                    start = run.get("start_date")
+                    end = run.get("end_date")
+                    duration_sec = None
+                    if start and end:
+                        duration_sec = (
+                            datetime.fromisoformat(end) - datetime.fromisoformat(start)
+                        ).total_seconds()
+                    runs.append(
+                        {
+                            "dag_id": dag_id,
+                            "run_id": run.get("dag_run_id"),
+                            "state": run.get("state"),
+                            "execution_date": run.get("execution_date"),
+                            "start_date": start,
+                            "end_date": end,
+                            "duration_sec": duration_sec,
+                        }
+                    )
+    except httpx.HTTPError:
+        return [], True
+    return runs, False
+
+
+def _get_system_stats() -> dict | None:
+    """CPU/RAM/disk of the host this container runs on. Reads /proc directly
+    (via psutil) rather than the docker socket — no extra mount/permissions
+    needed, and on a single-VPS deployment (no cgroup memory/cpu limits set
+    on the api container) /proc reflects the host, not just this container.
+    Returns None if psutil is unavailable or reading fails, so the rest of
+    the monitoring page still renders."""
+    try:
+        import psutil
+
+        mem = psutil.virtual_memory()
+        disk = psutil.disk_usage("/")
+        return {
+            "cpu_percent": psutil.cpu_percent(interval=0.2),
+            "mem_percent": mem.percent,
+            "mem_used_gb": mem.used / 1_073_741_824,
+            "mem_total_gb": mem.total / 1_073_741_824,
+            "disk_percent": disk.percent,
+            "disk_used_gb": disk.used / 1_073_741_824,
+            "disk_total_gb": disk.total / 1_073_741_824,
+            "load_avg_1m": os.getloadavg()[0],
+        }
+    except Exception:
+        return None
+
+
+@router.get("/monitoring/system", response_model=SystemStats)
+def get_monitoring_system(_user: dict = Depends(get_current_user)) -> dict:
+    """Split out from /monitoring/overview so the frontend can poll this one
+    much more frequently (near-realtime CPU/RAM) without re-running the
+    overview's DB queries + 5 sequential Airflow API calls every tick."""
+    stats = _get_system_stats()
+    if stats is None:
+        raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "Không đọc được số liệu CPU/RAM")
+    return stats
+
+
+@router.get("/monitoring/overview", response_model=MonitoringOverview)
+def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
+    where_clause, params = _accessible_target_filter(user)
+
+    with get_pool().connection() as conn:
+        if user["role"] == "org_sub" and not (user["accessible_target_ids"] or []):
+            sources_by_status: list[dict] = []
+            failing_sources: list[dict] = []
+            crawled_sources: list[dict] = []
+            document_throughput: list[dict] = []
+        else:
+            sources_by_status = conn.execute(
+                f"""
+                SELECT ct.platform_type, COALESCE(ct.last_status, 'chua_crawl') AS status, count(*) AS count
+                FROM crawl_targets ct
+                WHERE {where_clause}
+                GROUP BY 1, 2
+                ORDER BY 1, 2
+                """,
+                params,
+            ).fetchall()
+
+            failing_sources = conn.execute(
+                f"""
+                SELECT ct.id, ct.platform_type, ct.display_name, ct.url, ct.last_status,
+                       ct.last_error, ct.consecutive_failures, ct.last_crawled_at
+                FROM crawl_targets ct
+                WHERE {where_clause} AND ct.last_status IN ('error', 'session_expired')
+                ORDER BY ct.consecutive_failures DESC, ct.last_crawled_at DESC NULLS LAST
+                LIMIT 50
+                """,
+                params,
+            ).fetchall()
+
+            crawled_sources = conn.execute(
+                f"""
+                SELECT ct.id, ct.platform_type, ct.display_name, ct.url, ct.last_status, ct.last_crawled_at,
+                       (SELECT count(*) FROM documents d WHERE d.target_id = ct.id) AS document_count
+                FROM crawl_targets ct
+                WHERE {where_clause} AND ct.last_status = 'ok'
+                ORDER BY ct.last_crawled_at DESC NULLS LAST
+                LIMIT 200
+                """,
+                params,
+            ).fetchall()
+
+            document_throughput = conn.execute(
+                f"""
+                SELECT date(d.first_seen_at) AS day, d.platform_type, count(*) AS count
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE {where_clause} AND d.first_seen_at >= now() - interval '14 days'
+                GROUP BY 1, 2
+                ORDER BY 1
+                """,
+                params,
+            ).fetchall()
+
+    dag_runs, airflow_unreachable = _fetch_recent_dag_runs()
+
+    return {
+        "sources_by_status": sources_by_status,
+        "failing_sources": failing_sources,
+        "crawled_sources": crawled_sources,
+        "document_throughput": document_throughput,
+        "dag_runs": dag_runs,
+        "airflow_unreachable": airflow_unreachable,
+    }
 
 
 # ---------------------------------------------------------------------------

@@ -9,6 +9,69 @@ export interface SourceItem {
   last_status: string | null
 }
 
+export interface SourceStatusCount {
+  platform_type: string
+  status: string
+  count: number
+}
+
+export interface FailingSource {
+  id: number
+  platform_type: string
+  display_name: string | null
+  url: string
+  last_status: string | null
+  last_error: string | null
+  consecutive_failures: number
+  last_crawled_at: string | null
+}
+
+export interface CrawledSource {
+  id: number
+  platform_type: string
+  display_name: string | null
+  url: string
+  last_status: string | null
+  last_crawled_at: string | null
+  document_count: number
+}
+
+export interface DocumentThroughputPoint {
+  day: string
+  platform_type: string
+  count: number
+}
+
+export interface DagRunItem {
+  dag_id: string
+  run_id: string
+  state: string
+  execution_date: string | null
+  start_date: string | null
+  end_date: string | null
+  duration_sec: number | null
+}
+
+export interface SystemStats {
+  cpu_percent: number
+  mem_percent: number
+  mem_used_gb: number
+  mem_total_gb: number
+  disk_percent: number
+  disk_used_gb: number
+  disk_total_gb: number
+  load_avg_1m: number
+}
+
+export interface MonitoringOverview {
+  sources_by_status: SourceStatusCount[]
+  failing_sources: FailingSource[]
+  crawled_sources: CrawledSource[]
+  document_throughput: DocumentThroughputPoint[]
+  dag_runs: DagRunItem[]
+  airflow_unreachable: boolean
+}
+
 export interface OrgEntitySelection {
   canonical_name: string
   industry_code: string | null

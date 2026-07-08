@@ -52,6 +52,16 @@ Nếu chỉ đổi frontend (React/TSX) thì chỉ cần `docker compose build f
 Nếu chỉ đổi backend (`platform_app/`, migration mới) thì bỏ `frontend` ra
 khỏi lệnh trên.
 
+**Riêng file trong `airflow/dags/` thì KHÔNG cần build** — thư mục này được
+mount sống vào container (không COPY lúc build image), nên `git pull` là đủ
+để code DAG mới có mặt trong container. Airflow scheduler tự quét lại thư
+mục DAG định kỳ (mặc định ~5 phút), nhưng để áp dụng NGAY thì restart
+scheduler + webserver (nhẹ, không rebuild):
+
+```bash
+docker compose restart airflow-scheduler airflow-webserver
+```
+
 ### 3. Khởi động lại
 
 ```bash
@@ -152,7 +162,13 @@ docker compose ps
   (`classification_text_summary`, `classification_image_summary`), tách
   luồng mô tả ảnh 2 bước (mô tả từng ảnh → fold vào text classify) theo
   đúng prompt của `opencrawler/classify/llm_classifier.py`, migration
-  `0020_document_classification_summary.sql`.
+  `0020_document_classification_summary.sql`; và fix lỗi
+  `UniqueViolation: dag_run_dag_id_execution_date_key` khiến
+  `facebook_groups_crawl`/`facebook_pages_crawl`/`forums_crawl`/`news_crawl`
+  thỉnh thoảng fail ở task `trigger_content_pipeline` — `trigger_dag()` mặc
+  định làm tròn `execution_date` xuống 0 microsecond nên 2 DAG trigger
+  `content_pipeline` trong cùng 1 giây bị đụng unique constraint; fix bằng
+  `replace_microseconds=False` + swallow `DagRunAlreadyExists`.
 - Việc bật mode `llm_image` cho từng org là cấu hình runtime
   (`pipeline_settings.classify_mode`, đổi qua trang Cài đặt hoặc
   `set_classify_mode()`) — không nằm trong code deploy, không tự đổi khi

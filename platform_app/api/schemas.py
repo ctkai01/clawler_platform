@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
@@ -98,6 +98,69 @@ class SourceImportResult(BaseModel):
     inserted: int
     skipped: int
     errors: list[str]
+
+
+class SourceStatusCount(BaseModel):
+    platform_type: str
+    status: str
+    count: int
+
+
+class FailingSourceOut(BaseModel):
+    id: int
+    platform_type: str
+    display_name: str | None
+    url: str
+    last_status: str | None
+    last_error: str | None
+    consecutive_failures: int
+    last_crawled_at: datetime | None
+
+
+class CrawledSourceOut(BaseModel):
+    id: int
+    platform_type: str
+    display_name: str | None
+    url: str
+    last_status: str | None
+    last_crawled_at: datetime | None
+    document_count: int
+
+
+class DocumentThroughputPoint(BaseModel):
+    day: date
+    platform_type: str
+    count: int
+
+
+class DagRunOut(BaseModel):
+    dag_id: str
+    run_id: str
+    state: str
+    execution_date: datetime | None
+    start_date: datetime | None
+    end_date: datetime | None
+    duration_sec: float | None
+
+
+class SystemStats(BaseModel):
+    cpu_percent: float
+    mem_percent: float
+    mem_used_gb: float
+    mem_total_gb: float
+    disk_percent: float
+    disk_used_gb: float
+    disk_total_gb: float
+    load_avg_1m: float
+
+
+class MonitoringOverview(BaseModel):
+    sources_by_status: list[SourceStatusCount]
+    failing_sources: list[FailingSourceOut]
+    crawled_sources: list[CrawledSourceOut]
+    document_throughput: list[DocumentThroughputPoint]
+    dag_runs: list[DagRunOut]
+    airflow_unreachable: bool
 
 
 class OrganizationOut(BaseModel):

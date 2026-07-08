@@ -14,6 +14,7 @@ export const SOURCE_STATUS_LABEL: Record<string, string> = {
   ok: 'ok',
   error: 'lỗi',
   session_expired: 'hết phiên đăng nhập',
+  chua_crawl: 'chưa crawl',
 }
 
 export function sourceStatusTone(status: string | null): BadgeTone {

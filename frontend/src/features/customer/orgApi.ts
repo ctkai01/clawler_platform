@@ -9,7 +9,9 @@ import type {
   DocumentListResponse,
   EngagementGrowthPoint,
   EntityNetworkResponse,
+  MonitoringOverview,
   OrgEntitySelection,
+  SystemStats,
   OrgKeywordSelection,
   OrgReport,
   RelatedDocumentItem,
@@ -102,6 +104,9 @@ export const orgApi = {
     search.set('page_size', String(params.page_size ?? 10))
     return apiClient.get<ReportPostsResponse>(`/org/report/posts?${search.toString()}`)
   },
+
+  getMonitoringOverview: () => apiClient.get<MonitoringOverview>('/org/monitoring/overview'),
+  getMonitoringSystem: () => apiClient.get<SystemStats>('/org/monitoring/system'),
 
   listSources: () => apiClient.get<SourceItem[]>('/org/sources'),
   createSource: (body: { platform_type: string; url: string; display_name?: string }) =>

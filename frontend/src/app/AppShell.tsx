@@ -31,6 +31,7 @@ function useNavItems(): NavItem[] {
     items.push(
       { to: '/tracking/entities-keywords', label: 'Entity / Keyword' },
       { to: '/tracking/sources', label: 'Nguồn crawl' },
+      { to: '/tracking/monitoring', label: 'Giám sát' },
     )
   }
   if (user.role === 'org_main') {

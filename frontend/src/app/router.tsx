@@ -16,6 +16,7 @@ import { SettingsPage } from '@/features/customer/settings/SettingsPage'
 import { TopicsViewPage } from '@/features/customer/topics/TopicsViewPage'
 import { EntityKeywordPicker } from '@/features/customer/tracking/EntityKeywordPicker'
 import { SourceManagerPage } from '@/features/customer/tracking/SourceManagerPage'
+import { MonitoringPage } from '@/features/customer/monitoring/MonitoringPage'
 import { SubAccountListPage } from '@/features/customer/members/SubAccountListPage'
 import { SubAccountFormPage } from '@/features/customer/members/SubAccountFormPage'
 
@@ -52,6 +53,7 @@ export const router = createBrowserRouter([
                 children: [
                   { path: 'tracking/entities-keywords', element: <EntityKeywordPicker /> },
                   { path: 'tracking/sources', element: <SourceManagerPage /> },
+                  { path: 'tracking/monitoring', element: <MonitoringPage /> },
                 ],
               },
               {
