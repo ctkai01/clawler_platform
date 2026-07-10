@@ -17,6 +17,7 @@ from platform_app.reporting.word_report import (
     _fmt,
     _sentiment_pie_png,
     _set_cell_text,
+    _set_full_width,
     _shade_cell,
 )
 
@@ -36,8 +37,14 @@ def _pct_change(yesterday: int, today: int) -> str:
     return f"{round((today - yesterday) / yesterday * 100)}%"
 
 
+def _add_full_width_cell(doc):
+    table = doc.add_table(rows=1, cols=1)
+    _set_full_width(table)
+    return table.rows[0].cells[0]
+
+
 def _add_section_header(doc, text: str, *, color: object = _TITLE_BLUE) -> None:
-    cell = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    cell = _add_full_width_cell(doc)
     _shade_cell(cell, _HEADER_GREEN)
     _set_cell_text(cell, text, bold=True, color=color)
 
@@ -56,7 +63,7 @@ def _set_cell_multiline_text(cell, text: str) -> None:
 
 
 def _add_subsection_header(doc, text: str) -> None:
-    cell = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    cell = _add_full_width_cell(doc)
     _shade_cell(cell, _SUBHEADER_GREEN)
     _set_cell_text(cell, text, bold=True)
 
@@ -165,6 +172,7 @@ def build_event_daily_word_report_bytes(
     title_table = doc.add_table(rows=1, cols=1)
     title_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     title_table.style = "Table Grid"
+    _set_full_width(title_table)
     title_cell = title_table.rows[0].cells[0]
     _shade_cell(title_cell, _HEADER_GREEN)
     title_cell.text = ""
@@ -188,8 +196,18 @@ def build_event_daily_word_report_bytes(
     charts_table.style = "Table Grid"
     news_sent = comparison["news"]["today_sentiment"]
     social_sent = comparison["social"]["today_sentiment"]
-    news_pie = _sentiment_pie_png(news_sent["positive"], news_sent["neutral"], news_sent["negative"])
-    social_pie = _sentiment_pie_png(social_sent["positive"], social_sent["neutral"], social_sent["negative"])
+    news_pie = _sentiment_pie_png(
+        news_sent["positive"],
+        news_sent["neutral"],
+        news_sent["negative"],
+        title=f"Thu thập về {event_label} {org_name} trên kênh Báo chí",
+    )
+    social_pie = _sentiment_pie_png(
+        social_sent["positive"],
+        social_sent["neutral"],
+        social_sent["negative"],
+        title=f"Thu thập về {event_label} {org_name} trên mạng xã hội",
+    )
     for cell, png in zip(charts_table.rows[0].cells, (news_pie, social_pie)):
         p = cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -201,7 +219,7 @@ def build_event_daily_word_report_bytes(
     _add_section_header(doc, f"I.  THÔNG TIN VỀ {event_label.upper()} TRÊN KÊNH BÁO CHÍ ONLINE")
 
     _add_subsection_header(doc, f"1.  Đánh giá chung thông tin {event_label} của {org_name} & đối thủ")
-    narrative_cell = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    narrative_cell = _add_full_width_cell(doc)
     _set_cell_multiline_text(narrative_cell, overview_narrative)
 
     _add_subsection_header(doc, f"2.  Thông tin về {event_label} {org_name} trên kênh báo chí online")
@@ -209,7 +227,7 @@ def build_event_daily_word_report_bytes(
 
     _add_subsection_header(doc, f"3.  Thông tin về {event_label} của đối thủ trên kênh báo chí online")
     for brand, matches in competitor_news.items():
-        label_cell = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+        label_cell = _add_full_width_cell(doc)
         _set_cell_text(label_cell, f"-  {brand}:", bold=True)
         _add_news_table(doc, matches)
 

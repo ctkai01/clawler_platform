@@ -32,10 +32,37 @@ def daily_window(report_date: date) -> tuple[datetime, datetime]:
     return period_start, period_end
 
 
+def _add_full_width_cell(doc):
+    table = doc.add_table(rows=1, cols=1)
+    _set_full_width(table)
+    return table.rows[0].cells[0]
+
+
 def _shade_cell(cell, hex_color: str) -> None:
     shd = OxmlElement("w:shd")
     shd.set(qn("w:fill"), hex_color)
     cell._tc.get_or_add_tcPr().append(shd)
+
+
+# Content width for an A4 page with the 1.5cm side margins set on every
+# report section below (21cm - 1.5cm - 1.5cm).
+_CONTENT_WIDTH = Cm(18)
+
+
+def _set_full_width(table) -> None:
+    """Pins a single-column table to the page's content width.
+
+    Without this, Word/Google Docs each pick their own autofit width for a
+    lone wide-text cell (title banners, section headers) — Google Docs in
+    particular tends to collapse it down to a narrow column and wrap the
+    text into a cramped, many-line box instead of spanning the page like
+    the multi-column tables below it do. Real incident: the report title
+    banner rendered as a tall, narrow green box in Google Docs."""
+    table.autofit = False
+    table.allow_autofit = False
+    table.columns[0].width = _CONTENT_WIDTH
+    for row in table.rows:
+        row.cells[0].width = _CONTENT_WIDTH
 
 
 def _set_cell_text(
@@ -80,25 +107,32 @@ def _fmt(n: int) -> str:
     return f"{n:,}".replace(",", ".")
 
 
-def _sentiment_pie_png(positive: int, neutral: int, negative: int) -> bytes:
-    labels = ["Tích cực", "Trung tính", "Tiêu cực"]
+def _sentiment_pie_png(positive: int, neutral: int, negative: int, *, title: str = "") -> bytes:
+    # Legend always lists all 3 sentiments with their fixed colors, even
+    # when a slice is zero (matches the report template) — filtering to
+    # only non-zero slices made the legend jump around between charts and
+    # drop labels entirely once a report had just 1-2 sentiments present.
+    display_labels = ["Tích cực", "Trung lập", "Tiêu cực"]
+    colors = [_SENTIMENT_HEX["Tích cực"], _SENTIMENT_HEX["Trung tính"], _SENTIMENT_HEX["Tiêu cực"]]
     values = [positive, neutral, negative]
-    non_zero = [(v, l, _SENTIMENT_HEX[l]) for v, l in zip(values, labels) if v > 0]
-    if not non_zero:
-        non_zero = [(1, "Không có dữ liệu", "#cccccc")]
 
-    fig, ax = plt.subplots(figsize=(3.4, 2.5), dpi=150)
-    ax.pie(
-        [v for v, _, _ in non_zero],
-        colors=[c for _, _, c in non_zero],
-        autopct=lambda pct: f"{pct:.0f}%" if pct > 0 else "",
-        startangle=90,
-        textprops={"fontsize": 8},
-    )
+    fig, ax = plt.subplots(figsize=(3.4, 3.0), dpi=150)
+    if sum(values) > 0:
+        ax.pie(
+            values,
+            colors=colors,
+            autopct=lambda pct: f"{pct:.1f}%" if pct > 0 else "",
+            startangle=90,
+            textprops={"fontsize": 8},
+        )
+    else:
+        ax.pie([1], colors=["#cccccc"], startangle=90)
+    handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in colors]
     legend = ax.legend(
-        [l for _, l, _ in non_zero], loc="center left", bbox_to_anchor=(1.0, 0.5), fontsize=7, frameon=False
+        handles, display_labels, loc="upper center", bbox_to_anchor=(0.5, -0.04), ncol=3, fontsize=7, frameon=False
     )
-    ax.set_title("Thu thập thông tin theo sắc thái", fontsize=8)
+    if title:
+        ax.set_title(title, fontsize=9, fontweight="bold")
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", bbox_extra_artists=(legend,))
     plt.close(fig)
@@ -190,6 +224,7 @@ def build_daily_word_report_bytes(
     title_table = doc.add_table(rows=1, cols=1)
     title_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     title_table.style = "Table Grid"
+    _set_full_width(title_table)
     title_cell = title_table.rows[0].cells[0]
     _shade_cell(title_cell, _HEADER_GREEN)
     title_cell.text = ""
@@ -207,12 +242,12 @@ def build_daily_word_report_bytes(
     run2.font.size = Pt(13)
 
     # --- I. Tổng quan ---
-    sec1 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sec1 = _add_full_width_cell(doc)
     sec1.text = ""
     _shade_cell(sec1, _HEADER_GREEN)
     _set_cell_text(sec1, f"I.  TỔNG QUAN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", bold=True, color=_TITLE_BLUE)
 
-    sub1 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sub1 = _add_full_width_cell(doc)
     _shade_cell(sub1, _SUBHEADER_GREEN)
     _set_cell_text(sub1, f"1.  TỔNG SỐ THÔNG TIN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", bold=True)
 
@@ -233,13 +268,18 @@ def build_daily_word_report_bytes(
     kpi_cells2[1].add_paragraph().add_run(_fmt(report["total_shares"])).bold = True
 
     pie_cell = pie_cell.merge(kpi_cells2[2])
-    pie_png = _sentiment_pie_png(report["sentiment_positive"], report["sentiment_neutral"], report["sentiment_negative"])
+    pie_png = _sentiment_pie_png(
+        report["sentiment_positive"],
+        report["sentiment_neutral"],
+        report["sentiment_negative"],
+        title="Thu thập thông tin theo sắc thái",
+    )
     pie_cell.text = ""
     pie_p = pie_cell.paragraphs[0]
     pie_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     pie_p.add_run().add_picture(io.BytesIO(pie_png), width=Cm(7.5))
 
-    sub2 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sub2 = _add_full_width_cell(doc)
     _shade_cell(sub2, _SUBHEADER_GREEN)
     _set_cell_text(sub2, f"2.  THÔNG TIN {org_name.upper()} TRÊN MẠNG XÃ HỘI THEO CHỦ ĐỀ", bold=True)
 
@@ -258,7 +298,7 @@ def build_daily_word_report_bytes(
         _set_cell_text(cells[3], _fmt(row["comments"]), align_center=True)
         _set_cell_text(cells[4], _fmt(row["total_engagement"]), align_center=True)
 
-    sub3 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sub3 = _add_full_width_cell(doc)
     _shade_cell(sub3, _SUBHEADER_GREEN)
     _set_cell_text(sub3, f"3.  THÔNG TIN {org_name.upper()} SO SÁNH SẮC THÁI THEO CHỦ ĐỀ", bold=True)
 
@@ -266,13 +306,14 @@ def build_daily_word_report_bytes(
     chart_table = doc.add_table(rows=1, cols=1)
     chart_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     chart_table.style = "Table Grid"
+    _set_full_width(chart_table)
     chart_cell = chart_table.rows[0].cells[0]
     chart_p = chart_cell.paragraphs[0]
     chart_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     chart_p.add_run().add_picture(io.BytesIO(chart_png), width=Cm(16))
 
     # --- II. Tiêu cực ---
-    sec2 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sec2 = _add_full_width_cell(doc)
     _shade_cell(sec2, _HEADER_GREEN)
     sec2.text = ""
     p = sec2.paragraphs[0]
@@ -286,13 +327,13 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    count_neg = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    count_neg = _add_full_width_cell(doc)
     _set_cell_text(count_neg, f"Tổng bài viết tiêu cực: {len(negative_posts):02d} bài viết")
 
     _add_post_list_table(doc, negative_posts)
 
     # --- III. Tích cực ---
-    sec3 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sec3 = _add_full_width_cell(doc)
     _shade_cell(sec3, _HEADER_GREEN)
     sec3.text = ""
     p = sec3.paragraphs[0]
@@ -306,17 +347,17 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    count_pos = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    count_pos = _add_full_width_cell(doc)
     _set_cell_text(count_pos, f"Tổng bài viết tích cực: {len(positive_posts):02d} bài viết")
 
     _add_post_list_table(doc, positive_posts)
 
     # --- IV. Tương tác của SMCC (manual — no such data in this system) ---
-    sec4 = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    sec4 = _add_full_width_cell(doc)
     _shade_cell(sec4, _HEADER_GREEN)
     _set_cell_text(sec4, "IV.  TƯƠNG TÁC CỦA SMCC", bold=True, color=_TITLE_BLUE)
 
-    smcc = doc.add_table(rows=1, cols=1).rows[0].cells[0]
+    smcc = _add_full_width_cell(doc)
     _set_cell_text(smcc, "Tổng số khách hàng được hỗ trợ: ____ trường hợp. (Số liệu SMCC — vui lòng điền tay, hệ thống không có dữ liệu này.)")
 
     buf = io.BytesIO()
