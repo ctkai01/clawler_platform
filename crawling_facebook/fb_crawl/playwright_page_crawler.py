@@ -100,6 +100,14 @@ EXTRACT_PAGE_NAME_JS = """
       .replace(/^\\(\\d+\\+?\\)\\s*/, '')
       .replace(/\\s*\\|\\s*Facebook.*$/i, '')
       .replace(/\\s*-\\s*Facebook.*$/i, '')
+      // The blue-checkmark verified badge next to a Page's name carries a
+      // screen-reader-only label ("Verified account" / "Tài khoản đã xác
+      // minh") that sits inside the same h1/name element — .innerText
+      // includes it right along with the visible name, so it silently got
+      // appended onto the stored page name on every crawl. Real incident:
+      // "Báo Tiền Phong" saved (and kept re-saving) as
+      // "Báo Tiền Phong Verified account".
+      .replace(/\\s*(Verified account|Tài khoản đã xác minh)\\s*$/i, '')
       .trim();
   }
 

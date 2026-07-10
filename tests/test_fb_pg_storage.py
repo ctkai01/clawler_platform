@@ -24,7 +24,7 @@ def target_id() -> int:
         row = conn.execute(
             """
             INSERT INTO crawl_targets (platform_type, url, display_name, enabled)
-            VALUES ('facebook_group', 'https://facebook.com/groups/test123', 'seed', false)
+            VALUES ('facebook_group', 'https://facebook.com/groups/test123', NULL, false)
             RETURNING id
             """
         ).fetchone()
@@ -59,6 +59,19 @@ def test_upsert_group_and_get_group(storage: PgStorage) -> None:
     assert row["name"] == "Test Group"
 
     assert storage.get_group("does_not_exist") is None
+
+
+def test_upsert_group_does_not_overwrite_existing_name(storage: PgStorage) -> None:
+    # display_name is user/import-controlled — a live re-crawl must not
+    # clobber it, even when the freshly-fetched name looks legitimate.
+    # Regression test for a real incident: a Facebook verified-badge label
+    # ("Verified account") kept getting appended onto correct source names
+    # on every crawl because upsert used to always take the new name.
+    storage.upsert_group("group_123", "https://facebook.com/groups/test123", name="Tên đúng")
+    storage.upsert_group("group_123", "https://facebook.com/groups/test123", name="Tên đúng Verified account")
+    row = storage.get_group("group_123")
+    assert row is not None
+    assert row["name"] == "Tên đúng"
 
 
 def test_save_post_roundtrip_and_update(storage: PgStorage) -> None:

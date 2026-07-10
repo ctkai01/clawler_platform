@@ -89,6 +89,9 @@ EXTRACT_GROUP_NAME_JS = """
       .replace(/^\\(\\d+\\+?\\)\\s*/, '')
       .replace(/\\s*\\|\\s*Facebook.*$/i, '')
       .replace(/\\s*-\\s*Facebook.*$/i, '')
+      // See EXTRACT_PAGE_NAME_JS's cleanTitle comment — verified-badge
+      // screen-reader label bleeding into the name.
+      .replace(/\\s*(Verified account|Tài khoản đã xác minh)\\s*$/i, '')
       .trim();
   }
 
@@ -211,16 +214,22 @@ class PlaywrightGroupCrawler:
                 return None
             name = await page.evaluate(EXTRACT_GROUP_NAME_JS)
             name = (name or "").strip()
-            # A "Public" group can still hide its feed from non-members —
-            # the shell (name, member count) renders fine, but there are no
-            # real posts to find, so the crawl used to silently report
-            # success with 0 documents. Surface it as a distinct, actionable
-            # error instead of a generic session failure.
+            # A "Join Group" button alone does NOT mean the feed is hidden
+            # — that button shows for every non-member on every group,
+            # member-restricted or not. Real incident: flagged a group as
+            # not_a_member even though the same non-member account could
+            # browse its posts fine in a real browser. Only treat it as
+            # actually blocked when there's ALSO no real post link
+            # findable on the page (the same detection discover_feed_post_urls
+            # uses) — that's the real "can't see content" signal.
             if await self._has_join_wall(page):
-                raise NotGroupMemberError(
-                    f"Tài khoản chưa tham gia group '{name or group_url}' — "
-                    "chỉ thấy được thông tin công khai, không thấy bài viết"
-                )
+                group_id = extract_group_id(group_url) or ""
+                feed_urls = await page.evaluate(DISCOVER_FEED_URLS_JS, group_id)
+                if not feed_urls:
+                    raise NotGroupMemberError(
+                        f"Tài khoản chưa tham gia group '{name or group_url}' — "
+                        "chỉ thấy được thông tin công khai, không thấy bài viết"
+                    )
             return name or None
         except NotGroupMemberError:
             raise

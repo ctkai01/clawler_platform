@@ -133,7 +133,7 @@ class Storage:
                     INSERT INTO groups (group_id, name, url) VALUES (?, ?, ?)
                     ON CONFLICT(group_id) DO UPDATE SET
                         url = excluded.url,
-                        name = COALESCE(excluded.name, groups.name)
+                        name = COALESCE(groups.name, excluded.name)
                     """,
                     (group_id, name, url),
                 )
@@ -159,7 +159,7 @@ class Storage:
                     INSERT INTO pages (page_id, name, url) VALUES (?, ?, ?)
                     ON CONFLICT(page_id) DO UPDATE SET
                         url = excluded.url,
-                        name = COALESCE(excluded.name, pages.name)
+                        name = COALESCE(pages.name, excluded.name)
                     """,
                     (page_id, name, url),
                 )

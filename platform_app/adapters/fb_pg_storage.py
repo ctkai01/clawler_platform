@@ -56,7 +56,15 @@ class PgStorage:
                 UPDATE crawl_targets
                 SET external_id = %s,
                     url = %s,
-                    display_name = COALESCE(%s, display_name),
+                    -- display_name is user/import-controlled — the crawler
+                    -- only fills it in when it's still unset (first crawl),
+                    -- never overwrites an existing name. Previously this
+                    -- re-wrote it from the live page on every single crawl,
+                    -- so any extraction glitch (a verified-badge label, a
+                    -- generic "All"/notification-count fallback, ...)
+                    -- silently clobbered a correct, user-set name over and
+                    -- over instead of just being a one-time bad read.
+                    display_name = COALESCE(display_name, %s),
                     updated_at = now()
                 WHERE id = %s AND platform_type = %s
                 """,
