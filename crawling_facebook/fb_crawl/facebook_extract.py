@@ -668,24 +668,52 @@ EXTRACT_POST_PAGE_JS = """
   // reference the requested post's ID.
   function findMatchingArticle(id) {
     if (!id) return null;
+    // A comment's own deep-link ALSO embeds the parent post's id (e.g.
+    // ".../posts/{id}/?comment_id=..."), so a plain substring match on the
+    // id matches every comment's article just as well as the post's own.
+    // Real incident: the post's article was still a "Loading..." skeleton
+    // (0 links) when checked, so this matched the first already-rendered
+    // COMMENT instead and saved its text as the post's content. Excluding
+    // comment_id links makes a comment's article structurally unmatchable,
+    // regardless of load timing.
     const articles = document.querySelectorAll('[role="article"]');
     for (const el of articles) {
       const links = el.querySelectorAll('a[href]');
       for (const a of links) {
-        if ((a.getAttribute('href') || '').includes(id)) return el;
+        const href = a.getAttribute('href') || '';
+        if (href.includes(id) && !href.includes('comment_id=')) return el;
       }
     }
     return null;
   }
 
   const matchedRoot = findMatchingArticle(targetPostId);
-  if (targetPostId && !matchedRoot) {
-    // We know exactly which post we want but couldn't find its article on
-    // the page (Facebook rendered something else — a suggested/viral post,
-    // a login-wall, etc). Falling back to "first article" here is what
-    // caused a real incident: a small page's post got saved with a
-    // completely unrelated viral post's content and 373k fake reactions.
-    // Returning nothing is strictly safer than returning the wrong thing.
+  // Opening a permalink URL often renders the post as a [role="dialog"]
+  // overlaying the group/page's regular feed, rather than as its own
+  // standalone page. In that view the OP's own post text is NOT wrapped
+  // in [role="article"] at all (confirmed live) — only comments/replies
+  // are — so findMatchingArticle can never find it there by definition,
+  // no matter how long we wait. Fall back to the whole dialog as the
+  // search scope in that case; the comment-exclusion filter below (which
+  // strips every known comment's text out of the candidate list) is what
+  // keeps this from picking up a comment instead of the real post.
+  // There can be more than one [role="dialog"] on the page at once (a
+  // hovercard/tooltip/menu can also use that role) — the FIRST one isn't
+  // reliably the content modal, so pick whichever dialog actually has
+  // comments (confirmed live: this varies between loads of the exact
+  // same URL).
+  const dialog = [...document.querySelectorAll('[role="dialog"]')].find(
+    (d) => d.querySelector('[role="article"]')
+  );
+  const dialogHasComments = !!dialog;
+  if (targetPostId && !matchedRoot && !dialogHasComments) {
+    // We know exactly which post we want but couldn't find its article OR
+    // a dialog to fall back to (Facebook rendered something else — a
+    // suggested/viral post, a login-wall, etc). Falling back to "first
+    // article" here is what caused a real incident: a small page's post
+    // got saved with a completely unrelated viral post's content and
+    // 373k fake reactions. Returning nothing is strictly safer than
+    // returning the wrong thing.
     return {
       url: location.href, groupId: '', pageId: '', author: '', authorId: '', topic: '',
       content: '', publishedTime: '', publishedUnix: null, isEdited: false,
@@ -694,6 +722,7 @@ EXTRACT_POST_PAGE_JS = """
   }
   const postRoot =
     matchedRoot ||
+    (targetPostId && dialogHasComments ? dialog : null) ||
     document.querySelector('[role="article"]') ||
     document.querySelector('div[data-pagelet*="FeedUnit"]') ||
     document.body;
@@ -722,7 +751,14 @@ EXTRACT_POST_PAGE_JS = """
   const authorCounts = {};
   postRoot.querySelectorAll('[aria-label]').forEach((el) => {
     const label = el.getAttribute('aria-label') || '';
-    const m = label.match(/bài viết của (.+)$/i) || label.match(/post by (.+)$/i);
+    // "X's post" (e.g. "Comment on Anonymous participant's post") is the
+    // toolbar-button phrasing seen in a permalink-dialog view — different
+    // wording from the "bài viết của X"/"post by X" phrasing used
+    // elsewhere, but the same signal.
+    const m =
+      label.match(/bài viết của (.+)$/i) ||
+      label.match(/post by (.+)$/i) ||
+      label.match(/^.+ (?:to|on) (.+)'s post$/i);
     if (m) {
       const name = m[1].trim();
       authorCounts[name] = (authorCounts[name] || 0) + 1;
@@ -797,7 +833,17 @@ EXTRACT_POST_PAGE_JS = """
     if (t.length < 40) return;
     if (/xem thêm$/i.test(t) && t.length < 120) return;
     if (commentTexts.has(t)) return;
-    if (comments.some((c) => c.body === t || t.startsWith(c.body))) return;
+    // Bidirectional substring check, not just startsWith/equality — the
+    // candidate div's text and the parsed comment body frequently DON'T
+    // match either exactly or as a clean prefix: a comment's own div can
+    // render as "{Author}{body}" with no separator (candidate is LONGER
+    // than c.body), while the parsed comment body itself often has
+    // "{Author}\\n{body}\\nSee translation\\nEdited" wrapped around the
+    // same core text (c.body is LONGER than the candidate div, which only
+    // holds the bare paragraph). Either direction has to count as a
+    // match, or real comment text keeps slipping through as if it were
+    // the post's own content.
+    if (comments.some((c) => c.body && (t.includes(c.body) || c.body.includes(t)))) return;
     if (/^(Thích|Trả lời|Chia sẻ|Like|Reply|Share)$/i.test(t)) return;
     candidates.push({ text: t, len: t.length, el });
   });
@@ -837,6 +883,17 @@ EXTRACT_POST_PAGE_JS = """
       topic = topic.slice(0, 150).trim() + '…';
     }
 
+    // Prefer the aria-label-derived author (authorCounts, computed above)
+    // when it's unambiguous — it's Facebook's own "this is the post's
+    // author" signal, tied directly to the post rather than inferred from
+    // DOM proximity. Real incident: an anonymous-post author ("Anonymous
+    // participant") has no profile link at all, so the DOM-walk below
+    // found nothing near the post and kept climbing until it picked up
+    // the first COMMENTER's real profile link instead.
+    if (Object.keys(authorCounts).length === 1) {
+      author = Object.keys(authorCounts)[0];
+    }
+
     // Walk up from the content div looking for a profile link, but never past
     // postRoot — real bug found in production: Page posts link to the page
     // via /PageName/ (doesn't match /user/ or profile.php), so this walk
@@ -845,23 +902,25 @@ EXTRACT_POST_PAGE_JS = """
     // a link to the CRAWLER'S OWN LOGGED-IN SESSION ACCOUNT and misattributed
     // dozens of unrelated posts across many different pages to that one
     // account. Stop the walk at postRoot itself.
-    const anchor = candidates[0];
-    let node = anchor.el;
-    for (let i = 0; i < 15 && node; i++) {
-      const links = node.querySelectorAll
-        ? node.querySelectorAll('a[href*="/user/"], a[href*="profile.php"]')
-        : [];
-      for (const link of links) {
-        const name = (link.innerText || '').trim();
-        const href = link.getAttribute('href') || '';
-        if (name && name.length < 60 && !/^(Theo dõi|Follow|THE LIEMS|Nhóm)$/i.test(name)) {
-          author = name;
-          authorId = extractUserId(href);
-          break;
+    if (!author) {
+      const anchor = candidates[0];
+      let node = anchor.el;
+      for (let i = 0; i < 15 && node; i++) {
+        const links = node.querySelectorAll
+          ? node.querySelectorAll('a[href*="/user/"], a[href*="profile.php"]')
+          : [];
+        for (const link of links) {
+          const name = (link.innerText || '').trim();
+          const href = link.getAttribute('href') || '';
+          if (name && name.length < 60 && !/^(Theo dõi|Follow|THE LIEMS|Nhóm)$/i.test(name)) {
+            author = name;
+            authorId = extractUserId(href);
+            break;
+          }
         }
+        if (author || node === postRoot) break;
+        node = node.parentElement;
       }
-      if (author || node === postRoot) break;
-      node = node.parentElement;
     }
   }
 
@@ -1086,24 +1145,46 @@ EXTRACT_MEDIA_JS = """
   // needed here too so images/videos don't get attached to the wrong post.
   function findMatchingArticle(id) {
     if (!id) return null;
+    // A comment's own deep-link ALSO embeds the parent post's id (e.g.
+    // ".../posts/{id}/?comment_id=..."), so a plain substring match on the
+    // id matches every comment's article just as well as the post's own.
+    // Real incident: the post's article was still a "Loading..." skeleton
+    // (0 links) when checked, so this matched the first already-rendered
+    // COMMENT instead and saved its text as the post's content. Excluding
+    // comment_id links makes a comment's article structurally unmatchable,
+    // regardless of load timing.
     const articles = document.querySelectorAll('[role="article"]');
     for (const el of articles) {
       const links = el.querySelectorAll('a[href]');
       for (const a of links) {
-        if ((a.getAttribute('href') || '').includes(id)) return el;
+        const href = a.getAttribute('href') || '';
+        if (href.includes(id) && !href.includes('comment_id=')) return el;
       }
     }
     return null;
   }
 
   const matchedRoot = findMatchingArticle(targetPostId);
-  if (targetPostId && !matchedRoot) {
+  // See EXTRACT_POST_PAGE_JS's dialog-fallback comment — the OP's post
+  // isn't wrapped in [role="article"] in a permalink-modal view, so widen
+  // to the dialog rather than failing closed when one is present.
+  // There can be more than one [role="dialog"] on the page at once (a
+  // hovercard/tooltip/menu can also use that role) — the FIRST one isn't
+  // reliably the content modal, so pick whichever dialog actually has
+  // comments (confirmed live: this varies between loads of the exact
+  // same URL).
+  const dialog = [...document.querySelectorAll('[role="dialog"]')].find(
+    (d) => d.querySelector('[role="article"]')
+  );
+  const dialogHasComments = !!dialog;
+  if (targetPostId && !matchedRoot && !dialogHasComments) {
     // Same fail-closed rule as EXTRACT_POST_PAGE_JS: don't attach media
     // from an unrelated article to this post.
     return { images: [], videos: [] };
   }
   const postRoot =
     matchedRoot ||
+    (targetPostId && dialogHasComments ? dialog : null) ||
     document.querySelector('[role="article"]') ||
     document.querySelector('div[data-pagelet*="FeedUnit"]') ||
     document.body;
