@@ -13,11 +13,12 @@ from platform_app.reporting.word_report import (
     _NEGATIVE_RED,
     _SUBHEADER_GREEN,
     _TITLE_BLUE,
+    _add_header_line,
     _add_hyperlink,
+    _add_shaded_paragraph,
     _fmt,
-    _sentiment_pie_png,
+    _sentiment_pie_pair_png,
     _set_cell_text,
-    _set_full_width,
     _shade_cell,
 )
 
@@ -37,35 +38,22 @@ def _pct_change(yesterday: int, today: int) -> str:
     return f"{round((today - yesterday) / yesterday * 100)}%"
 
 
-def _add_full_width_cell(doc):
-    table = doc.add_table(rows=1, cols=1)
-    _set_full_width(table)
-    return table.rows[0].cells[0]
-
-
 def _add_section_header(doc, text: str, *, color: object = _TITLE_BLUE) -> None:
-    cell = _add_full_width_cell(doc)
-    _shade_cell(cell, _HEADER_GREEN)
-    _set_cell_text(cell, text, bold=True, color=color)
+    _add_header_line(doc, text, _HEADER_GREEN, color=color, align_center=False)
 
 
-def _set_cell_multiline_text(cell, text: str) -> None:
-    """Renders each non-empty line of `text` as its own paragraph in the
-    cell — an LLM narrative with "- Brand: ..." bullet lines needs real line
-    breaks, not one run with embedded '\\n' (Word ignores those)."""
-    cell.text = ""
-    lines = [line.strip() for line in (text or "").split("\n") if line.strip()]
-    if not lines:
-        return
-    cell.paragraphs[0].add_run(lines[0])
-    for line in lines[1:]:
-        cell.add_paragraph().add_run(line)
+def _add_multiline_paragraphs(doc, text: str) -> None:
+    """One real paragraph per non-empty line — an LLM narrative with
+    "- Brand: ..." bullet lines needs real line breaks, not one run with
+    embedded '\\n' (Word ignores those)."""
+    for line in (text or "").split("\n"):
+        line = line.strip()
+        if line:
+            doc.add_paragraph(line)
 
 
 def _add_subsection_header(doc, text: str) -> None:
-    cell = _add_full_width_cell(doc)
-    _shade_cell(cell, _SUBHEADER_GREEN)
-    _set_cell_text(cell, text, bold=True)
+    _add_header_line(doc, text, _SUBHEADER_GREEN, align_center=False)
 
 
 def _add_news_table(doc, matches: list[dict]) -> None:
@@ -169,49 +157,35 @@ def build_event_daily_word_report_bytes(
     section.left_margin = Cm(1.5)
     section.right_margin = Cm(1.5)
 
-    title_table = doc.add_table(rows=1, cols=1)
-    title_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    title_table.style = "Table Grid"
-    _set_full_width(title_table)
-    title_cell = title_table.rows[0].cells[0]
-    _shade_cell(title_cell, _HEADER_GREEN)
-    title_cell.text = ""
-    p1 = title_cell.paragraphs[0]
-    p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run1 = p1.add_run(f"BÁO CÁO ONLINE MẠNG XÃ HỘI VÀ BÁO CHÍ VỀ {event_label.upper()} {org_name.upper()}")
-    run1.bold = True
-    run1.font.color.rgb = _TITLE_BLUE
-    run1.font.size = Pt(13)
-    p2 = title_cell.add_paragraph()
-    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run2 = p2.add_run(f"NGÀY {report_date.strftime('%d/%m/%Y')}")
-    run2.bold = True
-    run2.font.color.rgb = _TITLE_BLUE
-    run2.font.size = Pt(13)
+    _add_header_line(
+        doc,
+        f"BÁO CÁO ONLINE MẠNG XÃ HỘI VÀ BÁO CHÍ VỀ {event_label.upper()} {org_name.upper()}",
+        _HEADER_GREEN,
+        color=_TITLE_BLUE,
+        size=13,
+    )
+    _add_header_line(doc, f"NGÀY {report_date.strftime('%d/%m/%Y')}", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
 
     _add_comparison_table(doc, comparison)
 
-    charts_table = doc.add_table(rows=1, cols=2)
-    charts_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    charts_table.style = "Table Grid"
+    # Both pies are drawn into ONE image (side-by-side matplotlib subplots)
+    # rather than placed in a 2-column table — a table's rendered width is
+    # decided independently by each renderer, and Google Docs' docx
+    # importer doesn't honor an explicit width override the way Word does
+    # (confirmed on a real report: the chart table got clipped to roughly
+    # half its set width). A single picture in one paragraph has no such
+    # ambiguity.
     news_sent = comparison["news"]["today_sentiment"]
     social_sent = comparison["social"]["today_sentiment"]
-    news_pie = _sentiment_pie_png(
-        news_sent["positive"],
-        news_sent["neutral"],
-        news_sent["negative"],
-        title=f"Thu thập về {event_label} {org_name} trên kênh Báo chí",
+    pies_png = _sentiment_pie_pair_png(
+        (news_sent["positive"], news_sent["neutral"], news_sent["negative"]),
+        (social_sent["positive"], social_sent["neutral"], social_sent["negative"]),
+        left_title=f"Thu thập về {event_label} {org_name} trên kênh Báo chí",
+        right_title=f"Thu thập về {event_label} {org_name} trên mạng xã hội",
     )
-    social_pie = _sentiment_pie_png(
-        social_sent["positive"],
-        social_sent["neutral"],
-        social_sent["negative"],
-        title=f"Thu thập về {event_label} {org_name} trên mạng xã hội",
-    )
-    for cell, png in zip(charts_table.rows[0].cells, (news_pie, social_pie)):
-        p = cell.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.add_run().add_picture(io.BytesIO(png), width=Cm(7))
+    pies_p = doc.add_paragraph()
+    pies_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pies_p.add_run().add_picture(io.BytesIO(pies_png), width=Cm(17))
 
     doc.add_page_break()
 
@@ -219,16 +193,15 @@ def build_event_daily_word_report_bytes(
     _add_section_header(doc, f"I.  THÔNG TIN VỀ {event_label.upper()} TRÊN KÊNH BÁO CHÍ ONLINE")
 
     _add_subsection_header(doc, f"1.  Đánh giá chung thông tin {event_label} của {org_name} & đối thủ")
-    narrative_cell = _add_full_width_cell(doc)
-    _set_cell_multiline_text(narrative_cell, overview_narrative)
+    _add_multiline_paragraphs(doc, overview_narrative)
 
     _add_subsection_header(doc, f"2.  Thông tin về {event_label} {org_name} trên kênh báo chí online")
     _add_news_table(doc, mobifone_news)
 
     _add_subsection_header(doc, f"3.  Thông tin về {event_label} của đối thủ trên kênh báo chí online")
     for brand, matches in competitor_news.items():
-        label_cell = _add_full_width_cell(doc)
-        _set_cell_text(label_cell, f"-  {brand}:", bold=True)
+        run = doc.add_paragraph().add_run(f"-  {brand}:")
+        run.bold = True
         _add_news_table(doc, matches)
 
     # --- II. Mạng xã hội ---

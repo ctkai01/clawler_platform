@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import textwrap
 from datetime import date, datetime, timedelta, timezone
 
 import matplotlib
@@ -32,37 +33,46 @@ def daily_window(report_date: date) -> tuple[datetime, datetime]:
     return period_start, period_end
 
 
-def _add_full_width_cell(doc):
-    table = doc.add_table(rows=1, cols=1)
-    _set_full_width(table)
-    return table.rows[0].cells[0]
-
-
 def _shade_cell(cell, hex_color: str) -> None:
     shd = OxmlElement("w:shd")
     shd.set(qn("w:fill"), hex_color)
     cell._tc.get_or_add_tcPr().append(shd)
 
 
-# Content width for an A4 page with the 1.5cm side margins set on every
-# report section below (21cm - 1.5cm - 1.5cm).
-_CONTENT_WIDTH = Cm(18)
+def _add_shaded_paragraph(doc, hex_color: str):
+    """A colored 'banner' line — used for section headers/titles instead of
+    a lone single-column table.
+
+    A single-column table's rendered width is up to each renderer's own
+    autofit heuristic. Word honors an explicit `tblW`/`tblLayout=fixed`
+    override; Google Docs' docx importer does not — confirmed on a real
+    generated report, where the title table's `tblW` was correctly written
+    as 18cm in the XML (checked by re-opening the file with python-docx)
+    and Google Docs still rendered it as a narrow, many-line-wrapped box.
+    A paragraph has no such ambiguity: it always spans the page's full
+    text width, in every renderer, by definition."""
+    p = doc.add_paragraph()
+    pPr = p._p.get_or_add_pPr()
+    shd = OxmlElement("w:shd")
+    shd.set(qn("w:fill"), hex_color)
+    pPr.append(shd)
+    p.paragraph_format.space_before = Pt(2)
+    p.paragraph_format.space_after = Pt(2)
+    return p
 
 
-def _set_full_width(table) -> None:
-    """Pins a single-column table to the page's content width.
-
-    Without this, Word/Google Docs each pick their own autofit width for a
-    lone wide-text cell (title banners, section headers) — Google Docs in
-    particular tends to collapse it down to a narrow column and wrap the
-    text into a cramped, many-line box instead of spanning the page like
-    the multi-column tables below it do. Real incident: the report title
-    banner rendered as a tall, narrow green box in Google Docs."""
-    table.autofit = False
-    table.allow_autofit = False
-    table.columns[0].width = _CONTENT_WIDTH
-    for row in table.rows:
-        row.cells[0].width = _CONTENT_WIDTH
+def _add_header_line(
+    doc, text: str, hex_color: str, *, color: RGBColor | None = None, size: int = 11, align_center: bool = True
+):
+    p = _add_shaded_paragraph(doc, hex_color)
+    if align_center:
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run(text)
+    run.bold = True
+    if color is not None:
+        run.font.color.rgb = color
+    run.font.size = Pt(size)
+    return p
 
 
 def _set_cell_text(
@@ -107,34 +117,62 @@ def _fmt(n: int) -> str:
     return f"{n:,}".replace(",", ".")
 
 
-def _sentiment_pie_png(positive: int, neutral: int, negative: int, *, title: str = "") -> bytes:
+_SENTIMENT_PIE_LABELS = ["Tích cực", "Trung lập", "Tiêu cực"]
+_SENTIMENT_PIE_COLORS = [_SENTIMENT_HEX["Tích cực"], _SENTIMENT_HEX["Trung tính"], _SENTIMENT_HEX["Tiêu cực"]]
+
+
+def _draw_sentiment_pie(ax, positive: int, neutral: int, negative: int, *, title: str = "") -> None:
     # Legend always lists all 3 sentiments with their fixed colors, even
     # when a slice is zero (matches the report template) — filtering to
     # only non-zero slices made the legend jump around between charts and
     # drop labels entirely once a report had just 1-2 sentiments present.
-    display_labels = ["Tích cực", "Trung lập", "Tiêu cực"]
-    colors = [_SENTIMENT_HEX["Tích cực"], _SENTIMENT_HEX["Trung tính"], _SENTIMENT_HEX["Tiêu cực"]]
     values = [positive, neutral, negative]
-
-    fig, ax = plt.subplots(figsize=(3.4, 3.0), dpi=150)
     if sum(values) > 0:
         ax.pie(
             values,
-            colors=colors,
+            colors=_SENTIMENT_PIE_COLORS,
             autopct=lambda pct: f"{pct:.1f}%" if pct > 0 else "",
             startangle=90,
             textprops={"fontsize": 8},
         )
     else:
         ax.pie([1], colors=["#cccccc"], startangle=90)
-    handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in colors]
-    legend = ax.legend(
-        handles, display_labels, loc="upper center", bbox_to_anchor=(0.5, -0.04), ncol=3, fontsize=7, frameon=False
+    handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in _SENTIMENT_PIE_COLORS]
+    ax.legend(
+        handles,
+        _SENTIMENT_PIE_LABELS,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.04),
+        ncol=3,
+        fontsize=7,
+        frameon=False,
     )
     if title:
         ax.set_title(title, fontsize=9, fontweight="bold")
+
+
+def _sentiment_pie_png(positive: int, neutral: int, negative: int, *, title: str = "") -> bytes:
+    fig, ax = plt.subplots(figsize=(3.4, 3.0), dpi=150)
+    _draw_sentiment_pie(ax, positive, neutral, negative, title=title)
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight", bbox_extra_artists=(legend,))
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    plt.close(fig)
+    return buf.getvalue()
+
+
+def _sentiment_pie_pair_png(
+    left: tuple[int, int, int], right: tuple[int, int, int], *, left_title: str = "", right_title: str = ""
+) -> bytes:
+    """Two pies side by side in a single image — used instead of a 2-column
+    table so the pair can't get clipped by a table-width quirk (see
+    _add_shaded_paragraph's docstring: Google Docs' docx importer doesn't
+    reliably honor an explicit table width)."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8.5, 3.4), dpi=150)
+    fig.subplots_adjust(wspace=0.6)
+    _draw_sentiment_pie(ax1, *left, title="\n".join(textwrap.wrap(left_title, 28)))
+    _draw_sentiment_pie(ax2, *right, title="\n".join(textwrap.wrap(right_title, 28)))
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
     plt.close(fig)
     return buf.getvalue()
 
@@ -221,35 +259,16 @@ def build_daily_word_report_bytes(
     section.right_margin = Cm(1.5)
 
     # --- Title ---
-    title_table = doc.add_table(rows=1, cols=1)
-    title_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    title_table.style = "Table Grid"
-    _set_full_width(title_table)
-    title_cell = title_table.rows[0].cells[0]
-    _shade_cell(title_cell, _HEADER_GREEN)
-    title_cell.text = ""
-    p1 = title_cell.paragraphs[0]
-    p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run1 = p1.add_run("🔖BÁO CÁO MẠNG XÃ HỘI")
-    run1.bold = True
-    run1.font.color.rgb = _TITLE_BLUE
-    run1.font.size = Pt(13)
-    p2 = title_cell.add_paragraph()
-    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run2 = p2.add_run(f"NGÀY {report_date.strftime('%d/%m/%Y')}")
-    run2.bold = True
-    run2.font.color.rgb = _TITLE_BLUE
-    run2.font.size = Pt(13)
+    _add_header_line(doc, "🔖BÁO CÁO MẠNG XÃ HỘI", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
+    _add_header_line(doc, f"NGÀY {report_date.strftime('%d/%m/%Y')}", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
 
     # --- I. Tổng quan ---
-    sec1 = _add_full_width_cell(doc)
-    sec1.text = ""
-    _shade_cell(sec1, _HEADER_GREEN)
-    _set_cell_text(sec1, f"I.  TỔNG QUAN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", bold=True, color=_TITLE_BLUE)
-
-    sub1 = _add_full_width_cell(doc)
-    _shade_cell(sub1, _SUBHEADER_GREEN)
-    _set_cell_text(sub1, f"1.  TỔNG SỐ THÔNG TIN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", bold=True)
+    _add_header_line(
+        doc, f"I.  TỔNG QUAN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", _HEADER_GREEN, color=_TITLE_BLUE, align_center=False
+    )
+    _add_header_line(
+        doc, f"1.  TỔNG SỐ THÔNG TIN VỀ {org_name.upper()} TRÊN MẠNG XÃ HỘI", _SUBHEADER_GREEN, align_center=False
+    )
 
     kpi_table = doc.add_table(rows=2, cols=3)
     kpi_table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -279,9 +298,9 @@ def build_daily_word_report_bytes(
     pie_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     pie_p.add_run().add_picture(io.BytesIO(pie_png), width=Cm(7.5))
 
-    sub2 = _add_full_width_cell(doc)
-    _shade_cell(sub2, _SUBHEADER_GREEN)
-    _set_cell_text(sub2, f"2.  THÔNG TIN {org_name.upper()} TRÊN MẠNG XÃ HỘI THEO CHỦ ĐỀ", bold=True)
+    _add_header_line(
+        doc, f"2.  THÔNG TIN {org_name.upper()} TRÊN MẠNG XÃ HỘI THEO CHỦ ĐỀ", _SUBHEADER_GREEN, align_center=False
+    )
 
     topic_rows = report["keyword_topic_detail"] or [{"topic": "—", "posts": 0, "comments": 0, "total_engagement": 0}]
     topic_table = doc.add_table(rows=1 + len(topic_rows), cols=5)
@@ -298,25 +317,17 @@ def build_daily_word_report_bytes(
         _set_cell_text(cells[3], _fmt(row["comments"]), align_center=True)
         _set_cell_text(cells[4], _fmt(row["total_engagement"]), align_center=True)
 
-    sub3 = _add_full_width_cell(doc)
-    _shade_cell(sub3, _SUBHEADER_GREEN)
-    _set_cell_text(sub3, f"3.  THÔNG TIN {org_name.upper()} SO SÁNH SẮC THÁI THEO CHỦ ĐỀ", bold=True)
+    _add_header_line(
+        doc, f"3.  THÔNG TIN {org_name.upper()} SO SÁNH SẮC THÁI THEO CHỦ ĐỀ", _SUBHEADER_GREEN, align_center=False
+    )
 
     chart_png = _sentiment_by_topic_chart_png(topic_sentiment_rows)
-    chart_table = doc.add_table(rows=1, cols=1)
-    chart_table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    chart_table.style = "Table Grid"
-    _set_full_width(chart_table)
-    chart_cell = chart_table.rows[0].cells[0]
-    chart_p = chart_cell.paragraphs[0]
+    chart_p = doc.add_paragraph()
     chart_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     chart_p.add_run().add_picture(io.BytesIO(chart_png), width=Cm(16))
 
     # --- II. Tiêu cực ---
-    sec2 = _add_full_width_cell(doc)
-    _shade_cell(sec2, _HEADER_GREEN)
-    sec2.text = ""
-    p = sec2.paragraphs[0]
+    p = _add_shaded_paragraph(doc, _HEADER_GREEN)
     r = p.add_run("II.  THÔNG TIN ")
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
@@ -327,16 +338,12 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    count_neg = _add_full_width_cell(doc)
-    _set_cell_text(count_neg, f"Tổng bài viết tiêu cực: {len(negative_posts):02d} bài viết")
+    doc.add_paragraph(f"Tổng bài viết tiêu cực: {len(negative_posts):02d} bài viết")
 
     _add_post_list_table(doc, negative_posts)
 
     # --- III. Tích cực ---
-    sec3 = _add_full_width_cell(doc)
-    _shade_cell(sec3, _HEADER_GREEN)
-    sec3.text = ""
-    p = sec3.paragraphs[0]
+    p = _add_shaded_paragraph(doc, _HEADER_GREEN)
     r = p.add_run("III.  THÔNG TIN ")
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
@@ -347,18 +354,16 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    count_pos = _add_full_width_cell(doc)
-    _set_cell_text(count_pos, f"Tổng bài viết tích cực: {len(positive_posts):02d} bài viết")
+    doc.add_paragraph(f"Tổng bài viết tích cực: {len(positive_posts):02d} bài viết")
 
     _add_post_list_table(doc, positive_posts)
 
     # --- IV. Tương tác của SMCC (manual — no such data in this system) ---
-    sec4 = _add_full_width_cell(doc)
-    _shade_cell(sec4, _HEADER_GREEN)
-    _set_cell_text(sec4, "IV.  TƯƠNG TÁC CỦA SMCC", bold=True, color=_TITLE_BLUE)
+    _add_header_line(doc, "IV.  TƯƠNG TÁC CỦA SMCC", _HEADER_GREEN, color=_TITLE_BLUE, align_center=False)
 
-    smcc = _add_full_width_cell(doc)
-    _set_cell_text(smcc, "Tổng số khách hàng được hỗ trợ: ____ trường hợp. (Số liệu SMCC — vui lòng điền tay, hệ thống không có dữ liệu này.)")
+    doc.add_paragraph(
+        "Tổng số khách hàng được hỗ trợ: ____ trường hợp. (Số liệu SMCC — vui lòng điền tay, hệ thống không có dữ liệu này.)"
+    )
 
     buf = io.BytesIO()
     doc.save(buf)
