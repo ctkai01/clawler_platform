@@ -117,7 +117,7 @@ def _add_social_table(doc, matches: list[dict]) -> None:
 
 
 def _add_comparison_table(doc, comparison: dict) -> None:
-    table = doc.add_table(rows=8, cols=5)
+    table = doc.add_table(rows=9, cols=5)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.style = "Table Grid"
     headers = table.rows[0].cells
@@ -141,8 +141,8 @@ def _add_comparison_table(doc, comparison: dict) -> None:
         key = {"Tích cực": "positive", "Trung lập": "neutral", "Tiêu cực": "negative"}[label]
         _row(j, "-", label, news["yesterday_sentiment"][key], news["today_sentiment"][key])
     _row(5, "II", "Thu thập trên kênh Mạng xã hội", social["yesterday_total"], social["today_total"], bold=True)
-    for j, label in zip((6, 7), ("Tích cực", "Tiêu cực")):
-        key = {"Tích cực": "positive", "Tiêu cực": "negative"}[label]
+    for j, label in enumerate(("Tích cực", "Trung lập", "Tiêu cực"), start=6):
+        key = {"Tích cực": "positive", "Trung lập": "neutral", "Tiêu cực": "negative"}[label]
         _row(j, "-", label, social["yesterday_sentiment"][key], social["today_sentiment"][key])
 
 
