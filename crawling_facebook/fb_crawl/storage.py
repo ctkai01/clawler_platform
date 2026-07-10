@@ -357,6 +357,14 @@ class Storage:
             ).fetchall()
             return [dict(r) for r in rows]
 
+    def known_post_ids(self, owner_id: str, *, source_type: str = "group") -> set[str]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT post_id FROM posts WHERE group_id = ? AND source_type = ?",
+                (owner_id, source_type),
+            ).fetchall()
+        return {r["post_id"] for r in rows}
+
     def mark_group_synced(self, group_id: str) -> None:
         with self._conn() as conn:
             conn.execute(

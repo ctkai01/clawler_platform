@@ -22,7 +22,7 @@ def facebook_groups_crawl():
 
         return [{"id": t.id, "url": t.url} for t in get_due_targets("facebook_group", limit=BATCH_CAP)]
 
-    @task(pool="fb_playwright_pool", queue="fb_crawler", retries=0)
+    @task(pool="fb_group_pool", queue="fb_crawler", retries=0)
     def crawl_one(target: dict) -> None:
         import asyncio
 

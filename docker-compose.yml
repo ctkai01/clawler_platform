@@ -15,6 +15,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
     CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
     FB_SESSION_PATH: /opt/app/secrets/fb_session.json
+    FB_SESSION_DIR: /opt/app/secrets/fb_sessions
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - airflow-logs:/opt/airflow/logs
@@ -110,7 +111,8 @@ services:
       - |
         airflow db migrate
         airflow users create --username admin --password "${AIRFLOW_ADMIN_PASSWORD:-admin}" --firstname Admin --lastname Admin --role Admin --email admin@example.com || true
-        airflow pools set fb_playwright_pool 3 "Concurrent Playwright/Chromium sessions for FB crawling"
+        airflow pools set fb_group_pool 2 "FB Group crawl sessions — kept low, all groups share one account (membership-gated)"
+        airflow pools set fb_page_pool 5 "FB Page crawl sessions — spread across the FB session pool (multiple accounts)"
         airflow pools set http_pool 30 "Concurrent lightweight HTTP crawls (forum/news)"
         python -m platform_app.db.migrate
 
@@ -147,7 +149,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - airflow-logs:/opt/airflow/logs
       - ./secrets:/opt/app/secrets:ro
-    command: airflow celery worker --queues fb_crawler --concurrency 3
+    command: airflow celery worker --queues fb_crawler --concurrency 7
     depends_on:
       airflow-init:
         condition: service_completed_successfully

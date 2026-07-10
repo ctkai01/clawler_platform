@@ -21,6 +21,16 @@ WORKDIR /opt/app
 RUN pip install --no-cache-dir "apache-airflow[celery,postgres,redis]==${AIRFLOW_VERSION}" \
     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
 
+# ---------------------------------------------------------------------------
+# fb-worker: branches off `base` BEFORE the app-source COPY below, so editing
+# crawling_facebook/ or platform_app/ (which happens constantly) never
+# invalidates this layer and forces a ~180MB Chromium re-download — only
+# bumping the pinned playwright version here does.
+# ---------------------------------------------------------------------------
+FROM base AS fb-worker
+RUN pip install --no-cache-dir playwright>=1.40.0 \
+    && playwright install --with-deps chromium
+
 COPY crawling_facebook/ ./crawling_facebook/
 COPY platform_app/ ./platform_app/
 COPY pyproject.toml ./
@@ -31,13 +41,15 @@ COPY csv/ ./csv/
 COPY airflow/dags/ ${AIRFLOW_HOME}/dags/
 
 # ---------------------------------------------------------------------------
-# fb-worker: base + Playwright/Chromium, for the resource-heavy FB queue only
-# ---------------------------------------------------------------------------
-FROM base AS fb-worker
-RUN pip install --no-cache-dir playwright>=1.40.0 \
-    && playwright install --with-deps chromium
-
-# ---------------------------------------------------------------------------
-# http-worker / webserver / scheduler: base as-is, no browser binaries
+# http-worker / webserver / scheduler: base + app source, no browser binaries
 # ---------------------------------------------------------------------------
 FROM base AS http-worker
+
+COPY crawling_facebook/ ./crawling_facebook/
+COPY platform_app/ ./platform_app/
+COPY pyproject.toml ./
+RUN pip install --no-cache-dir -e ./crawling_facebook -e .
+
+COPY config/ ./config/
+COPY csv/ ./csv/
+COPY airflow/dags/ ${AIRFLOW_HOME}/dags/
