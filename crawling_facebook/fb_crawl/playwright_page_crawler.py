@@ -97,10 +97,21 @@ EXTRACT_PAGE_NAME_JS = """
       .trim();
   }
 
+  // A degraded session (checkpoint/rate-limited) doesn't always redirect to
+  // a different URL — Facebook sometimes silently serves a generic surface
+  // (its Watch feed, Notifications) for the SAME URL instead of the real
+  // page. The old code only excluded literal "facebook"/"trang", so it
+  // happily accepted that generic surface's UI chrome label ("All" —
+  // Watch's category tab) as the page's real name, then crawled whatever
+  // random viral content was on it. Real incident: 34 targets, 414 saved
+  // "posts" that were actually unrelated drama/showbiz/sports content with
+  // reaction counts in the millions.
+  const JUNK_NAMES = /^(all|tất cả|watch|reels|notifications|thông báo)$/i;
+
   const og = document.querySelector('meta[property="og:title"]');
   if (og && og.content) {
     const t = cleanTitle(og.content);
-    if (t && !/^facebook$/i.test(t)) return t;
+    if (t && !/^facebook$/i.test(t) && !JUNK_NAMES.test(t)) return t;
   }
 
   for (const sel of [
@@ -112,11 +123,11 @@ EXTRACT_PAGE_NAME_JS = """
   ]) {
     const el = document.querySelector(sel);
     const t = (el && el.innerText || '').trim();
-    if (t && t.length < 200 && !/^(facebook|trang)$/i.test(t)) return t;
+    if (t && t.length < 200 && !/^(facebook|trang)$/i.test(t) && !JUNK_NAMES.test(t)) return t;
   }
 
   const title = cleanTitle(document.title);
-  if (title && !/^facebook$/i.test(title)) return title;
+  if (title && !/^facebook$/i.test(title) && !JUNK_NAMES.test(title)) return title;
   return '';
 }
 """
@@ -152,16 +163,15 @@ class PlaywrightPageCrawler:
         context_kwargs: dict = {
             "viewport": {"width": 1280, "height": 900},
             "locale": "vi-VN",
+            "timezone_id": "Asia/Ho_Chi_Minh",
+            "user_agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            ),
         }
         if self.storage_state_path and self.storage_state_path.exists():
             context_kwargs["storage_state"] = str(self.storage_state_path)
         self._context = await self._browser.new_context(**context_kwargs)
-        await self._context.route(
-            "**/*",
-            lambda route: route.abort()
-            if route.request.resource_type == "font"
-            else route.continue_(),
-        )
         return self
 
     async def __aexit__(self, *args: object) -> None:
@@ -213,6 +223,9 @@ class PlaywrightPageCrawler:
         try:
             await page.goto(normalize_page_url(page_url), wait_until="domcontentloaded", timeout=60000)
             await page.wait_for_timeout(3000)
+            if "checkpoint" in page.url:
+                logger.warning("Session bị checkpoint khi mở page %s (%s)", page_url, page.url)
+                return None
             name = await page.evaluate(EXTRACT_PAGE_NAME_JS)
             name = (name or "").strip()
             return name or None
@@ -387,9 +400,10 @@ class PlaywrightPageCrawler:
         await self._try_play_video(page)
         await self._expand_comments(page)
         crawled_at = datetime.now(timezone.utc)
-        data = await page.evaluate(EXTRACT_POST_PAGE_JS)
+        target_post_id = extract_post_id(post_url)
+        data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
         await hydrate_precise_comment_times(page, data.get("comments") or [])
-        media = await page.evaluate(EXTRACT_MEDIA_JS)
+        media = await page.evaluate(EXTRACT_MEDIA_JS, target_post_id)
         post = build_post_from_page_data(data, fallback_url=post_url, crawled_at=crawled_at)
         if post:
             post.images = media.get("images") or []
@@ -399,9 +413,9 @@ class PlaywrightPageCrawler:
             post.comments = post.comments[: self.max_comments]
             return post
         await page.wait_for_timeout(1500)
-        data = await page.evaluate(EXTRACT_POST_PAGE_JS)
+        data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
         await hydrate_precise_comment_times(page, data.get("comments") or [])
-        media = await page.evaluate(EXTRACT_MEDIA_JS)
+        media = await page.evaluate(EXTRACT_MEDIA_JS, target_post_id)
         post = build_post_from_page_data(data, fallback_url=post_url, crawled_at=crawled_at)
         if post:
             post.images = media.get("images") or []

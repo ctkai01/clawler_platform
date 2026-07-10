@@ -14,6 +14,7 @@ from fb_crawl.filters import (
 from fb_crawl.parser import (
     dedupe_post_urls,
     extract_group_id,
+    extract_post_id,
     normalize_group_post_url,
 )
 from fb_crawl.playwright_crawler import PlaywrightGroupCrawler
@@ -59,12 +60,14 @@ class GroupCrawlService:
 
         feed_urls = await self.crawler.discover_feed_post_urls(group_url)
         recheck_only: list[str] = []
+        recheck_post_ids: set[str] = set()
         if not feed_only:
             recheck_rows = self.storage.list_posts_to_recheck(
                 group_id,
                 since_hours=max(self.new_post_hours, self.recent_comment_minutes / 60.0),
                 source_type="group",
             )
+            recheck_post_ids = {r["post_id"] for r in recheck_rows}
             recheck_urls = [
                 normalize_group_post_url(r["url"], group_id) or r["url"]
                 for r in recheck_rows
@@ -72,11 +75,24 @@ class GroupCrawlService:
             ]
             feed_set = set(feed_urls)
             recheck_only = [u for u in recheck_urls if u not in feed_set]
-        all_urls = dedupe_post_urls(feed_urls + recheck_only, group_id)
+
+        # Every post still visible in the feed used to get fully re-fetched
+        # (page load + comment expansion) on every crawl, even ones we
+        # already have and that aren't due a recheck — most of the cost for
+        # an active group, since the feed rarely shrinks. Skip those; keep
+        # anything brand new or explicitly due for a recheck.
+        known_ids = self.storage.known_post_ids(group_id, source_type="group")
+        new_feed_urls = [
+            u for u in feed_urls
+            if (extract_post_id(u) or u) not in known_ids or (extract_post_id(u) or u) in recheck_post_ids
+        ]
+
+        all_urls = dedupe_post_urls(new_feed_urls + recheck_only, group_id)
         logger.info(
-            "Crawl %d URL (feed=%d, recheck=%d%s)",
+            "Crawl %d URL (feed=%d bo qua %d bai da biet, recheck=%d%s)",
             len(all_urls),
             len(feed_urls),
+            len(feed_urls) - len(new_feed_urls),
             len(recheck_only),
             ", feed-only" if feed_only else "",
         )

@@ -18,7 +18,7 @@ from fb_crawl.parser import (
 from fb_crawl.types import Comment, Post, PostEngagement
 
 EXTRACT_POST_PAGE_JS = """
-() => {
+(targetPostId) => {
   const skip = new Set([
     'thích', 'like', 'trả lời', 'reply', 'chia sẻ', 'share', 'bình luận', 'comment',
     'theo dõi', 'follow', 'phản hồi',
@@ -660,7 +660,40 @@ EXTRACT_POST_PAGE_JS = """
     return normalizeEngagement(eng);
   }
 
+  // A permalink URL (esp. opaque pfbid IDs) doesn't always render as an
+  // isolated single-post view — Facebook sometimes serves the Page's
+  // regular feed instead. Blindly taking the FIRST [role="article"] then
+  // silently attaches a DIFFERENT post's content to this URL (wrong post
+  // pinned/most-recent at the top). Prefer the article whose own links
+  // reference the requested post's ID.
+  function findMatchingArticle(id) {
+    if (!id) return null;
+    const articles = document.querySelectorAll('[role="article"]');
+    for (const el of articles) {
+      const links = el.querySelectorAll('a[href]');
+      for (const a of links) {
+        if ((a.getAttribute('href') || '').includes(id)) return el;
+      }
+    }
+    return null;
+  }
+
+  const matchedRoot = findMatchingArticle(targetPostId);
+  if (targetPostId && !matchedRoot) {
+    // We know exactly which post we want but couldn't find its article on
+    // the page (Facebook rendered something else — a suggested/viral post,
+    // a login-wall, etc). Falling back to "first article" here is what
+    // caused a real incident: a small page's post got saved with a
+    // completely unrelated viral post's content and 373k fake reactions.
+    // Returning nothing is strictly safer than returning the wrong thing.
+    return {
+      url: location.href, groupId: '', pageId: '', author: '', authorId: '', topic: '',
+      content: '', publishedTime: '', publishedUnix: null, isEdited: false,
+      editedTime: '', images: [], videos: [], engagement: normalizeEngagement(null), comments: [],
+    };
+  }
   const postRoot =
+    matchedRoot ||
     document.querySelector('[role="article"]') ||
     document.querySelector('div[data-pagelet*="FeedUnit"]') ||
     document.body;
@@ -1048,8 +1081,29 @@ async (opts) => {
 """
 
 EXTRACT_MEDIA_JS = """
-() => {
+(targetPostId) => {
+  // See EXTRACT_POST_PAGE_JS's findMatchingArticle comment — same fix,
+  // needed here too so images/videos don't get attached to the wrong post.
+  function findMatchingArticle(id) {
+    if (!id) return null;
+    const articles = document.querySelectorAll('[role="article"]');
+    for (const el of articles) {
+      const links = el.querySelectorAll('a[href]');
+      for (const a of links) {
+        if ((a.getAttribute('href') || '').includes(id)) return el;
+      }
+    }
+    return null;
+  }
+
+  const matchedRoot = findMatchingArticle(targetPostId);
+  if (targetPostId && !matchedRoot) {
+    // Same fail-closed rule as EXTRACT_POST_PAGE_JS: don't attach media
+    // from an unrelated article to this post.
+    return { images: [], videos: [] };
+  }
   const postRoot =
+    matchedRoot ||
     document.querySelector('[role="article"]') ||
     document.querySelector('div[data-pagelet*="FeedUnit"]') ||
     document.body;

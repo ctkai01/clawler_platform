@@ -119,6 +119,7 @@ class FailingSourceOut(BaseModel):
     last_error: str | None
     consecutive_failures: int
     last_crawled_at: datetime | None
+    fb_session_key: str | None
 
 
 class CrawledSourceOut(BaseModel):
@@ -135,6 +136,15 @@ class DocumentThroughputPoint(BaseModel):
     day: date
     platform_type: str
     count: int
+
+
+class RecentDocumentOut(BaseModel):
+    id: int
+    platform_type: str
+    topic: str | None
+    url: str
+    target_name: str | None
+    first_seen_at: datetime
 
 
 class DagRunOut(BaseModel):
@@ -164,6 +174,7 @@ class MonitoringOverview(BaseModel):
     crawled_sources: list[CrawledSourceOut]
     document_throughput: list[DocumentThroughputPoint]
     dag_runs: list[DagRunOut]
+    recent_documents: list[RecentDocumentOut]
     airflow_unreachable: bool
 
 

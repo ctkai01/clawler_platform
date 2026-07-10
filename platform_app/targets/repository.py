@@ -16,6 +16,7 @@ class CrawlTarget:
     display_name: str | None
     config: dict
     crawl_interval_sec: int
+    fb_session_key: str | None = None
 
 
 def _row_to_target(row: dict) -> CrawlTarget:
@@ -28,6 +29,7 @@ def _row_to_target(row: dict) -> CrawlTarget:
         display_name=row["display_name"],
         config=row["config"] or {},
         crawl_interval_sec=row["crawl_interval_sec"],
+        fb_session_key=row.get("fb_session_key"),
     )
 
 
@@ -36,7 +38,8 @@ def get_target(target_id: int) -> CrawlTarget | None:
     with pool.connection() as conn:
         row = conn.execute(
             """
-            SELECT id, platform_type, url, parser_key, external_id, display_name, config, crawl_interval_sec
+            SELECT id, platform_type, url, parser_key, external_id, display_name, config, crawl_interval_sec,
+                   fb_session_key
             FROM crawl_targets WHERE id = %s
             """,
             (target_id,),
@@ -49,7 +52,8 @@ def get_due_targets(platform_type: str, *, limit: int = 50) -> list[CrawlTarget]
     with pool.connection() as conn:
         rows = conn.execute(
             """
-            SELECT id, platform_type, url, parser_key, external_id, display_name, config, crawl_interval_sec
+            SELECT id, platform_type, url, parser_key, external_id, display_name, config, crawl_interval_sec,
+                   fb_session_key
             FROM crawl_targets
             WHERE platform_type = %s AND enabled
               AND (

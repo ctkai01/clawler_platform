@@ -5,6 +5,13 @@ from datetime import datetime
 from enum import Enum
 
 
+class NotGroupMemberError(RuntimeError):
+    """The crawling account can see the group's public shell (name, member
+    count) but not its feed — Facebook gates post content behind group
+    membership even for "Public" groups. Distinct from a dead/expired
+    session: re-logging in won't fix this, joining the group will."""
+
+
 class PostChangeType(str, Enum):
     NEW = "new"
     CONTENT_EDITED = "content_edited"

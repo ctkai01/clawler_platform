@@ -193,21 +193,35 @@ def extract_page_id(url: str) -> str | None:
         return None
 
     first = parts[0].lower()
-    if first in _PAGE_RESERVED:
-        return None
 
+    # These two need to run BEFORE the blanket _PAGE_RESERVED rejection
+    # below — both "profile.php" and "people" are themselves reserved
+    # (not usable as a page slug), but the URL *shapes* they introduce
+    # (?id=... / .../<numeric-id>/) are valid, extractable identifiers.
     if first == "profile.php":
         pid = qs.get("id", [None])[0]
         return pid.strip() if pid else None
+
+    if first == "people":
+        # /people/<slug>/<numeric-id>/ used to mean "personal profile only",
+        # but Facebook now also assigns it to real Pages that haven't
+        # claimed a vanity username (e.g. "Mobifone Internet Hải Phòng").
+        # Rejecting the whole path shape blocked legitimate pages; the
+        # numeric id further down the path is the stable identifier either way.
+        for part in parts[1:]:
+            if part.isdigit():
+                return part
+        return None
+
+    if first in _PAGE_RESERVED:
+        return None
 
     if len(parts) >= 2 and parts[1] in ("posts", "videos", "photos", "reels", "reel"):
         slug = parts[0]
         if slug.lower() not in _PAGE_RESERVED:
             return slug
 
-    if first not in _PAGE_RESERVED:
-        return parts[0]
-    return None
+    return parts[0]
 
 
 def normalize_page_url(url: str) -> str:

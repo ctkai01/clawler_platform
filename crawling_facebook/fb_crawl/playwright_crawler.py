@@ -21,7 +21,7 @@ from fb_crawl.parser import (
     extract_post_id,
     normalize_group_post_url,
 )
-from fb_crawl.types import Post
+from fb_crawl.types import NotGroupMemberError, Post
 
 logger = logging.getLogger(__name__)
 
@@ -89,20 +89,25 @@ EXTRACT_GROUP_NAME_JS = """
       .trim();
   }
 
+  // See EXTRACT_PAGE_NAME_JS's JUNK_NAMES comment — same fix, needed here
+  // too so a degraded session's generic Watch/Notifications surface doesn't
+  // get accepted as this group's real name.
+  const JUNK_NAMES = /^(all|tất cả|watch|reels|notifications|thông báo)$/i;
+
   const og = document.querySelector('meta[property="og:title"]');
   if (og && og.content) {
     const t = cleanTitle(og.content);
-    if (t && !/^facebook$/i.test(t)) return t;
+    if (t && !/^facebook$/i.test(t) && !JUNK_NAMES.test(t)) return t;
   }
 
   for (const sel of ['h1[dir="auto"]', 'h1', '[role="main"] h1', 'a[href*="/groups/"] span']) {
     const el = document.querySelector(sel);
     const t = (el && el.innerText || '').trim();
-    if (t && t.length < 200 && !/^(facebook|nhóm)$/i.test(t)) return t;
+    if (t && t.length < 200 && !/^(facebook|nhóm)$/i.test(t) && !JUNK_NAMES.test(t)) return t;
   }
 
   const title = cleanTitle(document.title);
-  if (title && !/^facebook$/i.test(title)) return title;
+  if (title && !/^facebook$/i.test(title) && !JUNK_NAMES.test(title)) return title;
   return '';
 }
 """
@@ -138,16 +143,15 @@ class PlaywrightGroupCrawler:
         context_kwargs: dict = {
             "viewport": {"width": 1280, "height": 900},
             "locale": "vi-VN",
+            "timezone_id": "Asia/Ho_Chi_Minh",
+            "user_agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            ),
         }
         if self.storage_state_path and self.storage_state_path.exists():
             context_kwargs["storage_state"] = str(self.storage_state_path)
         self._context = await self._browser.new_context(**context_kwargs)
-        await self._context.route(
-            "**/*",
-            lambda route: route.abort()
-            if route.request.resource_type == "font"
-            else route.continue_(),
-        )
         return self
 
     async def __aexit__(self, *args: object) -> None:
@@ -199,14 +203,43 @@ class PlaywrightGroupCrawler:
         try:
             await page.goto(group_url, wait_until="domcontentloaded", timeout=60000)
             await page.wait_for_timeout(3000)
+            if "checkpoint" in page.url:
+                logger.warning("Session bị checkpoint khi mở group %s (%s)", group_url, page.url)
+                return None
             name = await page.evaluate(EXTRACT_GROUP_NAME_JS)
             name = (name or "").strip()
+            # A "Public" group can still hide its feed from non-members —
+            # the shell (name, member count) renders fine, but there are no
+            # real posts to find, so the crawl used to silently report
+            # success with 0 documents. Surface it as a distinct, actionable
+            # error instead of a generic session failure.
+            if await self._has_join_wall(page):
+                raise NotGroupMemberError(
+                    f"Tài khoản chưa tham gia group '{name or group_url}' — "
+                    "chỉ thấy được thông tin công khai, không thấy bài viết"
+                )
             return name or None
+        except NotGroupMemberError:
+            raise
         except Exception as exc:
             logger.warning("Không lấy được tên nhóm %s: %s", group_url, exc)
             return None
         finally:
             await page.close()
+
+    @staticmethod
+    async def _has_join_wall(page: Page) -> bool:
+        return await page.evaluate(
+            """() => {
+                const needles = ['join group', 'tham gia nhóm', 'yêu cầu tham gia', 'request to join'];
+                const els = document.querySelectorAll('[role="button"], a, span');
+                for (const el of els) {
+                    const text = (el.innerText || el.getAttribute('aria-label') || '').trim().toLowerCase();
+                    if (needles.includes(text)) return true;
+                }
+                return false;
+            }"""
+        )
 
     async def discover_feed_post_urls(
         self,
@@ -370,9 +403,10 @@ class PlaywrightGroupCrawler:
         await self._try_play_video(page)
         await self._expand_comments(page)
         crawled_at = datetime.now(timezone.utc)
-        data = await page.evaluate(EXTRACT_POST_PAGE_JS)
+        target_post_id = extract_post_id(post_url)
+        data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
         await hydrate_precise_comment_times(page, data.get("comments") or [])
-        media = await page.evaluate(EXTRACT_MEDIA_JS)
+        media = await page.evaluate(EXTRACT_MEDIA_JS, target_post_id)
         post = build_post_from_page_data(data, fallback_url=post_url, crawled_at=crawled_at)
         if post:
             post.images = media.get("images") or []
@@ -381,9 +415,9 @@ class PlaywrightGroupCrawler:
             post.comments = post.comments[: self.max_comments]
             return post
         await page.wait_for_timeout(1500)
-        data = await page.evaluate(EXTRACT_POST_PAGE_JS)
+        data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
         await hydrate_precise_comment_times(page, data.get("comments") or [])
-        media = await page.evaluate(EXTRACT_MEDIA_JS)
+        media = await page.evaluate(EXTRACT_MEDIA_JS, target_post_id)
         post = build_post_from_page_data(data, fallback_url=post_url, crawled_at=crawled_at)
         if post:
             post.images = media.get("images") or []

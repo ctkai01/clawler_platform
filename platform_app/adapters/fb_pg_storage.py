@@ -361,6 +361,17 @@ class PgStorage:
             ).fetchall()
         return list(rows)
 
+    def known_post_ids(self, owner_id: str, *, source_type: str) -> set[str]:
+        with self.pool.connection() as conn:
+            rows = conn.execute(
+                """
+                SELECT external_doc_id FROM documents
+                WHERE target_id = %s AND platform_type = %s AND owner_external_id = %s AND source_type = %s
+                """,
+                (self.target_id, self.platform_type, owner_id, source_type),
+            ).fetchall()
+        return {r["external_doc_id"] for r in rows}
+
     def known_comment_ids(self, post_id: str) -> set[str]:
         with self.pool.connection() as conn:
             rows = conn.execute(

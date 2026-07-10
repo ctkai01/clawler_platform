@@ -10,15 +10,52 @@ from fb_crawl.page_service import PageCrawlService
 from fb_crawl.playwright_crawler import PlaywrightGroupCrawler
 from fb_crawl.playwright_page_crawler import PlaywrightPageCrawler
 from fb_crawl.service import GroupCrawlService
+from fb_crawl.types import NotGroupMemberError
 
 from platform_app.adapters.fb_pg_storage import PgStorage
 from platform_app.targets import repository
+from platform_app.targets.repository import CrawlTarget
 
 logger = logging.getLogger(__name__)
 
+# Legacy single-session path — kept as the final fallback so a VPS that
+# hasn't set up FB_SESSION_DIR yet (no `fb_sessions/` directory) keeps
+# working exactly as before this change.
 DEFAULT_SESSION = Path(
     os.environ.get("FB_SESSION_PATH", str(Path.home() / ".fb_crawl" / "fb_session.json"))
 )
+FB_SESSION_DIR = Path(
+    os.environ.get("FB_SESSION_DIR", str(Path.home() / ".fb_crawl" / "sessions"))
+)
+
+
+def _resolve_session_path(target: CrawlTarget) -> Path:
+    """Picks which FB account's session file to crawl `target` with.
+
+    Both pages and unassigned groups round-robin across whatever session
+    files exist. Groups ideally use an account that's actually a member
+    (set fb_session_key explicitly for those), but requiring that up front
+    for every group was pure friction: many "Public" groups' feeds are
+    readable without joining, so most auto-assigned groups just work. For
+    the ones that don't, fetch_group_name's join-wall check raises
+    NotGroupMemberError with a specific, actionable status instead of
+    silently reporting a 0-document "success" — see crawl_target below.
+    """
+    keys = sorted(p.stem for p in FB_SESSION_DIR.glob("*.json")) if FB_SESSION_DIR.is_dir() else []
+
+    if target.fb_session_key:
+        if target.fb_session_key not in keys:
+            raise ValueError(
+                f"fb_session_key={target.fb_session_key!r} không tồn tại trong {FB_SESSION_DIR}"
+            )
+        return FB_SESSION_DIR / f"{target.fb_session_key}.json"
+
+    if len(keys) <= 1:
+        # Single-account setup (today's default everywhere) — no pool to
+        # choose from, behave exactly like the old single-file DEFAULT_SESSION.
+        return FB_SESSION_DIR / f"{keys[0]}.json" if keys else DEFAULT_SESSION
+
+    return FB_SESSION_DIR / f"{keys[target.id % len(keys)]}.json"
 
 
 class SessionExpiredError(RuntimeError):
@@ -41,10 +78,11 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
     cfg = target.config or {}
 
     try:
+        session_path = _resolve_session_path(target)
         if target.platform_type == "facebook_group":
             async with PlaywrightGroupCrawler(
                 headless=not show_browser,
-                storage_state_path=DEFAULT_SESSION,
+                storage_state_path=session_path,
                 max_scrolls=cfg.get("max_scrolls", 50),
                 max_comments=cfg.get("max_comments", 100),
                 concurrency=cfg.get("concurrency", 3),
@@ -58,7 +96,7 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
         else:
             async with PlaywrightPageCrawler(
                 headless=not show_browser,
-                storage_state_path=DEFAULT_SESSION,
+                storage_state_path=session_path,
                 max_scrolls=cfg.get("max_scrolls", 50),
                 max_comments=cfg.get("max_comments", 100),
                 concurrency=cfg.get("concurrency", 3),
@@ -71,6 +109,9 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
                 )
     except SessionExpiredError as exc:
         repository.mark_failed(target_id, str(exc), status="session_expired")
+        raise
+    except NotGroupMemberError as exc:
+        repository.mark_failed(target_id, str(exc), status="not_a_member")
         raise
     except Exception as exc:  # noqa: BLE001 - must reach Airflow as a failed task
         repository.mark_failed(target_id, str(exc))
