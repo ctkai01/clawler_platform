@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Pagination } from '@/components/ui/pagination'
 import { useToast } from '@/components/ui/toast'
 import { PageHeader } from '@/components/PageHeader'
-import { PLATFORM_LABEL, SOURCE_STATUS_LABEL, sourceStatusTone } from '@/lib/platform'
+import { PLATFORM_LABEL, SOURCE_STATUS_DESCRIPTION, SOURCE_STATUS_LABEL, sourceStatusTone } from '@/lib/platform'
 import { ApiError } from '@/lib/apiClient'
 import type { SourceImportResult } from '@/types/org'
 
@@ -320,7 +320,11 @@ export function SourceManagerPage() {
                       </a>
                     </td>
                     <td className="px-5 py-3">
-                      <Badge tone={sourceStatusTone(s.last_status)} dot>
+                      <Badge
+                        tone={sourceStatusTone(s.last_status)}
+                        dot
+                        title={SOURCE_STATUS_DESCRIPTION[s.last_status ?? 'chua_crawl']}
+                      >
                         {s.last_status ? (SOURCE_STATUS_LABEL[s.last_status] ?? s.last_status) : 'chưa crawl'}
                       </Badge>
                     </td>

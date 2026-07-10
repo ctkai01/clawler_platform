@@ -24,6 +24,7 @@ export interface FailingSource {
   last_error: string | null
   consecutive_failures: number
   last_crawled_at: string | null
+  fb_session_key: string | null
 }
 
 export interface CrawledSource {
@@ -40,6 +41,15 @@ export interface DocumentThroughputPoint {
   day: string
   platform_type: string
   count: number
+}
+
+export interface RecentDocument {
+  id: number
+  platform_type: string
+  topic: string | null
+  url: string
+  target_name: string | null
+  first_seen_at: string
 }
 
 export interface DagRunItem {
@@ -69,6 +79,7 @@ export interface MonitoringOverview {
   crawled_sources: CrawledSource[]
   document_throughput: DocumentThroughputPoint[]
   dag_runs: DagRunItem[]
+  recent_documents: RecentDocument[]
   airflow_unreachable: boolean
 }
 

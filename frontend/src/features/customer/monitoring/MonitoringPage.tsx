@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { RefreshCw } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -6,9 +7,10 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
+import { Pagination } from '@/components/ui/pagination'
 import { PageHeader } from '@/components/PageHeader'
-import { PLATFORM_LABEL, SOURCE_STATUS_LABEL, sourceStatusTone, type BadgeTone } from '@/lib/platform'
-import type { CrawledSource, DagRunItem, SystemStats } from '@/types/org'
+import { PLATFORM_LABEL, SOURCE_STATUS_DESCRIPTION, SOURCE_STATUS_LABEL, sourceStatusTone, type BadgeTone } from '@/lib/platform'
+import type { CrawledSource, DagRunItem, RecentDocument, SystemStats } from '@/types/org'
 import { cn } from '@/lib/utils'
 
 const PLATFORM_ORDER = ['facebook_group', 'facebook_page', 'forum', 'news']
@@ -220,6 +222,48 @@ function CrawledSourcesTable({ sources }: { sources: CrawledSource[] }) {
   )
 }
 
+function RecentDocumentsTable({ documents }: { documents: RecentDocument[] }) {
+  if (documents.length === 0) {
+    return <p className="text-sm text-muted">Chưa có bài viết nào.</p>
+  }
+  return (
+    <div className="max-h-96 overflow-y-auto overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead className="sticky top-0 bg-surface">
+          <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-muted">
+            <th className="py-2 pr-4">Tiêu đề</th>
+            <th className="py-2 pr-4">Nền tảng</th>
+            <th className="py-2 pr-4">Nguồn</th>
+            <th className="py-2 text-right">Thêm vào lúc</th>
+          </tr>
+        </thead>
+        <tbody>
+          {documents.map((d) => (
+            <tr key={d.id} className="border-b border-line last:border-0">
+              <td className="max-w-sm truncate py-2.5 pr-4">
+                <a
+                  href={d.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-ink hover:underline"
+                  title={d.topic ?? d.url}
+                >
+                  {d.topic ?? d.url}
+                </a>
+              </td>
+              <td className="py-2.5 pr-4">
+                <Badge tone="neutral">{PLATFORM_LABEL[d.platform_type] ?? d.platform_type}</Badge>
+              </td>
+              <td className="max-w-40 truncate py-2.5 pr-4 text-xs text-muted">{d.target_name ?? '—'}</td>
+              <td className="py-2.5 text-right tabular text-muted">{formatDateTime(d.first_seen_at)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function DagRunTable({ runs }: { runs: DagRunItem[] }) {
   if (runs.length === 0) {
     return <p className="text-sm text-muted">Chưa có lịch sử chạy DAG.</p>
@@ -239,7 +283,9 @@ function DagRunTable({ runs }: { runs: DagRunItem[] }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-muted">
-                  <th className="py-1.5 pr-4">Thời điểm chạy</th>
+                  <th className="py-1.5 pr-4" title="Giờ thực sự bắt đầu chạy — có thể trễ hơn khung giờ lịch, vì Airflow chỉ tạo run sau khi khung giờ đó kết thúc">
+                    Thời điểm chạy
+                  </th>
                   <th className="py-1.5 pr-4">Trạng thái</th>
                   <th className="py-1.5 text-right">Thời lượng</th>
                 </tr>
@@ -247,7 +293,7 @@ function DagRunTable({ runs }: { runs: DagRunItem[] }) {
               <tbody>
                 {dagRuns.map((run) => (
                   <tr key={run.run_id} className="border-b border-line last:border-0">
-                    <td className="py-1.5 pr-4 tabular text-muted">{formatDateTime(run.execution_date)}</td>
+                    <td className="py-1.5 pr-4 tabular text-muted">{formatDateTime(run.start_date ?? run.execution_date)}</td>
                     <td className="py-1.5 pr-4">
                       <Badge tone={dagStateTone(run.state)}>{DAG_STATE_LABEL[run.state] ?? run.state}</Badge>
                     </td>
@@ -263,12 +309,15 @@ function DagRunTable({ runs }: { runs: DagRunItem[] }) {
   )
 }
 
+const FAILING_PAGE_SIZE = 10
+
 export function MonitoringPage() {
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ['org', 'monitoring', 'overview'],
     queryFn: orgApi.getMonitoringOverview,
     refetchInterval: 60_000,
   })
+  const [failingPage, setFailingPage] = useState(1)
 
   const { data: system } = useQuery({
     queryKey: ['org', 'monitoring', 'system'],
@@ -317,41 +366,56 @@ export function MonitoringPage() {
 
           <Card>
             <h3 className="mb-1 font-display text-base font-semibold text-ink">Danh sách lỗi cần xử lý</h3>
-            <p className="mb-4 text-xs text-muted">Nguồn đang lỗi hoặc hết phiên đăng nhập, sắp theo số lần lỗi liên tiếp.</p>
+            <p className="mb-4 text-xs text-muted">
+              {data.failing_sources.length} nguồn đang lỗi hoặc hết phiên đăng nhập, sắp theo số lần lỗi liên tiếp.
+            </p>
             {data.failing_sources.length === 0 ? (
               <p className="text-sm text-good">Không có nguồn nào đang lỗi.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-muted">
-                      <th className="py-2 pr-4">Nguồn</th>
-                      <th className="py-2 pr-4">Trạng thái</th>
-                      <th className="py-2 pr-4">Lỗi gần nhất</th>
-                      <th className="py-2 pr-4 text-right">Số lần lỗi liên tiếp</th>
-                      <th className="py-2 text-right">Crawl gần nhất</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.failing_sources.map((s) => (
-                      <tr key={s.id} className="border-b border-line last:border-0 align-top">
-                        <td className="py-2.5 pr-4">
-                          <div className="font-medium text-ink">{s.display_name ?? s.url}</div>
-                          <div className="text-xs text-muted">{PLATFORM_LABEL[s.platform_type] ?? s.platform_type}</div>
-                        </td>
-                        <td className="py-2.5 pr-4">
-                          <Badge tone={sourceStatusTone(s.last_status)}>{SOURCE_STATUS_LABEL[s.last_status ?? ''] ?? s.last_status}</Badge>
-                        </td>
-                        <td className="py-2.5 pr-4 max-w-xs truncate text-xs text-muted" title={s.last_error ?? ''}>
-                          {s.last_error ?? '—'}
-                        </td>
-                        <td className="py-2.5 pr-4 text-right tabular">{s.consecutive_failures}</td>
-                        <td className="py-2.5 text-right tabular text-muted">{formatDateTime(s.last_crawled_at)}</td>
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-line text-left text-xs font-medium uppercase tracking-wide text-muted">
+                        <th className="py-2 pr-4">Nguồn</th>
+                        <th className="py-2 pr-4">Trạng thái</th>
+                        <th className="py-2 pr-4">Tài khoản FB</th>
+                        <th className="py-2 pr-4">Lỗi gần nhất</th>
+                        <th className="py-2 pr-4 text-right">Số lần lỗi liên tiếp</th>
+                        <th className="py-2 text-right">Crawl gần nhất</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {data.failing_sources
+                        .slice((failingPage - 1) * FAILING_PAGE_SIZE, failingPage * FAILING_PAGE_SIZE)
+                        .map((s) => (
+                          <tr key={s.id} className="border-b border-line last:border-0 align-top">
+                            <td className="py-2.5 pr-4">
+                              <div className="font-medium text-ink">{s.display_name ?? s.url}</div>
+                              <div className="text-xs text-muted">{PLATFORM_LABEL[s.platform_type] ?? s.platform_type}</div>
+                            </td>
+                            <td className="py-2.5 pr-4">
+                              <Badge tone={sourceStatusTone(s.last_status)} title={SOURCE_STATUS_DESCRIPTION[s.last_status ?? '']}>
+                                {SOURCE_STATUS_LABEL[s.last_status ?? ''] ?? s.last_status}
+                              </Badge>
+                            </td>
+                            <td className="py-2.5 pr-4 text-xs text-muted">{s.fb_session_key ?? '—'}</td>
+                            <td className="py-2.5 pr-4 max-w-xs truncate text-xs text-muted" title={s.last_error ?? ''}>
+                              {s.last_error ?? '—'}
+                            </td>
+                            <td className="py-2.5 pr-4 text-right tabular">{s.consecutive_failures}</td>
+                            <td className="py-2.5 text-right tabular text-muted">{formatDateTime(s.last_crawled_at)}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+                <Pagination
+                  page={failingPage}
+                  pageCount={Math.max(1, Math.ceil(data.failing_sources.length / FAILING_PAGE_SIZE))}
+                  onPageChange={setFailingPage}
+                />
+              </>
             )}
           </Card>
 
@@ -361,6 +425,14 @@ export function MonitoringPage() {
               {data.crawled_sources.length} nguồn, sắp theo lần crawl gần nhất.
             </p>
             <CrawledSourcesTable sources={data.crawled_sources} />
+          </Card>
+
+          <Card>
+            <h3 className="mb-1 font-display text-base font-semibold text-ink">Bài viết mới thêm vào hệ thống</h3>
+            <p className="mb-4 text-xs text-muted">
+              {data.recent_documents.length} bài gần nhất, sắp theo thời điểm crawl được.
+            </p>
+            <RecentDocumentsTable documents={data.recent_documents} />
           </Card>
 
           <Card>

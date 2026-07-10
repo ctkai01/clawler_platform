@@ -10,16 +10,27 @@ export const PLATFORM_LABEL: Record<string, string> = {
 export type BadgeTone = 'neutral' | 'accent' | 'good' | 'bad'
 
 export const SOURCE_STATUS_LABEL: Record<string, string> = {
-  running: 'đang crawl',
-  ok: 'ok',
-  error: 'lỗi',
-  session_expired: 'hết phiên đăng nhập',
-  chua_crawl: 'chưa crawl',
+  running: 'Đang crawl',
+  ok: 'Thành công',
+  error: 'Lỗi',
+  session_expired: 'Hết phiên đăng nhập',
+  not_a_member: 'Chưa là thành viên',
+  chua_crawl: 'Chưa crawl',
+}
+
+export const SOURCE_STATUS_DESCRIPTION: Record<string, string> = {
+  running: 'Đang trong quá trình crawl — chờ task hiện tại hoàn tất.',
+  ok: 'Lần crawl gần nhất thành công.',
+  error: 'Lần crawl gần nhất thất bại (không phải do hết phiên đăng nhập) — xem chi tiết ở trang Giám sát.',
+  session_expired: 'Crawl thất bại vì phiên đăng nhập Facebook đã hết hạn — cần đăng nhập lại tài khoản.',
+  not_a_member:
+    'Group này ẩn bài viết với người chưa tham gia (kể cả group Public) — cần một tài khoản đã join group rồi gán thủ công qua fb_session_key.',
+  chua_crawl: 'Nguồn mới thêm, chưa từng được crawl lần nào — sẽ tự động crawl ở chu kỳ tiếp theo.',
 }
 
 export function sourceStatusTone(status: string | null): BadgeTone {
   if (status === 'ok') return 'good'
-  if (status === 'error' || status === 'session_expired') return 'bad'
+  if (status === 'error' || status === 'session_expired' || status === 'not_a_member') return 'bad'
   if (status === 'running') return 'accent'
   return 'neutral'
 }

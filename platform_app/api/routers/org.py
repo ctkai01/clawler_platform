@@ -40,6 +40,14 @@ from platform_app.pipeline.settings import VALID_MODES, get_classify_mode, set_c
 VALID_PLATFORM_TYPES = {"facebook_group", "facebook_page", "forum", "news"}
 
 
+def _normalize_url(url: str) -> str:
+    """Collapses cosmetic URL variants (protocol, www., trailing slash) so
+    duplicate-detection catches the same page imported under different
+    forms — e.g. a CSV re-import using bare 'facebook.com/x' must be
+    recognized against an existing 'https://www.facebook.com/x/' row."""
+    return re.sub(r"^https?://(www\.)?", "", url.strip().rstrip("/")).lower()
+
+
 def _tracked_entity_condition(alias: str) -> str:
     """Restricts an entity display to canonical_names the caller's org has
     actually selected to track (organization_entities). entity_match.py tags
@@ -104,8 +112,12 @@ def list_sources(user: dict = Depends(get_current_user)) -> list[dict]:
 def create_source(body: SourceCreate, user: dict = Depends(_require_configurator)) -> dict:
     with get_pool().connection() as conn:
         existing = conn.execute(
-            "SELECT id FROM crawl_targets WHERE platform_type = %s AND url = %s AND organization_id = %s",
-            (body.platform_type, body.url, user["organization_id"]),
+            """
+            SELECT id FROM crawl_targets
+            WHERE platform_type = %s AND organization_id = %s
+            AND regexp_replace(regexp_replace(lower(url), '^https?://(www\\.)?', ''), '/$', '') = %s
+            """,
+            (body.platform_type, user["organization_id"], _normalize_url(body.url)),
         ).fetchone()
         if existing is not None:
             raise HTTPException(status.HTTP_409_CONFLICT, "Nguồn crawl đã tồn tại")
@@ -151,6 +163,18 @@ def import_sources(file: UploadFile = File(...), user: dict = Depends(_require_c
                 continue
             if not url:
                 errors.append(f"Dòng {i}: thiếu url")
+                continue
+
+            dup = conn.execute(
+                """
+                SELECT 1 FROM crawl_targets
+                WHERE organization_id = %s AND platform_type = %s
+                AND regexp_replace(regexp_replace(lower(url), '^https?://(www\\.)?', ''), '/$', '') = %s
+                """,
+                (user["organization_id"], platform_type, _normalize_url(url)),
+            ).fetchone()
+            if dup is not None:
+                errors.append(f"Dòng {i}: nguồn đã tồn tại, bỏ qua")
                 continue
 
             result = conn.execute(
@@ -306,6 +330,7 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
             failing_sources: list[dict] = []
             crawled_sources: list[dict] = []
             document_throughput: list[dict] = []
+            recent_documents: list[dict] = []
         else:
             sources_by_status = conn.execute(
                 f"""
@@ -321,11 +346,11 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
             failing_sources = conn.execute(
                 f"""
                 SELECT ct.id, ct.platform_type, ct.display_name, ct.url, ct.last_status,
-                       ct.last_error, ct.consecutive_failures, ct.last_crawled_at
+                       ct.last_error, ct.consecutive_failures, ct.last_crawled_at, ct.fb_session_key
                 FROM crawl_targets ct
                 WHERE {where_clause} AND ct.last_status IN ('error', 'session_expired')
                 ORDER BY ct.consecutive_failures DESC, ct.last_crawled_at DESC NULLS LAST
-                LIMIT 50
+                LIMIT 500
                 """,
                 params,
             ).fetchall()
@@ -354,6 +379,18 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
                 params,
             ).fetchall()
 
+            recent_documents = conn.execute(
+                f"""
+                SELECT d.id, d.platform_type, d.topic, d.url, ct.display_name AS target_name, d.first_seen_at
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE {where_clause}
+                ORDER BY d.first_seen_at DESC
+                LIMIT 50
+                """,
+                params,
+            ).fetchall()
+
     dag_runs, airflow_unreachable = _fetch_recent_dag_runs()
 
     return {
@@ -362,6 +399,7 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
         "crawled_sources": crawled_sources,
         "document_throughput": document_throughput,
         "dag_runs": dag_runs,
+        "recent_documents": recent_documents,
         "airflow_unreachable": airflow_unreachable,
     }
 

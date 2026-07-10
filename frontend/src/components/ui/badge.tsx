@@ -17,10 +17,16 @@ export function Badge({
   className,
   tone,
   dot,
+  title,
   children,
-}: { children: React.ReactNode; dot?: boolean; className?: string } & VariantProps<typeof badgeVariants>) {
+}: {
+  children: React.ReactNode
+  dot?: boolean
+  className?: string
+  title?: string
+} & VariantProps<typeof badgeVariants>) {
   return (
-    <span className={cn(badgeVariants({ tone }), className)}>
+    <span className={cn(badgeVariants({ tone }), className)} title={title}>
       {dot && (
         <span
           className={cn(
