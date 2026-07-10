@@ -10,6 +10,7 @@ from fb_crawl.filters import (
     PostCrawlResult,
     _utcnow,
     classify_post,
+    post_is_within_hours,
 )
 from fb_crawl.parser import (
     dedupe_post_urls,
@@ -111,6 +112,14 @@ class GroupCrawlService:
                 first_crawled_at = _from_iso(existing["first_seen_at"]) or crawled_at
             else:
                 first_crawled_at = crawled_at
+
+            if is_first_crawl and not post_is_within_hours(post, self.new_post_hours):
+                # Discovered for the first time but published long ago (e.g.
+                # an old post still sitting in a feed we just started
+                # crawling) — only posts that were actually new when we saw
+                # them get a permanent record; already-known posts still get
+                # updated below regardless of age via the recheck path.
+                continue
 
             reason = classify_post(
                 post,
