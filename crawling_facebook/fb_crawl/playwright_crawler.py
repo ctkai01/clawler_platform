@@ -84,6 +84,9 @@ EXTRACT_GROUP_NAME_JS = """
 () => {
   function cleanTitle(raw) {
     return (raw || '')
+      // See EXTRACT_PAGE_NAME_JS's cleanTitle comment — unread-badge
+      // prefix like "(1) Facebook" isn't part of the real name.
+      .replace(/^\\(\\d+\\+?\\)\\s*/, '')
       .replace(/\\s*\\|\\s*Facebook.*$/i, '')
       .replace(/\\s*-\\s*Facebook.*$/i, '')
       .trim();

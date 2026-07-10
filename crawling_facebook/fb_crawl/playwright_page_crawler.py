@@ -92,6 +92,12 @@ EXTRACT_PAGE_NAME_JS = """
 () => {
   function cleanTitle(raw) {
     return (raw || '')
+      // Unread-notification badge prefix, e.g. "(1) Facebook" or
+      // "(3) Mobifone | Facebook" — not part of the actual page name.
+      // Left unstripped, a page whose OTHER extraction methods all failed
+      // fell through to this generic badge text as if it were the real
+      // page name (real incident, seen live on the VPS).
+      .replace(/^\\(\\d+\\+?\\)\\s*/, '')
       .replace(/\\s*\\|\\s*Facebook.*$/i, '')
       .replace(/\\s*-\\s*Facebook.*$/i, '')
       .trim();
