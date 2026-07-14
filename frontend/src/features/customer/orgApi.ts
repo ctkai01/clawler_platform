@@ -3,13 +3,17 @@ import type {
   AccordionCategoryCounts,
   AccordionFilterParams,
   AccordionSentimentCounts,
+  CompetitorChannelReportData,
   DocumentComment,
   DocumentDetail,
   DocumentListParams,
   DocumentListResponse,
   EngagementGrowthPoint,
   EntityNetworkResponse,
+  EventReportData,
+  EventWeeklyReportData,
   MonitoringOverview,
+  NegativeBrandReportData,
   OrgEntitySelection,
   SystemStats,
   OrgKeywordSelection,
@@ -80,6 +84,76 @@ export const orgApi = {
       `/org/report/event/${eventKey}/export-word?${search.toString()}`,
       `bao-cao-${eventKey}-${date.replaceAll('-', '')}.docx`,
     )
+  },
+  getEventReportData: (eventKey: string, reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.get<EventReportData>(`/org/report/event/${eventKey}/data?${search.toString()}`)
+  },
+  exportEventReportWordWeekly: (eventKey: string, reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/event/${eventKey}/export-word-weekly?${search.toString()}`,
+      `bao-cao-tuan-${eventKey}-${date.replaceAll('-', '')}.docx`,
+    )
+  },
+  getEventWeeklyReportData: (eventKey: string, reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.get<EventWeeklyReportData>(`/org/report/event/${eventKey}/data-weekly?${search.toString()}`)
+  },
+  exportNegativeBrandReportWordWeekly: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/negative-brand/export-word-weekly?${search.toString()}`,
+      `bao-cao-tuan-tieu-cuc-${date.replaceAll('-', '')}.docx`,
+    )
+  },
+  getNegativeBrandReportData: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.get<NegativeBrandReportData>(`/org/report/negative-brand/data-weekly?${search.toString()}`)
+  },
+  exportMonthlyBrandReportWord: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/export-word-monthly?${search.toString()}`,
+      `bao-cao-thang-${date.replaceAll('-', '')}.docx`,
+    )
+  },
+  exportCompetitorChannelReportWordWeekly: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/competitor-channels/export-word-weekly?${search.toString()}`,
+      `bao-cao-tuan-doi-thu-${date.replaceAll('-', '')}.docx`,
+    )
+  },
+  getCompetitorChannelReportData: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.get<CompetitorChannelReportData>(`/org/report/competitor-channels/data-weekly?${search.toString()}`)
+  },
+  exportCompetitorChannelReportWordMonthly: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    const date = reportDate ?? new Date().toISOString().slice(0, 10)
+    return apiClient.download(
+      `/org/report/competitor-channels/export-word-monthly?${search.toString()}`,
+      `bao-cao-thang-doi-thu-${date.replaceAll('-', '')}.docx`,
+    )
+  },
+  getCompetitorChannelReportDataMonthly: (reportDate?: string) => {
+    const search = new URLSearchParams()
+    if (reportDate) search.set('report_date', reportDate)
+    return apiClient.get<CompetitorChannelReportData>(`/org/report/competitor-channels/data-monthly?${search.toString()}`)
   },
   sendReportEmailNow: (days: number, entity?: string) => {
     const search = new URLSearchParams()

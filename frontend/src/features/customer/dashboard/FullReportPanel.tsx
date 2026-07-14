@@ -35,10 +35,18 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
  * dedicated /dashboard page (all actions) and embedded inside the Báo cáo
  * catalog tab (`actions="word-only"` — that tab represents just this one
  * report, so email/Excel/5G buttons there would be redundant/confusing). */
-export function FullReportPanel({ actions = 'all' }: { actions?: 'all' | 'word-only' } = {}) {
+export function FullReportPanel({
+  actions = 'all',
+  initialDays = 1,
+  exportWordFn = orgApi.exportReportWord,
+}: {
+  actions?: 'all' | 'word-only'
+  initialDays?: number
+  exportWordFn?: (reportDate?: string) => Promise<void>
+} = {}) {
   const user = useAuthStore((s) => s.user)
   const { toast } = useToast()
-  const [days, setDays] = useState(1)
+  const [days, setDays] = useState(initialDays)
   const [entityInput, setEntityInput] = useState('')
   const [entity, setEntity] = useState('')
   const [exporting, setExporting] = useState(false)
@@ -65,7 +73,7 @@ export function FullReportPanel({ actions = 'all' }: { actions?: 'all' | 'word-o
   const handleExportWord = async () => {
     setExportingWord(true)
     try {
-      await orgApi.exportReportWord()
+      await exportWordFn()
     } catch {
       toast('Xuất Word thất bại, vui lòng thử lại.', 'error')
     } finally {

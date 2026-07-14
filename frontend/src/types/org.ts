@@ -298,3 +298,109 @@ export interface RelatedDocumentItem {
   classification_sentiment: string | null
   shared_entities: number
 }
+
+// --- Báo cáo sự vụ/tiêu cực/đối thủ — JSON preview (khớp compute_*_data ở org.py) ---
+
+export interface EventMatchItem {
+  document_id: number
+  brand: string
+  topic: string | null
+  content: string | null
+  url: string
+  author: string | null
+  platform_type: string
+  published_at: string
+  engagement_total: number
+  target_name: string
+  sentiment: 'positive' | 'neutral' | 'negative'
+  impact_level: string
+  reasoning: string
+  handling_status: string
+  reach_tier: string | null
+}
+
+export interface EventComparisonSide {
+  yesterday_total: number
+  today_total: number
+  yesterday_sentiment: { positive: number; neutral: number; negative: number }
+  today_sentiment: { positive: number; neutral: number; negative: number }
+}
+
+export interface EventComparison {
+  yesterday_label: string
+  today_label: string
+  news: EventComparisonSide
+  social: EventComparisonSide
+}
+
+export interface EventReportData {
+  org_name: string
+  event_label: string
+  report_date: string
+  comparison: EventComparison
+  overview_narrative: string
+  mobifone_news: EventMatchItem[]
+  competitor_news: Record<string, EventMatchItem[]>
+  social_matches: EventMatchItem[]
+}
+
+export interface EventWeeklyReportData {
+  org_name: string
+  event_label: string
+  period_label: string
+  comparison: EventComparison
+  overview_narrative: string
+  mobifone_news: EventMatchItem[]
+  competitor_news: Record<string, EventMatchItem[]>
+  social_matches: EventMatchItem[]
+  brand_counts: Record<string, { positive: number; neutral: number; negative: number }>
+}
+
+export interface NegativeBrandSummaryRow {
+  stt: string
+  label: string
+  prev: number | null
+  this: number | null
+  pct: string | null
+  compare: string | null
+  bold?: boolean
+}
+
+export interface NegativeBrandReportData {
+  org_name: string
+  period_label: string
+  period_prev_label: string
+  summary_rows: NegativeBrandSummaryRow[]
+  news_theme: string
+  news_pct: string
+  social_theme: string
+  social_pct: string
+  hotspot_text: string
+  overview_narrative: string
+}
+
+export interface CompetitorPostItem {
+  id: number
+  topic: string | null
+  content: string | null
+  url: string
+  author: string | null
+  platform_type: string
+  images: string[]
+  target_name: string
+  engagement_total: number
+}
+
+export interface CompetitorChannelReportData {
+  org_name: string
+  period_label: string
+  brands: string[]
+  brand_counts: Record<string, { positive: number; neutral: number; negative: number }>
+  positive_bullets: string
+  negative_bullets: string
+  own_positive_posts: ReportPostItem[]
+  own_negative_posts: ReportPostItem[]
+  competitor_posts: Record<string, { positive: CompetitorPostItem[]; negative: CompetitorPostItem[] }>
+  channel_breakdowns: Record<string, { Facebook: number; News: number; Forum: number }>
+  channel_bullets: string[]
+}
