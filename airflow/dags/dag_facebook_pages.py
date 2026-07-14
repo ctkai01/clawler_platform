@@ -4,8 +4,6 @@ from datetime import datetime
 
 from airflow.decorators import dag, task
 
-BATCH_CAP = 50
-
 
 @dag(
     dag_id="facebook_pages_crawl",
@@ -17,20 +15,16 @@ BATCH_CAP = 50
 )
 def facebook_pages_crawl():
     @task(queue="http_crawler")
-    def get_due_targets() -> list[dict]:
-        from platform_app.targets.repository import get_due_targets
+    def dispatch() -> None:
+        # Called directly, not via .delay() — this task itself just queries
+        # Postgres and publishes crawl_batch_task onto RabbitMQ. The actual
+        # Playwright crawling happens out-of-band on fb-celery-worker, which
+        # Airflow has no visibility into (no more crawl_one/.expand() here).
+        from platform_app.crawlers.dispatch_tasks import dispatch_due_sources
 
-        return [{"id": t.id, "url": t.url} for t in get_due_targets("facebook_page", limit=BATCH_CAP)]
+        dispatch_due_sources("facebook_page")
 
-    @task(pool="fb_page_pool", queue="fb_crawler", retries=0)
-    def crawl_one(target: dict) -> None:
-        import asyncio
-
-        from platform_app.crawlers.facebook_runner import crawl_target
-
-        asyncio.run(crawl_target(target["id"]))
-
-    @task(queue="http_crawler", trigger_rule="all_done")
+    @task(queue="http_crawler")
     def trigger_content_pipeline() -> None:
         from datetime import datetime, timezone
 
@@ -55,7 +49,7 @@ def facebook_pages_crawl():
             # instant — the goal (content_pipeline runs) is satisfied either way.
             pass
 
-    crawl_one.expand(target=get_due_targets()) >> trigger_content_pipeline()
+    dispatch() >> trigger_content_pipeline()
 
 
 facebook_pages_crawl()

@@ -9,6 +9,7 @@ description = "Crawl bài viết và bình luận từ nhóm Facebook"
 requires-python = ">=3.11"
 dependencies = [
     "playwright>=1.40.0",
+    "playwright-stealth>=2.0.3",
 ]
 
 [project.scripts]

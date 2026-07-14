@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import random
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
+from playwright_stealth import Stealth
 
 from fb_crawl.facebook_extract import (
     EXPAND_COMMENTS_JS,
@@ -22,7 +24,7 @@ from fb_crawl.parser import (
     normalize_page_post_url,
     normalize_page_url,
 )
-from fb_crawl.types import Post
+from fb_crawl.types import CheckpointError, Post
 
 logger = logging.getLogger(__name__)
 
@@ -153,6 +155,10 @@ class PlaywrightPageCrawler:
         *,
         headless: bool = True,
         storage_state_path: str | Path | None = None,
+        user_agent: str | None = None,
+        proxy_server: str | None = None,
+        proxy_username: str | None = None,
+        proxy_password: str | None = None,
         scroll_pause_ms: int = 1500,
         max_scrolls: int = 50,
         max_comments: int = MAX_COMMENTS,
@@ -160,6 +166,13 @@ class PlaywrightPageCrawler:
     ) -> None:
         self.headless = headless
         self.storage_state_path = Path(storage_state_path) if storage_state_path else None
+        self.user_agent = user_agent or (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+        )
+        self.proxy_server = proxy_server
+        self.proxy_username = proxy_username
+        self.proxy_password = proxy_password
         self.scroll_pause_ms = scroll_pause_ms
         self.max_scrolls = max_scrolls
         self.max_comments = max_comments
@@ -173,19 +186,30 @@ class PlaywrightPageCrawler:
         self._browser = await self._pw.chromium.launch(
             headless=self.headless,
             timeout=120_000,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
+            ],
         )
         context_kwargs: dict = {
             "viewport": {"width": 1280, "height": 900},
             "locale": "vi-VN",
             "timezone_id": "Asia/Ho_Chi_Minh",
-            "user_agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-            ),
+            "user_agent": self.user_agent,
         }
         if self.storage_state_path and self.storage_state_path.exists():
             context_kwargs["storage_state"] = str(self.storage_state_path)
+        if self.proxy_server:
+            proxy_kwargs: dict = {"server": self.proxy_server}
+            if self.proxy_username:
+                proxy_kwargs["username"] = self.proxy_username
+            if self.proxy_password:
+                proxy_kwargs["password"] = self.proxy_password
+            context_kwargs["proxy"] = proxy_kwargs
         self._context = await self._browser.new_context(**context_kwargs)
+        self._context.set_default_timeout(45_000)
+        await Stealth().apply_stealth_async(self._context)
         return self
 
     async def __aexit__(self, *args: object) -> None:
@@ -238,11 +262,12 @@ class PlaywrightPageCrawler:
             await page.goto(normalize_page_url(page_url), wait_until="domcontentloaded", timeout=60000)
             await page.wait_for_timeout(3000)
             if "checkpoint" in page.url:
-                logger.warning("Session bị checkpoint khi mở page %s (%s)", page_url, page.url)
-                return None
+                raise CheckpointError(f"Session bị checkpoint khi mở page {page_url} ({page.url})")
             name = await page.evaluate(EXTRACT_PAGE_NAME_JS)
             name = (name or "").strip()
             return name or None
+        except CheckpointError:
+            raise
         except Exception as exc:
             logger.warning("Không lấy được tên Page %s: %s", page_url, exc)
             return None
@@ -282,7 +307,14 @@ class PlaywrightPageCrawler:
                 else:
                     stale_rounds = 0
                 await page.evaluate(SCROLL_FEED_JS)
-                await page.wait_for_timeout(self.scroll_pause_ms)
+
+                # Jittered pause instead of a fixed interval, plus an
+                # occasional longer "reading" pause — a metronome-regular
+                # scroll cadence is itself a bot signal.
+                pause = random.randint(max(500, self.scroll_pause_ms - 500), self.scroll_pause_ms + 700)
+                if random.random() < 0.15:
+                    pause += random.randint(2000, 4000)
+                await page.wait_for_timeout(pause)
 
             urls = dedupe_page_post_urls(list(collected), page_id)
             logger.info("Discovered %d post URLs on page %s", len(urls), page_id)

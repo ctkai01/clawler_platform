@@ -10,13 +10,19 @@ from fb_crawl.page_service import PageCrawlService
 from fb_crawl.playwright_crawler import PlaywrightGroupCrawler
 from fb_crawl.playwright_page_crawler import PlaywrightPageCrawler
 from fb_crawl.service import GroupCrawlService
-from fb_crawl.types import NotGroupMemberError
+from fb_crawl.types import CheckpointError, NotGroupMemberError
 
 from platform_app.adapters.fb_pg_storage import PgStorage
+from platform_app.crawlers.proxy_pool import ProxyPool
 from platform_app.targets import repository
 from platform_app.targets.repository import CrawlTarget
 
 logger = logging.getLogger(__name__)
+
+# Module-level so the round-robin cycle (and any future reset-cooldown
+# state) is shared across every crawl_target() call in this process,
+# rather than restarting from the first proxy each time.
+_proxy_pool = ProxyPool()
 
 # Legacy single-session path — kept as the final fallback so a VPS that
 # hasn't set up FB_SESSION_DIR yet (no `fb_sessions/` directory) keeps
@@ -29,8 +35,11 @@ FB_SESSION_DIR = Path(
 )
 
 
-def _resolve_session_path(target: CrawlTarget) -> Path:
-    """Picks which FB account's session file to crawl `target` with.
+def _resolve_session_key(target: CrawlTarget) -> str | None:
+    """Picks which FB account (by session key, e.g. "acc1") should crawl
+    `target` — the string half of session resolution, split out from
+    _resolve_session_path so callers that need to GROUP targets by account
+    (batch dispatch) don't have to reverse-engineer a key back out of a Path.
 
     Both pages and unassigned groups round-robin across whatever session
     files exist. Groups ideally use an account that's actually a member
@@ -40,6 +49,10 @@ def _resolve_session_path(target: CrawlTarget) -> Path:
     the ones that don't, fetch_group_name's join-wall check raises
     NotGroupMemberError with a specific, actionable status instead of
     silently reporting a 0-document "success" — see crawl_target below.
+
+    Returns None only when there's no session pool directory at all (the
+    legacy single-DEFAULT_SESSION setup) — callers resolving to a Path
+    fall back to DEFAULT_SESSION in that case.
     """
     keys = sorted(p.stem for p in FB_SESSION_DIR.glob("*.json")) if FB_SESSION_DIR.is_dir() else []
 
@@ -48,14 +61,23 @@ def _resolve_session_path(target: CrawlTarget) -> Path:
             raise ValueError(
                 f"fb_session_key={target.fb_session_key!r} không tồn tại trong {FB_SESSION_DIR}"
             )
-        return FB_SESSION_DIR / f"{target.fb_session_key}.json"
+        return target.fb_session_key
 
-    if len(keys) <= 1:
+    if not keys:
+        return None
+    if len(keys) == 1:
         # Single-account setup (today's default everywhere) — no pool to
         # choose from, behave exactly like the old single-file DEFAULT_SESSION.
-        return FB_SESSION_DIR / f"{keys[0]}.json" if keys else DEFAULT_SESSION
+        return keys[0]
 
-    return FB_SESSION_DIR / f"{keys[target.id % len(keys)]}.json"
+    return keys[target.id % len(keys)]
+
+
+def _resolve_session_path(target: CrawlTarget) -> Path:
+    """Picks which FB account's session file to crawl `target` with — see
+    _resolve_session_key for the selection logic."""
+    key = _resolve_session_key(target)
+    return FB_SESSION_DIR / f"{key}.json" if key else DEFAULT_SESSION
 
 
 class SessionExpiredError(RuntimeError):
@@ -79,10 +101,14 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
 
     try:
         session_path = _resolve_session_path(target)
+        proxy = _proxy_pool.acquire()
         if target.platform_type == "facebook_group":
             async with PlaywrightGroupCrawler(
                 headless=not show_browser,
                 storage_state_path=session_path,
+                proxy_server=proxy.server,
+                proxy_username=proxy.username,
+                proxy_password=proxy.password,
                 max_scrolls=cfg.get("max_scrolls", 50),
                 max_comments=cfg.get("max_comments", 100),
                 concurrency=cfg.get("concurrency", 3),
@@ -97,6 +123,9 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
             async with PlaywrightPageCrawler(
                 headless=not show_browser,
                 storage_state_path=session_path,
+                proxy_server=proxy.server,
+                proxy_username=proxy.username,
+                proxy_password=proxy.password,
                 max_scrolls=cfg.get("max_scrolls", 50),
                 max_comments=cfg.get("max_comments", 100),
                 concurrency=cfg.get("concurrency", 3),
@@ -112,6 +141,9 @@ async def crawl_target(target_id: int, *, show_browser: bool = False) -> None:
         raise
     except NotGroupMemberError as exc:
         repository.mark_failed(target_id, str(exc), status="not_a_member")
+        raise
+    except CheckpointError as exc:
+        repository.mark_failed(target_id, str(exc), status="checkpoint")
         raise
     except Exception as exc:  # noqa: BLE001 - must reach Airflow as a failed task
         repository.mark_failed(target_id, str(exc))

@@ -15,6 +15,7 @@ export const SOURCE_STATUS_LABEL: Record<string, string> = {
   error: 'Lỗi',
   session_expired: 'Hết phiên đăng nhập',
   not_a_member: 'Chưa là thành viên',
+  checkpoint: 'Tài khoản bị checkpoint',
   chua_crawl: 'Chưa crawl',
 }
 
@@ -25,12 +26,15 @@ export const SOURCE_STATUS_DESCRIPTION: Record<string, string> = {
   session_expired: 'Crawl thất bại vì phiên đăng nhập Facebook đã hết hạn — cần đăng nhập lại tài khoản.',
   not_a_member:
     'Group này ẩn bài viết với người chưa tham gia (kể cả group Public) — cần một tài khoản đã join group rồi gán thủ công qua fb_session_key.',
+  checkpoint:
+    'Facebook yêu cầu xác minh danh tính tài khoản này (checkpoint) — ảnh hưởng TẤT CẢ nguồn dùng chung tài khoản, không chỉ nguồn này. Cần xác minh thủ công trong trình duyệt thật rồi export lại session, re-export cookie từ session cũ không giải quyết được.',
   chua_crawl: 'Nguồn mới thêm, chưa từng được crawl lần nào — sẽ tự động crawl ở chu kỳ tiếp theo.',
 }
 
 export function sourceStatusTone(status: string | null): BadgeTone {
   if (status === 'ok') return 'good'
-  if (status === 'error' || status === 'session_expired' || status === 'not_a_member') return 'bad'
+  if (status === 'error' || status === 'session_expired' || status === 'not_a_member' || status === 'checkpoint')
+    return 'bad'
   if (status === 'running') return 'accent'
   return 'neutral'
 }

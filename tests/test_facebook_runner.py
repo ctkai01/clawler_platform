@@ -90,3 +90,24 @@ def test_explicit_fb_session_key_not_found_raises(monkeypatch: pytest.MonkeyPatc
 
     with pytest.raises(ValueError, match="không tồn tại"):
         facebook_runner._resolve_session_path(_target(1, "facebook_page", fb_session_key="ghost"))
+
+
+def test_resolve_session_key_returns_none_without_session_dir(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # dispatch_due_sources groups batches by this key directly (not a Path)
+    # — must stay None (not raise, not fall back to DEFAULT_SESSION) so an
+    # unconfigured pool batches everything under a single None bucket.
+    monkeypatch.setattr(facebook_runner, "FB_SESSION_DIR", tmp_path / "does_not_exist")
+
+    assert facebook_runner._resolve_session_key(_target(1, "facebook_page")) is None
+
+
+def test_resolve_session_key_honors_explicit_key(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    session_dir = tmp_path / "fb_sessions"
+    session_dir.mkdir()
+    (session_dir / "acc1.json").write_text("{}")
+    (session_dir / "acc2.json").write_text("{}")
+    monkeypatch.setattr(facebook_runner, "FB_SESSION_DIR", session_dir)
+
+    assert facebook_runner._resolve_session_key(_target(1, "facebook_group", fb_session_key="acc2")) == "acc2"

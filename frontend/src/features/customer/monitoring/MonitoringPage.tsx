@@ -14,7 +14,7 @@ import type { CrawledSource, DagRunItem, RecentDocument, SystemStats } from '@/t
 import { cn } from '@/lib/utils'
 
 const PLATFORM_ORDER = ['facebook_group', 'facebook_page', 'forum', 'news']
-const STATUS_ORDER = ['ok', 'running', 'error', 'session_expired', 'chua_crawl']
+const STATUS_ORDER = ['ok', 'running', 'error', 'session_expired', 'not_a_member', 'checkpoint', 'chua_crawl']
 const PLATFORM_COLOR: Record<string, string> = {
   facebook_group: '#3b5bdb',
   facebook_page: '#1f8a5f',

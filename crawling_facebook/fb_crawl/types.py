@@ -12,6 +12,14 @@ class NotGroupMemberError(RuntimeError):
     session: re-logging in won't fix this, joining the group will."""
 
 
+class CheckpointError(RuntimeError):
+    """Facebook redirected the session to an identity-verification
+    checkpoint — the account is locked for every URL, not just this one.
+    Distinct from a plain expired session: re-exporting the same cookies
+    won't fix it, the account needs manual verification in a real browser
+    first (see docs/fb-session-pool.md)."""
+
+
 class PostChangeType(str, Enum):
     NEW = "new"
     CONTENT_EDITED = "content_edited"
