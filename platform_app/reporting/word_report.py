@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import math
 import textwrap
 from datetime import date, datetime, timedelta, timezone
 
@@ -30,6 +31,25 @@ def daily_window(report_date: date) -> tuple[datetime, datetime]:
     email is generated each morning."""
     period_end = datetime(report_date.year, report_date.month, report_date.day, 1, 0, 0, tzinfo=timezone.utc)
     period_start = period_end - timedelta(days=1)
+    return period_start, period_end
+
+
+def weekly_window(report_date: date) -> tuple[datetime, datetime]:
+    """Rolling 7 days ending at daily_window's 08:00 (Vietnam time) boundary
+    on report_date — not calendar-Monday-anchored, to stay consistent with
+    daily_window's report_date-relative philosophy instead of introducing a
+    separate ISO-week convention."""
+    period_end = daily_window(report_date)[1]
+    period_start = period_end - timedelta(days=7)
+    return period_start, period_end
+
+
+def monthly_window(report_date: date) -> tuple[datetime, datetime]:
+    """Rolling 30 days ending at daily_window's 08:00 (Vietnam time) boundary
+    on report_date — same report_date-relative philosophy as weekly_window,
+    not calendar-month-anchored (avoids Feb-vs-31-day-month edge cases)."""
+    period_end = daily_window(report_date)[1]
+    period_start = period_end - timedelta(days=30)
     return period_start, period_end
 
 
@@ -75,6 +95,27 @@ def _add_header_line(
     return p
 
 
+def _add_italic_note(doc, text: str) -> None:
+    p = doc.add_paragraph()
+    run = p.add_run(text)
+    run.italic = True
+    run.font.size = Pt(9)
+
+
+def _add_subsection_header(doc, text: str) -> None:
+    _add_header_line(doc, text, _SUBHEADER_GREEN, align_center=False)
+
+
+def _add_multiline_paragraphs(doc, text: str) -> None:
+    """One real paragraph per non-empty line — an LLM narrative with
+    "- Brand: ..." bullet lines needs real line breaks, not one run with
+    embedded '\\n' (Word ignores those)."""
+    for line in (text or "").split("\n"):
+        line = line.strip()
+        if line:
+            doc.add_paragraph(line)
+
+
 def _set_cell_text(
     cell, text: str, *, bold: bool = False, color: RGBColor | None = None, align_center: bool = False, size: int | None = None
 ) -> None:
@@ -117,6 +158,18 @@ def _fmt(n: int) -> str:
     return f"{n:,}".replace(",", ".")
 
 
+def _pct_change(yesterday: int, today: int) -> str:
+    if yesterday == 0:
+        return "100%" if today > 0 else "0%"
+    return f"{round((today - yesterday) / yesterday * 100)}%"
+
+
+def _pct(count: int, total: int) -> str:
+    """Share of total, e.g. count=772 of total=1790 -> "43%" — distinct from
+    _pct_change, which is a period-over-period delta, not a share."""
+    return "0%" if total == 0 else f"{round(count / total * 100)}%"
+
+
 _SENTIMENT_PIE_LABELS = ["Tích cực", "Trung lập", "Tiêu cực"]
 _SENTIMENT_PIE_COLORS = [_SENTIMENT_HEX["Tích cực"], _SENTIMENT_HEX["Trung tính"], _SENTIMENT_HEX["Tiêu cực"]]
 
@@ -127,14 +180,34 @@ def _draw_sentiment_pie(ax, positive: int, neutral: int, negative: int, *, title
     # only non-zero slices made the legend jump around between charts and
     # drop labels entirely once a report had just 1-2 sentiments present.
     values = [positive, neutral, negative]
-    if sum(values) > 0:
-        ax.pie(
-            values,
-            colors=_SENTIMENT_PIE_COLORS,
-            autopct=lambda pct: f"{pct:.1f}%" if pct > 0 else "",
-            startangle=90,
-            textprops={"fontsize": 8},
-        )
+    total = sum(values)
+    if total > 0:
+        wedges, _ = ax.pie(values, colors=_SENTIMENT_PIE_COLORS, startangle=90)
+        # A slice under this share sits too close to its neighbor's label to
+        # print centered inside the wedge (e.g. a mostly-neutral report's
+        # sliver-thin positive/negative slices landing next to each other at
+        # the seam) — those get their label pushed outside with a leader
+        # line instead of overlapping illegibly.
+        small_threshold = 0.08
+        for wedge, value in zip(wedges, values):
+            if value <= 0:
+                continue
+            pct = value / total
+            angle = math.radians((wedge.theta1 + wedge.theta2) / 2)
+            x, y = math.cos(angle), math.sin(angle)
+            label = f"{pct * 100:.1f}%"
+            if pct < small_threshold:
+                ax.annotate(
+                    label,
+                    xy=(x * 0.95, y * 0.95),
+                    xytext=(x * 1.35, y * 1.35),
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    arrowprops=dict(arrowstyle="-", color="#666666", lw=0.8),
+                )
+            else:
+                ax.text(x * 0.6, y * 0.6, label, ha="center", va="center", fontsize=8)
     else:
         ax.pie([1], colors=["#cccccc"], startangle=90)
     handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in _SENTIMENT_PIE_COLORS]
@@ -184,6 +257,7 @@ def _sentiment_by_topic_chart_png(rows: list[dict]) -> bytes:
     neutral = [r["neutral"] for r in rows]
     positive = [r["positive"] for r in rows]
     left2 = [n + m for n, m in zip(negative, neutral)]
+    max_total = max((n + m + p for n, m, p in zip(negative, neutral, positive)), default=0)
 
     fig, ax = plt.subplots(figsize=(6.5, max(2.0, 0.5 * len(topics) + 0.5)), dpi=150)
     y = list(range(len(topics)))
@@ -191,17 +265,31 @@ def _sentiment_by_topic_chart_png(rows: list[dict]) -> bytes:
     ax.barh(y, neutral, left=negative, color=_SENTIMENT_HEX["Trung tính"])
     ax.barh(y, positive, left=left2, color=_SENTIMENT_HEX["Tích cực"])
 
+    # A segment narrower than this can't fit its own label without
+    # overflowing into the neighboring segment (illegible white-on-gray) —
+    # those get printed just outside the bar instead of centered inside it.
+    label_min = max_total * 0.04
+    pad = max_total * 0.015
+
     for i, (neg, neu, pos) in enumerate(zip(negative, neutral, positive)):
         if neg:
-            ax.text(neg / 2, i, str(neg), va="center", ha="center", fontsize=7, color="white")
+            if neg >= label_min:
+                ax.text(neg / 2, i, str(neg), va="center", ha="center", fontsize=7, color="white")
+            else:
+                ax.text(-pad, i, str(neg), va="center", ha="right", fontsize=7, color=_SENTIMENT_HEX["Tiêu cực"])
         if neu:
             ax.text(neg + neu / 2, i, str(neu), va="center", ha="center", fontsize=7)
         if pos:
-            ax.text(neg + neu + pos / 2, i, str(pos), va="center", ha="center", fontsize=7, color="white")
+            end = neg + neu + pos
+            if pos >= label_min:
+                ax.text(neg + neu + pos / 2, i, str(pos), va="center", ha="center", fontsize=7, color="white")
+            else:
+                ax.text(end + pad, i, str(pos), va="center", ha="left", fontsize=7, color=_SENTIMENT_HEX["Tích cực"])
 
     ax.set_yticks(y)
     ax.set_yticklabels(topics, fontsize=8)
     ax.invert_yaxis()
+    ax.set_xlim(left=-max_total * 0.08, right=max_total * 1.08)
     ax.tick_params(axis="x", labelsize=7)
     handles = [plt.Rectangle((0, 0), 1, 1, color=_SENTIMENT_HEX[l]) for l in ("Tiêu cực", "Trung tính", "Tích cực")]
     legend = ax.legend(
@@ -215,6 +303,101 @@ def _sentiment_by_topic_chart_png(rows: list[dict]) -> bytes:
     )
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", bbox_extra_artists=(legend,))
+    plt.close(fig)
+    return buf.getvalue()
+
+
+def _add_brand_sentiment_summary(doc, brand_counts: dict[str, dict[str, int]]) -> None:
+    """Top-of-report summary comparing every tracked brand (own + each
+    competitor) side by side: one row per sentiment (plus a bold "Tổng"
+    row), one [count, % of that brand's total] column pair per brand.
+    Column count is dynamic on len(brand_counts) — an org with zero
+    competitors configured just gets a single brand column. Table only —
+    caller embeds the matching _sentiment_by_topic_chart_png separately."""
+    brands = list(brand_counts.keys())
+    table = doc.add_table(rows=5, cols=2 + 2 * len(brands))
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.style = "Table Grid"
+
+    headers = table.rows[0].cells
+    _set_cell_text(headers[0], "STT", bold=True, align_center=True)
+    _set_cell_text(headers[1], "Nhà mạng", bold=True, align_center=True)
+    for i, brand in enumerate(brands):
+        _set_cell_text(headers[2 + 2 * i], brand, bold=True, align_center=True)
+        _set_cell_text(headers[3 + 2 * i], "Tỷ lệ % theo sắc thái", bold=True, align_center=True)
+
+    totals = {brand: sum(brand_counts[brand].values()) for brand in brands}
+
+    def _row(i: int, stt: str, label: str, key: str | None, *, bold: bool = False) -> None:
+        cells = table.rows[i].cells
+        _set_cell_text(cells[0], stt, bold=bold, align_center=True)
+        _set_cell_text(cells[1], label, bold=bold)
+        for j, brand in enumerate(brands):
+            total = totals[brand]
+            count = total if key is None else brand_counts[brand][key]
+            _set_cell_text(cells[2 + 2 * j], str(count), bold=bold, align_center=True)
+            _set_cell_text(cells[3 + 2 * j], "100%" if key is None else _pct(count, total), bold=bold, align_center=True)
+
+    _row(1, "1", "Tích cực", "positive")
+    _row(2, "2", "Trung tính", "neutral")
+    _row(3, "3", "Tiêu cực", "negative")
+    _row(4, "4", "Tổng", None, bold=True)
+
+
+def _single_sentiment_bar_chart_png(rows: list[dict], *, color_hex: str, title: str) -> bytes:
+    """Simple (non-stacked) vertical bar chart comparing brands on ONE
+    sentiment — e.g. "Thu thập thông tin tích cực" bar chart comparing 3
+    telcos. rows = [{"label": str, "count": int}, ...]."""
+    rows = rows or [{"label": "—", "count": 0}]
+    labels = [r["label"] for r in rows]
+    counts = [r["count"] for r in rows]
+
+    fig, ax = plt.subplots(figsize=(4.0, 3.0), dpi=150)
+    ax.bar(labels, counts, color=color_hex)
+    for i, c in enumerate(counts):
+        ax.text(i, c, _fmt(c), ha="center", va="bottom", fontsize=8)
+    ax.set_title(title, fontsize=9, fontweight="bold")
+    ax.tick_params(axis="both", labelsize=8)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
+    plt.close(fig)
+    return buf.getvalue()
+
+
+def _channel_donut_png(brand_breakdowns: list[dict]) -> bytes:
+    """N donut charts side by side, one per brand, total count centered —
+    brand_breakdowns = [{"label": brand, "breakdown": {"Facebook": n, "News": n, "Forum": n}}, ...].
+    Only channels this platform actually crawls (see VALID_PLATFORM_TYPES in
+    org.py) — no Youtube/TikTok slice, since those are never non-zero here."""
+    brand_breakdowns = brand_breakdowns or [{"label": "—", "breakdown": {}}]
+    colors = {"Facebook": "#3b5bdb", "News": "#1f2937", "Forum": "#c78a1f"}
+
+    fig, axes = plt.subplots(1, len(brand_breakdowns), figsize=(3.2 * len(brand_breakdowns), 3.2), dpi=150)
+    if len(brand_breakdowns) == 1:
+        axes = [axes]
+    for ax, entry in zip(axes, brand_breakdowns):
+        breakdown = entry["breakdown"]
+        total = sum(breakdown.values())
+        channels = [c for c in ("Facebook", "News", "Forum") if breakdown.get(c)]
+        values = [breakdown[c] for c in channels]
+        if total > 0:
+            ax.pie(
+                values,
+                colors=[colors[c] for c in channels],
+                wedgeprops=dict(width=0.4),
+                startangle=90,
+            )
+        else:
+            ax.pie([1], colors=["#cccccc"], wedgeprops=dict(width=0.4), startangle=90)
+        ax.text(0, 0, _fmt(total), ha="center", va="center", fontsize=13, fontweight="bold", color="#c0392b")
+        ax.set_title(entry["label"], fontsize=9, fontweight="bold")
+
+    handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in colors.values()]
+    fig.legend(handles, colors.keys(), loc="lower center", ncol=3, fontsize=8, frameon=False, bbox_to_anchor=(0.5, -0.05))
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", bbox_inches="tight")
     plt.close(fig)
     return buf.getvalue()
 
@@ -252,6 +435,9 @@ def build_daily_word_report_bytes(
     topic_sentiment_rows: list[dict],
     negative_posts: list[dict],
     positive_posts: list[dict],
+    period_label: str | None = None,
+    negative_total: int | None = None,
+    positive_total: int | None = None,
 ) -> bytes:
     doc = Document()
     section = doc.sections[0]
@@ -260,7 +446,9 @@ def build_daily_word_report_bytes(
 
     # --- Title ---
     _add_header_line(doc, "🔖BÁO CÁO MẠNG XÃ HỘI", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
-    _add_header_line(doc, f"NGÀY {report_date.strftime('%d/%m/%Y')}", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
+    _add_header_line(
+        doc, period_label or f"NGÀY {report_date.strftime('%d/%m/%Y')}", _HEADER_GREEN, color=_TITLE_BLUE, size=13
+    )
 
     # --- I. Tổng quan ---
     _add_header_line(
@@ -338,7 +526,7 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    doc.add_paragraph(f"Tổng bài viết tiêu cực: {len(negative_posts):02d} bài viết")
+    doc.add_paragraph(f"Tổng bài viết tiêu cực: {(negative_total if negative_total is not None else len(negative_posts)):02d} bài viết")
 
     _add_post_list_table(doc, negative_posts)
 
@@ -354,7 +542,7 @@ def build_daily_word_report_bytes(
     r.bold = True
     r.font.color.rgb = _TITLE_BLUE
 
-    doc.add_paragraph(f"Tổng bài viết tích cực: {len(positive_posts):02d} bài viết")
+    doc.add_paragraph(f"Tổng bài viết tích cực: {(positive_total if positive_total is not None else len(positive_posts)):02d} bài viết")
 
     _add_post_list_table(doc, positive_posts)
 

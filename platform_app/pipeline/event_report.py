@@ -249,11 +249,16 @@ def generate_overview_narrative(org_name: str, news_matches: list[dict]) -> str:
         for m in matches[:10]:
             lines.append(f"[{m['target_name']}] {m['topic']}: {(m['content'] or '')[:400]}")
 
+    tracked_brands = ", ".join(by_brand.keys())
     system_prompt = (
         f"Bạn là chuyên viên phân tích truyền thông của {org_name}. Dựa trên danh sách tin tức về 5G "
         f"của {org_name} và các đối thủ dưới đây, viết một đoạn 'Đánh giá chung' theo phong cách báo cáo "
         "nội bộ: 1 đoạn tổng quan ngắn, sau đó liệt kê nhận định riêng cho từng thương hiệu (mỗi thương hiệu "
-        "1-2 gạch đầu dòng). Viết bằng tiếng Việt, khách quan, súc tích, không thêm số liệu không có trong dữ liệu."
+        "1-2 gạch đầu dòng). Sau cùng, thêm một dòng tiêu đề 'Khuyến nghị:' rồi liệt kê 1-3 gạch đầu dòng "
+        f"đề xuất hành động cụ thể cho {org_name}. Viết bằng tiếng Việt, khách quan, súc tích, không thêm "
+        f"số liệu không có trong dữ liệu. CHỈ được nhắc tới các thương hiệu sau: {tracked_brands} — "
+        "TUYỆT ĐỐI KHÔNG được tự thêm, suy đoán, hay đề cập tới bất kỳ công ty/thương hiệu nào khác không có "
+        "trong danh sách này, kể cả khi bạn biết thông tin đó từ kiến thức chung."
     )
     try:
         resp = httpx.post(

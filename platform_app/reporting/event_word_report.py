@@ -13,10 +13,16 @@ from platform_app.reporting.word_report import (
     _NEGATIVE_RED,
     _SUBHEADER_GREEN,
     _TITLE_BLUE,
+    _add_brand_sentiment_summary,
     _add_header_line,
     _add_hyperlink,
+    _add_multiline_paragraphs,
     _add_shaded_paragraph,
+    _add_subsection_header,
     _fmt,
+    _pct,
+    _pct_change,
+    _sentiment_by_topic_chart_png,
     _sentiment_pie_pair_png,
     _set_cell_text,
     _shade_cell,
@@ -32,28 +38,8 @@ _HANDLING_STATUS_LABEL = {
 }
 
 
-def _pct_change(yesterday: int, today: int) -> str:
-    if yesterday == 0:
-        return "100%" if today > 0 else "0%"
-    return f"{round((today - yesterday) / yesterday * 100)}%"
-
-
 def _add_section_header(doc, text: str, *, color: object = _TITLE_BLUE) -> None:
     _add_header_line(doc, text, _HEADER_GREEN, color=color, align_center=False)
-
-
-def _add_multiline_paragraphs(doc, text: str) -> None:
-    """One real paragraph per non-empty line — an LLM narrative with
-    "- Brand: ..." bullet lines needs real line breaks, not one run with
-    embedded '\\n' (Word ignores those)."""
-    for line in (text or "").split("\n"):
-        line = line.strip()
-        if line:
-            doc.add_paragraph(line)
-
-
-def _add_subsection_header(doc, text: str) -> None:
-    _add_header_line(doc, text, _SUBHEADER_GREEN, align_center=False)
 
 
 def _add_news_table(doc, matches: list[dict]) -> None:
@@ -175,6 +161,86 @@ def build_event_daily_word_report_bytes(
     # (confirmed on a real report: the chart table got clipped to roughly
     # half its set width). A single picture in one paragraph has no such
     # ambiguity.
+    news_sent = comparison["news"]["today_sentiment"]
+    social_sent = comparison["social"]["today_sentiment"]
+    pies_png = _sentiment_pie_pair_png(
+        (news_sent["positive"], news_sent["neutral"], news_sent["negative"]),
+        (social_sent["positive"], social_sent["neutral"], social_sent["negative"]),
+        left_title=f"Thu thập về {event_label} {org_name} trên kênh Báo chí",
+        right_title=f"Thu thập về {event_label} {org_name} trên mạng xã hội",
+    )
+    pies_p = doc.add_paragraph()
+    pies_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pies_p.add_run().add_picture(io.BytesIO(pies_png), width=Cm(17))
+
+    doc.add_page_break()
+
+    # --- I. Báo chí ---
+    _add_section_header(doc, f"I.  THÔNG TIN VỀ {event_label.upper()} TRÊN KÊNH BÁO CHÍ ONLINE")
+
+    _add_subsection_header(doc, f"1.  Đánh giá chung thông tin {event_label} của {org_name} & đối thủ")
+    _add_multiline_paragraphs(doc, overview_narrative)
+
+    _add_subsection_header(doc, f"2.  Thông tin về {event_label} {org_name} trên kênh báo chí online")
+    _add_news_table(doc, mobifone_news)
+
+    _add_subsection_header(doc, f"3.  Thông tin về {event_label} của đối thủ trên kênh báo chí online")
+    for brand, matches in competitor_news.items():
+        run = doc.add_paragraph().add_run(f"-  {brand}:")
+        run.bold = True
+        _add_news_table(doc, matches)
+
+    # --- II. Mạng xã hội ---
+    _add_section_header(
+        doc, f"II.  THÔNG TIN VỀ {event_label.upper()} {org_name.upper()} TRÊN KÊNH MẠNG XÃ HỘI", color=_NEGATIVE_RED
+    )
+    _add_social_table(doc, social_matches)
+
+    buf = io.BytesIO()
+    doc.save(buf)
+    return buf.getvalue()
+
+
+def build_event_weekly_word_report_bytes(
+    *,
+    org_name: str,
+    event_label: str,
+    period_label: str,
+    comparison: dict,
+    overview_narrative: str,
+    mobifone_news: list[dict],
+    competitor_news: dict[str, list[dict]],
+    social_matches: list[dict],
+    brand_counts: dict[str, dict[str, int]],
+) -> bytes:
+    """Weekly variant of build_event_daily_word_report_bytes — same overall
+    shape (comparison table, pies, Section I/II), plus a brand-vs-brand
+    sentiment summary table+chart up top, and week-range labels instead of a
+    single date."""
+    doc = Document()
+    section = doc.sections[0]
+    section.left_margin = Cm(1.5)
+    section.right_margin = Cm(1.5)
+
+    _add_header_line(
+        doc,
+        f"BÁO CÁO ONLINE MẠNG XÃ HỘI VÀ BÁO CHÍ VỀ {event_label.upper()} {org_name.upper()}",
+        _HEADER_GREEN,
+        color=_TITLE_BLUE,
+        size=13,
+    )
+    _add_header_line(doc, f"TUẦN {period_label}", _HEADER_GREEN, color=_TITLE_BLUE, size=13)
+
+    _add_brand_sentiment_summary(doc, brand_counts)
+    brand_chart_png = _sentiment_by_topic_chart_png(
+        [{"topic": brand, **counts} for brand, counts in brand_counts.items()]
+    )
+    brand_chart_p = doc.add_paragraph()
+    brand_chart_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    brand_chart_p.add_run().add_picture(io.BytesIO(brand_chart_png), width=Cm(16))
+
+    _add_comparison_table(doc, comparison)
+
     news_sent = comparison["news"]["today_sentiment"]
     social_sent = comparison["social"]["today_sentiment"]
     pies_png = _sentiment_pie_pair_png(

@@ -369,7 +369,7 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
 
             document_throughput = conn.execute(
                 f"""
-                SELECT date(d.first_seen_at) AS day, d.platform_type, count(*) AS count
+                SELECT date(d.first_seen_at AT TIME ZONE 'Asia/Ho_Chi_Minh') AS day, d.platform_type, count(*) AS count
                 FROM documents d
                 JOIN crawl_targets ct ON ct.id = d.target_id
                 WHERE {where_clause} AND d.first_seen_at >= now() - interval '14 days'
@@ -834,6 +834,188 @@ def _build_report_from_scope(
     }
 
 
+def _negative_channel_split(conn, conditions: list[str], params: list) -> dict[str, int]:
+    """Negative-sentiment document count split into news vs. everything else
+    (social) — used by the negative-brand weekly report's summary table,
+    which needs this split but not the full topic/top-posts machinery of
+    _build_report_from_scope."""
+    where_clause = " AND ".join(conditions)
+    rows = conn.execute(
+        f"""
+        SELECT (d.platform_type = 'news') AS is_news, COUNT(*) AS count
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        WHERE {where_clause} AND d.classification_status = 'completed' AND d.classification_sentiment = 'negative'
+        GROUP BY is_news
+        """,
+        params,
+    ).fetchall()
+    result = {"news": 0, "social": 0}
+    for row in rows:
+        result["news" if row["is_news"] else "social"] = row["count"]
+    return result
+
+
+def _negative_top_topic(conn, conditions: list[str], params: list, *, news: bool) -> tuple[str, int] | None:
+    """The single most common organization_topics tag among this channel's
+    negative documents, with its count — None if the channel has zero
+    negative documents. Same grouping as keyword_topic_detail (org.py above)
+    but scoped to one channel + negative sentiment only."""
+    where_clause = " AND ".join(conditions)
+    channel_condition = "d.platform_type = 'news'" if news else "d.platform_type != 'news'"
+    row = conn.execute(
+        f"""
+        SELECT COALESCE(ot.name, 'KHÁC') AS topic, COUNT(*) AS count
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        LEFT JOIN organization_topics ot ON ot.id = d.topic_tag_id
+        WHERE {where_clause} AND {channel_condition}
+          AND d.classification_status = 'completed' AND d.classification_sentiment = 'negative'
+        GROUP BY ot.name
+        ORDER BY count DESC
+        LIMIT 1
+        """,
+        params,
+    ).fetchone()
+    return (row["topic"], row["count"]) if row else None
+
+
+def _negative_topic_docs(
+    conn, conditions: list[str], params: list, *, news: bool, topic: str, limit: int = 10
+) -> list[dict]:
+    """Real document excerpts for the top negative topic in one channel —
+    fed to the LLM to write the "Nội dung tiêu cực chính" summary sentence,
+    same content-excerpt pattern as event_report.py's overview narrative."""
+    where_clause = " AND ".join(conditions)
+    channel_condition = "d.platform_type = 'news'" if news else "d.platform_type != 'news'"
+    if topic == "KHÁC":
+        topic_condition = "ot.name IS NULL"
+        topic_params = list(params)
+    else:
+        topic_condition = "ot.name = %s"
+        topic_params = [*params, topic]
+    rows = conn.execute(
+        f"""
+        SELECT d.topic, d.content, ct.display_name AS target_name
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        LEFT JOIN organization_topics ot ON ot.id = d.topic_tag_id
+        WHERE {where_clause} AND {channel_condition} AND {topic_condition}
+          AND d.classification_status = 'completed' AND d.classification_sentiment = 'negative'
+        ORDER BY d.published_at DESC
+        LIMIT %s
+        """,
+        [*topic_params, limit],
+    ).fetchall()
+    return list(rows)
+
+
+def _brand_scope_condition(user: dict, period_start: datetime, period_end: datetime) -> tuple[list[str], list] | None:
+    """Same access-control shape as _report_scope_between (org scoping,
+    org_sub target restriction, date window) but WITHOUT brand_focus/entity
+    filters — for reports comparing multiple brands symmetrically (own
+    brand + competitors as peers) rather than scoping to one org's own
+    content. None when an org_sub has no granted targets, same convention
+    as _report_scope_between."""
+    conditions = ["ct.organization_id = %s"]
+    params: list = [user["organization_id"]]
+    if user["role"] == "org_sub":
+        ids = user["accessible_target_ids"] or []
+        if not ids:
+            return None
+        conditions.append("d.target_id = ANY(%s)")
+        params.append(ids)
+    conditions.append("d.published_at >= %s AND d.published_at <= %s")
+    params.extend([period_start, period_end])
+    return conditions, params
+
+
+def _brand_sentiment_counts(conn, conditions: list[str], params: list, brands: list[str]) -> dict[str, dict[str, int]]:
+    """Per-brand sentiment breakdown using the already-computed
+    documents.classification_sentiment (no new LLM call needed) — same
+    grouping pattern as _build_report_from_scope's topic_sentiment_map
+    (above) but scoped to a fixed brand list instead of
+    _tracked_entity_condition's org-selected-entities filter.
+
+    Case-insensitive match on canonical_name: organizations.name (used as
+    the org's own brand string here) and entity_gazetteer's seeded
+    canonical_name can disagree on casing for the same brand (confirmed in
+    prod data: organizations.name = "Mobifone", entity_gazetteer =
+    "MobiFone") — an exact `=` would silently return zero rows for the
+    org's own brand while still matching competitors verbatim."""
+    where_clause = " AND ".join(conditions)
+    upper_to_brand = {b.upper(): b for b in brands}
+    rows = conn.execute(
+        f"""
+        SELECT de.canonical_name AS brand, d.classification_sentiment AS sentiment, COUNT(DISTINCT d.id) AS count
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        JOIN document_entities de ON de.document_id = d.id AND UPPER(de.canonical_name) = ANY(%s)
+        WHERE {where_clause} AND d.classification_status = 'completed' AND d.classification_sentiment IS NOT NULL
+        GROUP BY de.canonical_name, d.classification_sentiment
+        """,
+        [list(upper_to_brand.keys()), *params],
+    ).fetchall()
+    result = {brand: {"positive": 0, "neutral": 0, "negative": 0} for brand in brands}
+    for row in rows:
+        brand = upper_to_brand.get(row["brand"].upper())
+        if brand:
+            result[brand][row["sentiment"]] = row["count"]
+    return result
+
+
+def _brand_channel_breakdown(conn, conditions: list[str], params: list, brand: str) -> dict[str, int]:
+    """Document count for one brand, bucketed into the channels this
+    platform actually crawls (VALID_PLATFORM_TYPES, above): Facebook
+    (facebook_group + facebook_page), News, Forum. Case-insensitive brand
+    match — see _brand_sentiment_counts docstring."""
+    where_clause = " AND ".join(conditions)
+    rows = conn.execute(
+        f"""
+        SELECT d.platform_type, COUNT(DISTINCT d.id) AS count
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        JOIN document_entities de ON de.document_id = d.id AND UPPER(de.canonical_name) = UPPER(%s)
+        WHERE {where_clause}
+        GROUP BY d.platform_type
+        """,
+        [brand, *params],
+    ).fetchall()
+    breakdown = {"Facebook": 0, "News": 0, "Forum": 0}
+    bucket = {"facebook_group": "Facebook", "facebook_page": "Facebook", "news": "News", "forum": "Forum"}
+    for row in rows:
+        key = bucket.get(row["platform_type"])
+        if key:
+            breakdown[key] += row["count"]
+    return breakdown
+
+
+def _brand_top_posts(
+    conn, conditions: list[str], params: list, *, brand: str, sentiment: str, limit: int = 3
+) -> list[dict]:
+    """Top posts mentioning one brand with one sentiment, ranked by
+    engagement — same shape as _report_post_row's source query but scoped
+    by document_entities (any brand) instead of brand_focus (own-brand
+    only), and includes `images` for the competitor post gallery (mục 3).
+    Case-insensitive brand match — see _brand_sentiment_counts docstring."""
+    where_clause = " AND ".join(conditions)
+    rows = conn.execute(
+        f"""
+        SELECT d.id, d.topic, d.content, d.url, d.author, d.platform_type, d.images,
+               ct.display_name AS target_name,
+               (COALESCE(d.reaction_count, 0) + COALESCE(d.comment_count, 0)) AS engagement_total
+        FROM documents d
+        JOIN crawl_targets ct ON ct.id = d.target_id
+        JOIN document_entities de ON de.document_id = d.id AND UPPER(de.canonical_name) = UPPER(%s)
+        WHERE {where_clause} AND d.classification_status = 'completed' AND d.classification_sentiment = %s
+        ORDER BY engagement_total DESC, d.published_at DESC
+        LIMIT %s
+        """,
+        [brand, *params, sentiment, limit],
+    ).fetchall()
+    return list(rows)
+
+
 @router.get("/report")
 def org_report(
     days: int = Query(default=7, ge=1, le=365),
@@ -955,11 +1137,15 @@ def build_word_report_bytes_between(
     period_start: datetime,
     period_end: datetime,
     entity: str | None,
+    *,
+    period_label: str | None = None,
 ) -> bytes:
     """Same Word (.docx) template as build_daily_word_report_bytes_between but
     for an explicit [period_start, period_end) window — used by the manual
-    "Gửi email ngay" button, which follows the dashboard's flexible "last N
-    days" picker rather than the fixed 08:00-to-08:00 window."""
+    "Gửi email ngay" button (flexible "last N days" picker) and by
+    build_monthly_brand_report_bytes (30-day window). `period_label`
+    overrides the title's default "NGÀY {report_date}" — needed for the
+    monthly report, whose window isn't a single day."""
     from platform_app.reporting.word_report import build_daily_word_report_bytes
 
     report = _build_report_between(user, period_start, period_end, entity) or _EMPTY_REPORT
@@ -972,6 +1158,7 @@ def build_word_report_bytes_between(
         topic_sentiment_rows=report["keyword_topic_sentiment"],
         negative_posts=negative_posts,
         positive_posts=positive_posts,
+        period_label=period_label,
     )
 
 
@@ -1058,18 +1245,16 @@ def _event_sentiment_counts(matches: list[dict]) -> dict[str, int]:
     return counts
 
 
-def build_event_word_report_bytes(user: dict, event_key: str, report_date: date) -> bytes:
-    """Builds the "sự vụ" (topic-event) Word report — e.g. 5G MobiFone vs
-    đối thủ — distinct from build_daily_word_report_bytes_between: scoped to
-    one topic (not all org content), split báo chí/mạng xã hội, and includes
-    an LLM-written overview comparing MobiFone against its competitors."""
+def compute_event_report_data(user: dict, event_key: str, report_date: date) -> dict:
+    """All data build_event_word_report_bytes needs, computed once — reused
+    by both the Word export and the JSON preview route
+    (/report/event/{event_key}/data)."""
     from platform_app.pipeline.event_report import (
         EVENT_DEFINITIONS,
         generate_overview_narrative,
         get_competitor_brands,
         run_event_match,
     )
-    from platform_app.reporting.event_word_report import build_event_daily_word_report_bytes
     from platform_app.reporting.word_report import daily_window
 
     event = EVENT_DEFINITIONS[event_key]
@@ -1114,16 +1299,27 @@ def build_event_word_report_bytes(user: dict, event_key: str, report_date: date)
 
     overview_narrative = generate_overview_narrative(org_name, today_news)
 
-    return build_event_daily_word_report_bytes(
-        org_name=org_name,
-        event_label=event["label"],
-        report_date=report_date,
-        comparison=comparison,
-        overview_narrative=overview_narrative,
-        mobifone_news=mobifone_news,
-        competitor_news=competitor_news,
-        social_matches=social_mobifone,
-    )
+    return {
+        "org_name": org_name,
+        "event_label": event["label"],
+        "report_date": report_date,
+        "comparison": comparison,
+        "overview_narrative": overview_narrative,
+        "mobifone_news": mobifone_news,
+        "competitor_news": competitor_news,
+        "social_matches": social_mobifone,
+    }
+
+
+def build_event_word_report_bytes(user: dict, event_key: str, report_date: date) -> bytes:
+    """Builds the "sự vụ" (topic-event) Word report — e.g. 5G MobiFone vs
+    đối thủ — distinct from build_daily_word_report_bytes_between: scoped to
+    one topic (not all org content), split báo chí/mạng xã hội, and includes
+    an LLM-written overview comparing MobiFone against its competitors."""
+    from platform_app.reporting.event_word_report import build_event_daily_word_report_bytes
+
+    data = compute_event_report_data(user, event_key, report_date)
+    return build_event_daily_word_report_bytes(**data)
 
 
 @router.get("/report/event/{event_key}/export-word")
@@ -1147,6 +1343,541 @@ def export_event_report_word(
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.get("/report/event/{event_key}/data")
+def get_event_report_data(
+    event_key: str,
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """JSON preview of the same data export_event_report_word renders to
+    .docx — lets the Báo cáo tab show the report on-screen before export."""
+    from platform_app.pipeline.event_report import EVENT_DEFINITIONS
+
+    if event_key not in EVENT_DEFINITIONS:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Không tìm thấy sự vụ '{event_key}'")
+
+    return compute_event_report_data(user, event_key, report_date)
+
+
+def _range_label(start_date: date, end_date: date) -> str:
+    return f"{start_date.day:02d}/{start_date.month:02d} - {end_date.day:02d}/{end_date.month:02d}"
+
+
+def compute_event_weekly_report_data(user: dict, event_key: str, report_date: date) -> dict:
+    """All data build_event_weekly_word_report_bytes needs, computed once —
+    reused by both the Word export and the JSON preview route
+    (/report/event/{event_key}/data-weekly)."""
+    from platform_app.pipeline.event_report import (
+        EVENT_DEFINITIONS,
+        generate_overview_narrative,
+        get_competitor_brands,
+        run_event_match,
+    )
+    from platform_app.reporting.word_report import weekly_window
+
+    event = EVENT_DEFINITIONS[event_key]
+    org_name = user["organization_name"]
+    organization_id = user["organization_id"]
+    prev_report_date = report_date - timedelta(days=7)
+
+    this_start, this_end = weekly_window(report_date)
+    prev_start, prev_end = weekly_window(prev_report_date)
+
+    this_matches = run_event_match(event_key, organization_id, this_start, this_end)
+    prev_matches = run_event_match(event_key, organization_id, prev_start, prev_end)
+
+    this_news = [m for m in this_matches if m["platform_type"] == "news"]
+    this_social = [m for m in this_matches if m["platform_type"] != "news"]
+    prev_news = [m for m in prev_matches if m["platform_type"] == "news"]
+    prev_social = [m for m in prev_matches if m["platform_type"] != "news"]
+
+    this_week_label = _range_label(report_date - timedelta(days=6), report_date)
+    prev_week_label = _range_label(prev_report_date - timedelta(days=6), prev_report_date)
+
+    comparison = {
+        "yesterday_label": prev_week_label,
+        "today_label": this_week_label,
+        "news": {
+            "yesterday_total": len(prev_news),
+            "today_total": len(this_news),
+            "yesterday_sentiment": _event_sentiment_counts(prev_news),
+            "today_sentiment": _event_sentiment_counts(this_news),
+        },
+        "social": {
+            "yesterday_total": len(prev_social),
+            "today_total": len(this_social),
+            "yesterday_sentiment": _event_sentiment_counts(prev_social),
+            "today_sentiment": _event_sentiment_counts(this_social),
+        },
+    }
+
+    mobifone_news = [m for m in this_news if m["brand"] == org_name]
+    competitor_news: dict[str, list[dict]] = {brand: [] for brand in get_competitor_brands(organization_id)}
+    for m in this_news:
+        if m["brand"] != org_name:
+            competitor_news.setdefault(m["brand"], []).append(m)
+    social_mobifone = [m for m in this_social if m["brand"] == org_name]
+
+    brands = [org_name] + get_competitor_brands(organization_id)
+    brand_counts = {
+        brand: _event_sentiment_counts([m for m in this_matches if m["brand"] == brand]) for brand in brands
+    }
+
+    overview_narrative = generate_overview_narrative(org_name, this_news)
+
+    return {
+        "org_name": org_name,
+        "event_label": event["label"],
+        "period_label": this_week_label,
+        "comparison": comparison,
+        "overview_narrative": overview_narrative,
+        "mobifone_news": mobifone_news,
+        "competitor_news": competitor_news,
+        "social_matches": social_mobifone,
+        "brand_counts": brand_counts,
+    }
+
+
+def build_event_weekly_word_report_bytes(user: dict, event_key: str, report_date: date) -> bytes:
+    """Weekly variant of build_event_word_report_bytes — 7-day window ending
+    on report_date (via weekly_window) vs. the preceding 7-day window, plus
+    a brand-vs-brand (MobiFone + each competitor) sentiment summary the
+    daily report doesn't have."""
+    from platform_app.reporting.event_word_report import build_event_weekly_word_report_bytes as _build_weekly_docx
+
+    data = compute_event_weekly_report_data(user, event_key, report_date)
+    return _build_weekly_docx(**data)
+
+
+@router.get("/report/event/{event_key}/export-word-weekly")
+def export_event_report_word_weekly(
+    event_key: str,
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) weekly "sự vụ" (topic-event) report — 7-day window
+    ending 08:00 (Vietnam time) on `report_date`, plus the preceding week
+    for comparison, plus a brand-vs-brand sentiment summary the daily
+    report doesn't have."""
+    from platform_app.pipeline.event_report import EVENT_DEFINITIONS
+
+    if event_key not in EVENT_DEFINITIONS:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Không tìm thấy sự vụ '{event_key}'")
+
+    content = build_event_weekly_word_report_bytes(user, event_key, report_date)
+    filename = f"bao-cao-tuan-{event_key}-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/report/event/{event_key}/data-weekly")
+def get_event_weekly_report_data(
+    event_key: str,
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """JSON preview of the same data export_event_report_word_weekly renders
+    to .docx."""
+    from platform_app.pipeline.event_report import EVENT_DEFINITIONS
+
+    if event_key not in EVENT_DEFINITIONS:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Không tìm thấy sự vụ '{event_key}'")
+
+    return compute_event_weekly_report_data(user, event_key, report_date)
+
+
+def compute_negative_brand_report_data(user: dict, report_date: date) -> dict:
+    """All data build_negative_brand_report_bytes needs, computed once —
+    reused by both the Word export and the JSON preview route
+    (/report/negative-brand/data-weekly). Unlike the 5G event report, this
+    scopes to the org's own-brand documents overall (brand_focus='own'),
+    reusing the same daily-social-report infra (_report_scope_between /
+    _build_report_from_scope) instead of event_report.py's topic-match
+    pipeline. Sections with no backing data anywhere in the system (geo
+    hotspots, xử lý/seeding case tracking) render as manual placeholders —
+    see build_negative_brand_weekly_word_report_bytes."""
+    from platform_app.pipeline.negative_brand_report import (
+        generate_negative_overview_narrative,
+        summarize_negative_theme,
+    )
+    from platform_app.reporting.word_report import _pct, _pct_change, weekly_window
+
+    org_name = user["organization_name"]
+    prev_report_date = report_date - timedelta(days=7)
+
+    this_start, this_end = weekly_window(report_date)
+    prev_start, prev_end = weekly_window(prev_report_date)
+
+    this_scope = _report_scope_between(user, this_start, this_end, None, brand_focus="own")
+    prev_scope = _report_scope_between(user, prev_start, prev_end, None, brand_focus="own")
+    this_report = _build_report_from_scope(user, this_scope, None) if this_scope else dict(_EMPTY_REPORT)
+    prev_report = _build_report_from_scope(user, prev_scope, None) if prev_scope else dict(_EMPTY_REPORT)
+
+    this_channel_split = {"news": 0, "social": 0}
+    news_theme = "Không có phản ánh tiêu cực nào trên kênh báo chí online trong tuần này."
+    news_pct = "0%"
+    news_location: str | None = None
+    social_theme = "Không có phản ánh tiêu cực nào trên mạng xã hội trong tuần này."
+    social_pct = "0%"
+    social_location: str | None = None
+
+    with get_pool().connection() as conn:
+        if prev_scope:
+            prev_conditions, prev_params, _, _ = prev_scope
+            prev_channel_split = _negative_channel_split(conn, prev_conditions, prev_params)
+        else:
+            prev_channel_split = {"news": 0, "social": 0}
+
+        if this_scope:
+            this_conditions, this_params, _, _ = this_scope
+            this_channel_split = _negative_channel_split(conn, this_conditions, this_params)
+
+            top_news = _negative_top_topic(conn, this_conditions, this_params, news=True)
+            if top_news:
+                topic_name, topic_count = top_news
+                docs = _negative_topic_docs(conn, this_conditions, this_params, news=True, topic=topic_name)
+                news_theme, news_location = summarize_negative_theme(org_name, "kênh báo chí online", docs)
+                news_pct = _pct(topic_count, this_channel_split["news"])
+
+            top_social = _negative_top_topic(conn, this_conditions, this_params, news=False)
+            if top_social:
+                topic_name, topic_count = top_social
+                docs = _negative_topic_docs(conn, this_conditions, this_params, news=False, topic=topic_name)
+                social_theme, social_location = summarize_negative_theme(org_name, "mạng xã hội", docs)
+                social_pct = _pct(topic_count, this_channel_split["social"])
+
+    hotspot_parts = []
+    if news_location:
+        hotspot_parts.append(f"{news_location} (báo chí)")
+    if social_location:
+        hotspot_parts.append(f"{social_location} (mạng xã hội)")
+    hotspot_text = ", ".join(hotspot_parts) if hotspot_parts else "—"
+
+    this_week_label = _range_label(report_date - timedelta(days=6), report_date)
+    prev_week_label = _range_label(prev_report_date - timedelta(days=6), prev_report_date)
+
+    summary_rows = [
+        {
+            "stt": "1.1",
+            "label": "Tổng thông tin thu thập và kiểm soát",
+            "prev": prev_report["total_posts"],
+            "this": this_report["total_posts"],
+            "pct": None,
+            "compare": _pct_change(prev_report["total_posts"], this_report["total_posts"]),
+            "bold": True,
+        },
+        {
+            "stt": "1.2",
+            "label": "Tổng thông tin tiêu cực (đã kiểm soát và cảnh báo)",
+            "prev": prev_report["sentiment_negative"],
+            "this": this_report["sentiment_negative"],
+            "pct": _pct(this_report["sentiment_negative"], this_report["total_posts"]),
+            "compare": _pct_change(prev_report["sentiment_negative"], this_report["sentiment_negative"]),
+            "bold": True,
+        },
+        {
+            "stt": "-",
+            "label": f"Tin tiêu cực về {org_name} trên kênh Báo chí online",
+            "prev": prev_channel_split["news"],
+            "this": this_channel_split["news"],
+            "pct": _pct(this_channel_split["news"], this_report["sentiment_negative"]),
+            "compare": _pct_change(prev_channel_split["news"], this_channel_split["news"]),
+        },
+        {
+            "stt": "-",
+            "label": f"Tin tiêu cực về {org_name} trên mạng xã hội",
+            "prev": prev_channel_split["social"],
+            "this": this_channel_split["social"],
+            "pct": _pct(this_channel_split["social"], this_report["sentiment_negative"]),
+            "compare": _pct_change(prev_channel_split["social"], this_channel_split["social"]),
+        },
+        {
+            "stt": "-",
+            "label": "Ghi nhận và phối hợp xử lý (trường hợp)",
+            "prev": None,
+            "this": None,
+            "pct": None,
+            "compare": None,
+        },
+        {
+            "stt": "1.3",
+            "label": "Tổng thông tin tích cực",
+            "prev": prev_report["sentiment_positive"],
+            "this": this_report["sentiment_positive"],
+            "pct": None,
+            "compare": _pct_change(prev_report["sentiment_positive"], this_report["sentiment_positive"]),
+            "bold": True,
+        },
+        {
+            "stt": "1.4",
+            "label": "Tổng thông tin trung tính",
+            "prev": prev_report["sentiment_neutral"],
+            "this": this_report["sentiment_neutral"],
+            "pct": None,
+            "compare": _pct_change(prev_report["sentiment_neutral"], this_report["sentiment_neutral"]),
+            "bold": True,
+        },
+    ]
+
+    comparison = {
+        "total_prev": prev_report["total_posts"],
+        "total_this": this_report["total_posts"],
+        "negative_prev": prev_report["sentiment_negative"],
+        "negative_this": this_report["sentiment_negative"],
+        "negative_news_this": this_channel_split["news"],
+        "negative_social_this": this_channel_split["social"],
+    }
+    overview_narrative = generate_negative_overview_narrative(org_name, comparison, news_theme, social_theme)
+
+    return {
+        "org_name": org_name,
+        "period_label": this_week_label,
+        "period_prev_label": prev_week_label,
+        "summary_rows": summary_rows,
+        "news_theme": news_theme,
+        "news_pct": news_pct,
+        "social_theme": social_theme,
+        "social_pct": social_pct,
+        "hotspot_text": hotspot_text,
+        "overview_narrative": overview_narrative,
+    }
+
+
+def build_negative_brand_report_bytes(user: dict, report_date: date) -> bytes:
+    """Weekly "negative brand mentions" report."""
+    from platform_app.reporting.negative_report import build_negative_brand_weekly_word_report_bytes as _build_docx
+
+    data = compute_negative_brand_report_data(user, report_date)
+    return _build_docx(**data)
+
+
+@router.get("/report/negative-brand/export-word-weekly")
+def export_negative_brand_report_word_weekly(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) weekly "negative brand mentions" report — org-wide
+    own-brand negative content, 7-day window ending 08:00 (Vietnam time) on
+    `report_date`, vs. the preceding week."""
+    content = build_negative_brand_report_bytes(user, report_date)
+    filename = f"bao-cao-tuan-tieu-cuc-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/report/negative-brand/data-weekly")
+def get_negative_brand_report_data(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """JSON preview of the same data export_negative_brand_report_word_weekly
+    renders to .docx."""
+    return compute_negative_brand_report_data(user, report_date)
+
+
+def build_monthly_brand_report_bytes(user: dict, report_date: date) -> bytes:
+    """Monthly "Báo cáo tháng thương hiệu MobiFone" — a balanced overview
+    (positive + negative + neutral), NOT negative-only (that's
+    build_negative_brand_report_bytes, a separate weekly report). Reuses
+    build_word_report_bytes_between unchanged — it's already generic over
+    any [period_start, period_end) window, exactly the same template the
+    daily report and report-email job already use (tổng quan + sentiment
+    pie + topic breakdown + top negative/positive posts)."""
+    from platform_app.reporting.word_report import monthly_window
+
+    org_name = user["organization_name"]
+    period_start, period_end = monthly_window(report_date)
+    period_label = f"THÁNG {_range_label(report_date - timedelta(days=29), report_date)}"
+    return build_word_report_bytes_between(
+        user, org_name, report_date, period_start, period_end, None, period_label=period_label
+    )
+
+
+@router.get("/report/export-word-monthly")
+def export_monthly_brand_report_word(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) monthly brand report — same balanced template as the
+    daily report (/report/export-word), 30-day window ending 08:00
+    (Vietnam time) on `report_date` instead of 1 day."""
+    content = build_monthly_brand_report_bytes(user, report_date)
+    filename = f"bao-cao-thang-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+def compute_competitor_channel_report_data(user: dict, report_date: date) -> dict:
+    """Weekly "đối thủ cùng ngành" report data."""
+    from platform_app.reporting.word_report import weekly_window
+
+    return _compute_competitor_channel_report_data(
+        user, report_date, window_fn=weekly_window, period_days=7, period_unit_label="TUẦN"
+    )
+
+
+def compute_competitor_channel_report_data_monthly(user: dict, report_date: date) -> dict:
+    """Monthly variant of compute_competitor_channel_report_data — identical
+    structure, 30-day window instead of 7-day (monthly_window). Requested
+    as "Báo cáo đối thủ ++ tháng", the pre-existing catalog stub name for
+    exactly this weekly report on a monthly cadence."""
+    from platform_app.reporting.word_report import monthly_window
+
+    return _compute_competitor_channel_report_data(
+        user, report_date, window_fn=monthly_window, period_days=30, period_unit_label="THÁNG"
+    )
+
+
+def build_competitor_channel_report_bytes(user: dict, report_date: date) -> bytes:
+    """Weekly "đối thủ cùng ngành" report — Word export."""
+    from platform_app.reporting.competitor_word_report import build_competitor_weekly_word_report_bytes as _build_docx
+
+    data = compute_competitor_channel_report_data(user, report_date)
+    return _build_docx(**data)
+
+
+def build_competitor_channel_monthly_report_bytes(user: dict, report_date: date) -> bytes:
+    """Monthly variant of build_competitor_channel_report_bytes — Word export."""
+    from platform_app.reporting.competitor_word_report import build_competitor_weekly_word_report_bytes as _build_docx
+
+    data = compute_competitor_channel_report_data_monthly(user, report_date)
+    return _build_docx(**data)
+
+
+def _compute_competitor_channel_report_data(
+    user: dict, report_date: date, *, window_fn, period_days: int, period_unit_label: str
+) -> dict:
+    """Shared impl for the weekly and monthly "đối thủ cùng ngành" report —
+    MobiFone + its tracked competitors treated as peer brands (unlike
+    build_negative_brand_report_bytes, which only looks at MobiFone's own
+    content). Sentiment breakdown reuses documents.classification_sentiment
+    (no new LLM call, unlike the 5G event report) — only the 2 bullet
+    summaries in mục 1 need an LLM."""
+    from platform_app.pipeline.competitor_report import summarize_brand_bullets
+    from platform_app.pipeline.event_report import get_competitor_brands
+    from platform_app.reporting.word_report import _fmt
+
+    org_name = user["organization_name"]
+    organization_id = user["organization_id"]
+    brands = [org_name, *get_competitor_brands(organization_id)]
+
+    this_start, this_end = window_fn(report_date)
+    this_period_label = f"{period_unit_label} {_range_label(report_date - timedelta(days=period_days - 1), report_date)}"
+
+    brand_counts = {b: {"positive": 0, "neutral": 0, "negative": 0} for b in brands}
+    channel_breakdowns = {b: {"Facebook": 0, "News": 0, "Forum": 0} for b in brands}
+    competitor_posts: dict[str, dict[str, list[dict]]] = {b: {"positive": [], "negative": []} for b in brands}
+    docs_by_brand_positive: dict[str, list[dict]] = {}
+    docs_by_brand_negative: dict[str, list[dict]] = {}
+
+    brand_scope = _brand_scope_condition(user, this_start, this_end)
+    if brand_scope:
+        conditions, params = brand_scope
+        with get_pool().connection() as conn:
+            brand_counts = _brand_sentiment_counts(conn, conditions, params, brands)
+            for brand in brands:
+                channel_breakdowns[brand] = _brand_channel_breakdown(conn, conditions, params, brand)
+                pos_posts = _brand_top_posts(conn, conditions, params, brand=brand, sentiment="positive")
+                neg_posts = _brand_top_posts(conn, conditions, params, brand=brand, sentiment="negative")
+                docs_by_brand_positive[brand] = pos_posts
+                docs_by_brand_negative[brand] = neg_posts
+                competitor_posts[brand] = {"positive": pos_posts, "negative": neg_posts}
+
+    own_scope = _report_scope_between(user, this_start, this_end, None, brand_focus="own")
+    own_report = _build_report_from_scope(user, own_scope, None) if own_scope else dict(_EMPTY_REPORT)
+
+    positive_bullets = summarize_brand_bullets(brands, "tích cực", docs_by_brand_positive)
+    negative_bullets = summarize_brand_bullets(brands, "tiêu cực", docs_by_brand_negative)
+
+    # mục 4's 2 bullet tính trực tiếp bằng Python (argmax trên số liệu thật) —
+    # đáng tin cậy hơn để LLM suy luận từ 1 con số duy nhất.
+    channel_bullets: list[str] = []
+    fb_leader = max(brands, key=lambda b: channel_breakdowns[b]["Facebook"], default=None)
+    if fb_leader and channel_breakdowns[fb_leader]["Facebook"] > 0:
+        max_fb = channel_breakdowns[fb_leader]["Facebook"]
+        channel_bullets.append(f"-  Xu hướng khách hàng nhắc đến {fb_leader.upper()} nhiều nhất trên kênh Facebook.")
+        channel_bullets.append(
+            f"-  Số bài đăng trên kênh Facebook của {fb_leader.upper()} cao nhất trong tất cả các nhà mạng "
+            f"với {_fmt(max_fb)} bài đăng."
+        )
+
+    return {
+        "org_name": org_name,
+        "period_label": this_period_label,
+        "brands": brands,
+        "brand_counts": brand_counts,
+        "positive_bullets": positive_bullets,
+        "negative_bullets": negative_bullets,
+        "own_positive_posts": own_report["positive_posts"],
+        "own_negative_posts": own_report["negative_posts"],
+        "competitor_posts": competitor_posts,
+        "channel_breakdowns": channel_breakdowns,
+        "channel_bullets": channel_bullets,
+    }
+
+
+@router.get("/report/competitor-channels/export-word-weekly")
+def export_competitor_channel_report_word_weekly(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) weekly "đối thủ cùng ngành" report — MobiFone + tracked
+    competitors as peer brands, 7-day window ending 08:00 (Vietnam time) on
+    `report_date`."""
+    content = build_competitor_channel_report_bytes(user, report_date)
+    filename = f"bao-cao-tuan-doi-thu-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/report/competitor-channels/export-word-monthly")
+def export_competitor_channel_report_word_monthly(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> StreamingResponse:
+    """Word (.docx) monthly "đối thủ cùng ngành" report — same report as the
+    weekly export, 30-day window instead of 7-day."""
+    content = build_competitor_channel_monthly_report_bytes(user, report_date)
+    filename = f"bao-cao-thang-doi-thu-{report_date.strftime('%Y%m%d')}.docx"
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/report/competitor-channels/data-weekly")
+def get_competitor_channel_report_data(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """JSON preview of the same data export_competitor_channel_report_word_weekly
+    renders to .docx."""
+    return compute_competitor_channel_report_data(user, report_date)
+
+
+@router.get("/report/competitor-channels/data-monthly")
+def get_competitor_channel_report_data_monthly(
+    report_date: date = Query(default_factory=lambda: datetime.now(timezone.utc).date()),
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """JSON preview of the same data export_competitor_channel_report_word_monthly
+    renders to .docx."""
+    return compute_competitor_channel_report_data_monthly(user, report_date)
 
 
 # ---------------------------------------------------------------------------
