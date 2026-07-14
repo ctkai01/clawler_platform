@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Giám sát crawl Facebook{% endblock %}
+{% block content %}
+<meta http-equiv="refresh" content="30">
+
+{% if triggered %}
+<div class="flash flash-ok">✅ Đã trigger <strong>{{ triggered }}</strong> — xem tiến trình ở <a href="http://localhost:8081" target="_blank" rel="noopener">Airflow UI</a>.</div>
+{% endif %}
+{% if released %}
+<div class="flash flash-ok">✅ Đã gỡ cách ly account <strong>{{ released }}</strong>.</div>
+{% endif %}
+{% if trigger_error %}
+<div class="flash flash-error">⚠️ {{ trigger_error }}</div>
+{% endif %}
+
+<h3 style="margin-top:0;">Dispatch (Airflow)</h3>
+<div class="status-grid">
+    {% for d in dag_status %}
+    <div class="card">
+        <div style="font-weight:600;">
+            {% if d.error %}
+            <span class="status-dot status-dot-gray"></span>
+            {% elif d.is_paused %}
+            <span class="status-dot status-dot-gray"></span>
+            {% else %}
+            <span class="status-dot status-dot-green"></span>
+            {% endif %}
+            {{ d.dag_id }}
+        </div>
+        {% if d.error %}
+        <div class="meta">Không lấy được trạng thái: {{ d.error }}</div>
+        {% else %}
+        <div class="meta">{{ 'Đang tạm dừng (paused)' if d.is_paused else 'Đang chạy theo lịch' }}</div>
+        <div class="meta">
+            Lần chạy gần nhất:
+            {% if d.last_run_at %}{{ d.last_run_at }} — <strong>{{ d.last_run_state }}</strong>{% else %}chưa có{% endif %}
+        </div>
+        {% endif %}
+        <form class="status-inline-form" action="/trigger" method="post" style="margin-top:0.5rem;">
+            <input type="hidden" name="dag_id" value="{{ d.dag_id }}">
+            <input type="hidden" name="next" value="/fb-crawl">
+            <button type="submit">▶ Trigger ngay</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<h3>Worker &amp; hàng đợi (RabbitMQ)</h3>
+<div class="card">
+    <div class="stats" style="border-top:none; padding-top:0;">
+        <span class="stat">
+            {% if worker_alive %}
+            <span class="status-dot status-dot-green"></span>fb-celery-worker: đang sống
+            {% else %}
+            <span class="status-dot status-dot-red"></span>fb-celery-worker: KHÔNG phản hồi{% if worker_error %} ({{ worker_error }}){% endif %}
+            {% endif %}
+        </span>
+    </div>
+    <div class="stats">
+        {% if queue_info %}
+        <span class="stat">Chờ xử lý: <strong>{{ queue_info.messages_ready }}</strong></span>
+        <span class="stat">Đang xử lý: <strong>{{ queue_info.messages_unacknowledged }}</strong></span>
+        <span class="stat">Consumer: <strong>{{ queue_info.consumers }}</strong></span>
+        {% else %}
+        <span class="stat">Không lấy được số liệu RabbitMQ{% if queue_error %}: {{ queue_error }}{% endif %}</span>
+        {% endif %}
+    </div>
+</div>
+
+<h3>Account pool ({{ accounts|length }})</h3>
+<div class="card" style="padding:0;">
+    <table class="report-table" style="margin:0;">
+        <thead>
+        <tr><th>Account</th><th>Trạng thái</th><th>Fail count</th><th>Dùng lần cuối</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for a in accounts %}
+        <tr>
+            <td style="padding-left:1.4rem;">{{ a.id }}</td>
+            <td>
+                {% if a.status == 'LIVE' %}
+                <span class="badge badge-sentiment-positive">LIVE</span>
+                {% else %}
+                <span class="badge badge-sentiment-negative">CHECKPOINT</span>
+                {% endif %}
+            </td>
+            <td>{{ a.fail_count }}</td>
+            <td>{{ a.last_used_at or '—' }}</td>
+            <td style="padding-right:1.4rem;">
+                {% if a.status != 'LIVE' %}
+                <form class="status-inline-form" action="/fb-crawl/release-checkpoint" method="post">
+                    <input type="hidden" name="account_key" value="{{ a.id }}">
+                    <button type="submit">Gỡ cách ly</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h3>Trạng thái crawl_targets (Facebook)</h3>
+<div class="card" style="padding:0;">
+    <table class="report-table" style="margin:0;">
+        <thead>
+        <tr><th>Nền tảng</th><th>Trạng thái</th><th>Số lượng</th></tr>
+        </thead>
+        <tbody>
+        {% for row in target_breakdown %}
+        <tr>
+            <td style="padding-left:1.4rem;">{{ row.platform_type }}</td>
+            <td>{{ row.last_status or '(chưa crawl)' }}</td>
+            <td>{{ row.n }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h3>Hoạt động gần đây</h3>
+<div class="card" style="padding:0;">
+    <table class="report-table" style="margin:0;">
+        <thead>
+        <tr><th>Nguồn</th><th>Nền tảng</th><th>Trạng thái</th><th>Crawl lúc</th><th>Lỗi</th></tr>
+        </thead>
+        <tbody>
+        {% for t in recent_activity %}
+        <tr>
+            <td style="padding-left:1.4rem;">{{ t.display_name or ('#' ~ t.id) }}</td>
+            <td>{{ t.platform_type }}</td>
+            <td>{{ t.last_status or '—' }}</td>
+            <td>{{ t.last_crawled_at or '—' }}</td>
+            <td style="max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ t.last_error or '' }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
