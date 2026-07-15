@@ -36,6 +36,7 @@ x-airflow-common: &airflow-common
 services:
   postgres:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
@@ -68,6 +69,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     ports:
       # No host binding needed for the single-machine setup (only reached via
       # the docker network) — only exposed when LAN_BIND_IP is set, same
@@ -91,6 +93,7 @@ services:
       context: ./frontend
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8083}
+    restart: unless-stopped
     ports:
       - "5173:80"
 
@@ -107,6 +110,7 @@ services:
       # Chỉ dùng để ping fb-celery-worker (control.ping) trên trang /fb-crawl
       # — dashboard không publish task nào, chỉ đọc trạng thái.
       FB_BROKER_URL: amqp://fbcrawl:fbcrawl@rabbitmq:5672//
+    restart: unless-stopped
     ports:
       - "8082:8000"
     command: uvicorn platform_app.dashboard.app:app --host 0.0.0.0 --port 8000
@@ -129,6 +133,7 @@ services:
       AIRFLOW_API_BASE: http://airflow-webserver:8080
       AIRFLOW_API_USER: admin
       AIRFLOW_API_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
+    restart: unless-stopped
     ports:
       - "8083:8000"
     command: uvicorn platform_app.api.app:app --host 0.0.0.0 --port 8000
@@ -149,6 +154,7 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
+    restart: unless-stopped
     command: airflow webserver
     ports:
       - "8081:8080"
@@ -158,6 +164,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
+    restart: unless-stopped
     command: airflow scheduler
     depends_on:
       airflow-init:
@@ -165,6 +172,7 @@ services:
 
   airflow-worker-http:
     <<: *airflow-common
+    restart: unless-stopped
     command: airflow celery worker --queues http_crawler --concurrency 20
     depends_on:
       airflow-init:
@@ -176,6 +184,7 @@ services:
   # http_crawler queue). See docs/dag-flow.md.
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: fbcrawl
       RABBITMQ_DEFAULT_PASS: fbcrawl
@@ -205,6 +214,7 @@ services:
       CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
       FB_BROKER_URL: amqp://fbcrawl:fbcrawl@rabbitmq:5672//
       FB_INFLIGHT_REDIS_URL: redis://redis:6379/2
+    restart: unless-stopped
     command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl --concurrency ${FB_CELERY_CONCURRENCY:-4}
     depends_on:
       postgres:
