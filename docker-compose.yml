@@ -42,13 +42,21 @@ services:
       POSTGRES_DB: airflow
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:-crawler}
     ports:
-      # Bound to loopback by default — host tools (pytest, psql) still reach
-      # it via localhost, but it's never reachable from outside this machine.
-      # Set LAN_BIND_IP to this host's Tailscale IP (100.x.x.x) to let a
-      # remote fb-celery-worker (docker-compose.worker.yml, see
-      # docs/fb-worker-remote.md) reach it over the tailnet — NEVER set it to
-      # "0.0.0.0" or a public IP, on a dev machine or a VPS alike.
-      - "${LAN_BIND_IP:-127.0.0.1}:5432:5432"
+      # Always bound to loopback — host tools (pytest, psql, DBeaver) reach
+      # it via localhost regardless of LAN_BIND_IP below. Kept as its own
+      # fixed entry rather than folded into the LAN_BIND_IP line: Docker
+      # rejects two identical host_ip:host_port bindings for one container,
+      # so if LAN_BIND_IP defaulted to 127.0.0.1 too, `docker compose up`
+      # with it unset would fail outright instead of silently doing nothing.
+      - "127.0.0.1:5432:5432"
+      # Additionally bound to this host's Tailscale IP (100.x.x.x) only when
+      # LAN_BIND_IP is set, so a remote fb-celery-worker (docker-compose.worker.yml,
+      # see docs/fb-worker-remote.md) can reach it over the tailnet — NEVER
+      # set LAN_BIND_IP to "0.0.0.0" or a public IP, on a dev machine or a
+      # VPS alike. Default 127.0.0.2 when unset is a harmless no-op (still
+      # loopback-only, just a second address) purely so this line is always
+      # valid to Docker without colliding with the fixed entry above.
+      - "${LAN_BIND_IP:-127.0.0.2}:5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./scripts/init-postgres.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
@@ -63,12 +71,13 @@ services:
     ports:
       # No host binding needed for the single-machine setup (only reached via
       # the docker network) — only exposed when LAN_BIND_IP is set, same
-      # remote-worker use case as postgres above. Host-side port 16379 (not
-      # the default 6379) — this host already has an unrelated project's
-      # Redis bound system-wide on 6379; internal container-to-container
-      # traffic (redis://redis:6379/...) is unaffected, only the exposed
-      # host port differs.
-      - "${LAN_BIND_IP:-127.0.0.1}:16379:6379"
+      # remote-worker use case as postgres above (127.0.0.2 default is the
+      # same harmless-no-op trick, see the comment there). Host-side port
+      # 16379 (not the default 6379) — this host already has an unrelated
+      # project's Redis bound system-wide on 6379; internal
+      # container-to-container traffic (redis://redis:6379/...) is
+      # unaffected, only the exposed host port differs.
+      - "${LAN_BIND_IP:-127.0.0.2}:16379:6379"
 
   # Production-only static build of the customer portal. Local dev doesn't
   # use this service — keep running `npm run dev` in frontend/ instead
