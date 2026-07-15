@@ -21,7 +21,7 @@ _account_pool = AccountPool()
 _proxy_pool = ProxyPool()
 
 
-async def _run_batch(platform_type: str, target_ids: list[int], session_path, proxy, user_agent: str | None) -> bool:
+async def _run_batch(platform_type: str, target_ids: list[int], session_data: dict, proxy, user_agent: str | None) -> bool:
     """Crawls every target_id in one browser session. Returns True if the
     account got checkpointed partway through (caller uses this to decide
     what to tell AccountPool.release)."""
@@ -39,7 +39,7 @@ async def _run_batch(platform_type: str, target_ids: list[int], session_path, pr
 
     async with crawler_cls(
         headless=True,
-        storage_state_path=session_path,
+        storage_state_path=session_data,
         proxy_server=proxy.server,
         proxy_username=proxy.username,
         proxy_password=proxy.password,
@@ -113,7 +113,7 @@ def crawl_batch_task(self, platform_type: str, target_ids: list[int], session_ke
     proxy = _proxy_pool.acquire()
     try:
         checkpointed = asyncio.run(
-            _run_batch(platform_type, target_ids, account.session_path, proxy, account.user_agent)
+            _run_batch(platform_type, target_ids, account.session_data, proxy, account.user_agent)
         )
     except Exception:
         logger.exception("Batch %s session_key=%s thất bại toàn bộ", platform_type, session_key)

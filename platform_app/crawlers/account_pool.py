@@ -3,9 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import dataclass
-from pathlib import Path
 
-from platform_app.crawlers.facebook_runner import FB_SESSION_DIR
 from platform_app.db.pool import get_pool
 
 logger = logging.getLogger(__name__)
@@ -14,51 +12,35 @@ logger = logging.getLogger(__name__)
 @dataclass
 class Account:
     key: str
-    session_path: Path
+    session_data: dict
     user_agent: str | None = None
 
 
 class AccountPool:
-    """Postgres-backed health/cooldown tracking for the FB session pool.
-
-    Cookies stay in secrets/fb_sessions/{key}.json exactly as before — this
-    pool only tracks LIVE/CHECKPOINT status and a cooldown window, keyed by
-    the same string used for crawl_targets.fb_session_key. No auto-login:
-    a CHECKPOINT account stays isolated until release_checkpoint() is
-    called by an operator who has manually verified it in a real browser
-    (see docs/fb-session-pool.md).
+    """Postgres-backed health/cooldown tracking AND session storage for the
+    FB session pool — fb_accounts.session_data (Playwright storage_state:
+    cookies + origins/localStorage) is the source of truth, keyed by the
+    same string used for crawl_targets.fb_session_key. An account with no
+    session_data yet is never handed out. Registering a new account or
+    refreshing a session is done via scripts/import_fb_sessions_to_db.py,
+    not by dropping a file — there is no filesystem involved here anymore.
+    No auto-login: a CHECKPOINT account stays isolated until
+    release_checkpoint() is called by an operator who has manually verified
+    it in a real browser (see docs/fb-session-pool.md).
     """
 
     def __init__(self) -> None:
         self.cooldown_minutes = int(os.environ.get("FB_ACCOUNT_COOLDOWN_MINUTES", "15"))
 
-    def _sync_known_accounts(self) -> None:
-        """Registers any secrets/fb_sessions/*.json not yet in fb_accounts
-        as LIVE. Never touches an existing row's status — dropping a fresh
-        session file next to an already-CHECKPOINT account doesn't silently
-        un-isolate it; that still requires release_checkpoint()."""
-        if not FB_SESSION_DIR.is_dir():
-            return
-        keys = sorted(p.stem for p in FB_SESSION_DIR.glob("*.json"))
-        if not keys:
-            return
-        with get_pool().connection() as conn:
-            for key in keys:
-                conn.execute(
-                    "INSERT INTO fb_accounts (id) VALUES (%s) ON CONFLICT (id) DO NOTHING",
-                    (key,),
-                )
-
     def _acquire(self, *, key: str | None) -> Account | None:
-        self._sync_known_accounts()
         with get_pool().connection() as conn:
             if key:
                 row = conn.execute(
                     """
                     UPDATE fb_accounts SET last_used_at = now(), updated_at = now()
-                    WHERE id = %s AND status = 'LIVE'
+                    WHERE id = %s AND status = 'LIVE' AND session_data IS NOT NULL
                       AND (last_used_at IS NULL OR last_used_at < now() - (%s * interval '1 minute'))
-                    RETURNING id, user_agent
+                    RETURNING id, session_data, user_agent
                     """,
                     (key, self.cooldown_minutes),
                 ).fetchone()
@@ -68,13 +50,13 @@ class AccountPool:
                     UPDATE fb_accounts SET last_used_at = now(), updated_at = now()
                     WHERE id = (
                         SELECT id FROM fb_accounts
-                        WHERE status = 'LIVE'
+                        WHERE status = 'LIVE' AND session_data IS NOT NULL
                           AND (last_used_at IS NULL OR last_used_at < now() - (%s * interval '1 minute'))
                         ORDER BY last_used_at ASC NULLS FIRST
                         LIMIT 1
                         FOR UPDATE SKIP LOCKED
                     )
-                    RETURNING id, user_agent
+                    RETURNING id, session_data, user_agent
                     """,
                     (self.cooldown_minutes,),
                 ).fetchone()
@@ -82,7 +64,7 @@ class AccountPool:
             return None
         return Account(
             key=row["id"],
-            session_path=FB_SESSION_DIR / f"{row['id']}.json",
+            session_data=row["session_data"],
             user_agent=row["user_agent"],
         )
 

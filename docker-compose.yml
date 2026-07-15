@@ -42,10 +42,13 @@ services:
       POSTGRES_DB: airflow
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:-crawler}
     ports:
-      # Bound to loopback only — host tools (pytest, psql) still reach it via
-      # localhost, but it's never reachable from outside this machine. Do NOT
-      # widen this to "5432:5432" on a host with a public IP.
-      - "127.0.0.1:5432:5432"
+      # Bound to loopback by default — host tools (pytest, psql) still reach
+      # it via localhost, but it's never reachable from outside this machine.
+      # Set LAN_BIND_IP to this host's Tailscale IP (100.x.x.x) to let a
+      # remote fb-celery-worker (docker-compose.worker.yml, see
+      # docs/fb-worker-remote.md) reach it over the tailnet — NEVER set it to
+      # "0.0.0.0" or a public IP, on a dev machine or a VPS alike.
+      - "${LAN_BIND_IP:-127.0.0.1}:5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./scripts/init-postgres.sh:/docker-entrypoint-initdb.d/01-init.sh:ro
@@ -57,6 +60,15 @@ services:
 
   redis:
     image: redis:7-alpine
+    ports:
+      # No host binding needed for the single-machine setup (only reached via
+      # the docker network) — only exposed when LAN_BIND_IP is set, same
+      # remote-worker use case as postgres above. Host-side port 16379 (not
+      # the default 6379) — this host already has an unrelated project's
+      # Redis bound system-wide on 6379; internal container-to-container
+      # traffic (redis://redis:6379/...) is unaffected, only the exposed
+      # host port differs.
+      - "${LAN_BIND_IP:-127.0.0.1}:16379:6379"
 
   # Production-only static build of the customer portal. Local dev doesn't
   # use this service — keep running `npm run dev` in frontend/ instead
@@ -159,10 +171,14 @@ services:
       RABBITMQ_DEFAULT_USER: fbcrawl
       RABBITMQ_DEFAULT_PASS: fbcrawl
     ports:
-      # Management UI only — not exposing 5672/15672 defaults, and not
-      # 15673 either: the fb-distributed-scraper reference project already
-      # runs its own RabbitMQ on this host bound to that port.
+      # Management UI — kept loopback-only always (not needed by a remote
+      # worker). Not 15672/5672 defaults, and not 15673 either: the
+      # fb-distributed-scraper reference project already runs its own
+      # RabbitMQ on this host bound to that port.
       - "127.0.0.1:15674:15672"
+      # AMQP — only exposed beyond loopback when LAN_BIND_IP is set, same
+      # remote fb-celery-worker use case as postgres/redis above.
+      - "${LAN_BIND_IP:-127.0.0.1}:5672:5672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -178,11 +194,8 @@ services:
       - .env
     environment:
       CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD:-crawler}@postgres/crawl_platform
-      FB_SESSION_DIR: /opt/app/secrets/fb_sessions
       FB_BROKER_URL: amqp://fbcrawl:fbcrawl@rabbitmq:5672//
       FB_INFLIGHT_REDIS_URL: redis://redis:6379/2
-    volumes:
-      - ./secrets:/opt/app/secrets:ro
     command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl --concurrency ${FB_CELERY_CONCURRENCY:-4}
     depends_on:
       postgres:

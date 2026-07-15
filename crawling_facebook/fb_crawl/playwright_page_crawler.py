@@ -154,7 +154,7 @@ class PlaywrightPageCrawler:
         self,
         *,
         headless: bool = True,
-        storage_state_path: str | Path | None = None,
+        storage_state_path: str | Path | dict | None = None,
         user_agent: str | None = None,
         proxy_server: str | None = None,
         proxy_username: str | None = None,
@@ -165,7 +165,10 @@ class PlaywrightPageCrawler:
         concurrency: int = 3,
     ) -> None:
         self.headless = headless
-        self.storage_state_path = Path(storage_state_path) if storage_state_path else None
+        # Either a path to a Playwright storage_state JSON file, or the
+        # already-parsed storage_state dict itself (e.g. read from
+        # fb_accounts.session_data) — new_context() below accepts both.
+        self.storage_state_path = storage_state_path
         self.user_agent = user_agent or (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -198,7 +201,9 @@ class PlaywrightPageCrawler:
             "timezone_id": "Asia/Ho_Chi_Minh",
             "user_agent": self.user_agent,
         }
-        if self.storage_state_path and self.storage_state_path.exists():
+        if isinstance(self.storage_state_path, dict):
+            context_kwargs["storage_state"] = self.storage_state_path
+        elif self.storage_state_path and Path(self.storage_state_path).exists():
             context_kwargs["storage_state"] = str(self.storage_state_path)
         if self.proxy_server:
             proxy_kwargs: dict = {"server": self.proxy_server}

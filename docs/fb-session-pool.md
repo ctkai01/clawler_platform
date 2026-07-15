@@ -30,19 +30,20 @@ python -m fb_crawl.cli login --session ./fb_sessions/accN.json
 ```
 Trình duyệt hiện ra → đăng nhập bằng tài khoản Facebook mới → chờ lưu xong.
 
-**2. Copy lên VPS** đúng thư mục:
-```bash
-scp ./fb_sessions/accN.json root@<VPS_IP>:/root/clawler_platform/secrets/fb_sessions/accN.json
-```
-(Nếu đây là session thứ 2 trở lên, thư mục `secrets/fb_sessions/` cần được
-tạo trước trên VPS: `mkdir -p /root/clawler_platform/secrets/fb_sessions` —
-và **copy luôn file `fb_session.json` cũ vào đó** dưới 1 tên key, vd
-`acc1.json`, để tài khoản đang dùng không bị "biến mất" khỏi pool.)
+**2. Import vào DB** — session sống trong `fb_accounts.session_data`
+(Postgres), không phải file, nên chạy script này (trong container `api`,
+cần kết nối DB):
 
-**3. Restart worker** để nhận session mới:
 ```bash
-docker compose restart airflow-worker-fb
+docker compose exec -T api python scripts/import_fb_sessions_to_db.py accN
 ```
+
+(Không tham số = import toàn bộ `secrets/fb_sessions/*.json` cùng lúc, hữu
+ích lần đầu migrate cả pool.)
+
+**3. Không cần restart gì** — `AccountPool` đọc `fb_accounts` trực tiếp mỗi
+lần acquire một batch mới, không cache, nên session mới có hiệu lực ngay từ
+batch tiếp theo.
 
 **4. Với Page mới**: không cần làm gì thêm — tự động vào vòng xoay.
 
