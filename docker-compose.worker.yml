@@ -1,0 +1,35 @@
+# Standalone fb-celery-worker for a SECOND machine — connects to the
+# Postgres/Redis/RabbitMQ already running on the "hub" machine (this repo's
+# main docker-compose.yml) over Tailscale instead of running its own copies.
+# See docs/fb-worker-remote.md for the full setup runbook.
+#
+# Deliberately its own file, not `docker compose -f docker-compose.yml up -d
+# fb-celery-worker` on this machine: that service's depends_on references
+# postgres/redis/rabbitmq defined in the SAME file, so Compose would spin up
+# empty local copies of all three here instead of using the hub's — exactly
+# what this setup must avoid. This file only defines fb-celery-worker, so
+# there's nothing local for it to depend on.
+#
+# Usage: cp .env.worker.example .env, fill in HUB_HOST + APP_DB_PASSWORD,
+# then `docker compose -f docker-compose.worker.yml up -d --build`.
+
+services:
+  fb-celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: fb-worker
+    environment:
+      CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD}@${HUB_HOST}/crawl_platform
+      FB_BROKER_URL: amqp://fbcrawl:fbcrawl@${HUB_HOST}:5672//
+      # Port 16379, not Redis's default 6379 — the hub exposes it there
+      # because 6379 is already taken by an unrelated project on that host.
+      FB_INFLIGHT_REDIS_URL: redis://${HUB_HOST}:16379/2
+      # Deliberately no FB_PROXY_* here — see docs/fb-worker-remote.md for
+      # why sharing the hub's single proxy port across two workers would
+      # have them reset each other's IP mid-crawl. Leaving these unset
+      # falls back to a direct connection (this machine's own IP), which
+      # sidesteps that and adds a second, distinct source IP for free.
+    command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl
+      --concurrency ${FB_CELERY_CONCURRENCY:-4} --hostname worker2@%h
+    restart: unless-stopped

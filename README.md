@@ -74,6 +74,7 @@ xử lý sự cố thường gặp): xem
 - [`docs/classification-pipeline.md`](docs/classification-pipeline.md) — pipeline lọc từ khoá/phân loại sắc thái/gắn thực thể
 - [`docs/fb-session-pool.md`](docs/fb-session-pool.md) — tạo session đăng nhập Facebook cho crawl
 - [`docs/vps-deploy.md`](docs/vps-deploy.md) — runbook deploy code/đồng bộ dữ liệu lên VPS
+- [`docs/fb-worker-remote.md`](docs/fb-worker-remote.md) — thêm fb-celery-worker chạy trên máy thứ 2 qua Tailscale
 
 ## Cấu trúc thư mục
 
