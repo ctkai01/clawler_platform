@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 
+from fb_crawl.filters import NEW_POST_HOURS
 from fb_crawl.page_service import PageCrawlService
 from fb_crawl.service import GroupCrawlService
 from fb_crawl.types import CheckpointError, NotGroupMemberError
 
 from platform_app.adapters.fb_pg_storage import PgStorage
-from platform_app.crawlers.account_pool import AccountPool
+from platform_app.crawlers.account_pool import Account, AccountPool
 from platform_app.crawlers.celery_app import app
 from platform_app.crawlers.dispatch_tasks import _inflight_key, _redis
 from platform_app.crawlers.facebook_runner import SessionExpiredError
@@ -19,9 +21,14 @@ logger = logging.getLogger(__name__)
 
 _account_pool = AccountPool()
 _proxy_pool = ProxyPool()
+# How far back a post's published_at can be and still count as "new" on
+# first discovery (crawling_facebook/fb_crawl/filters.py's default is 48h).
+# Configurable here so widening it (e.g. to backfill a reporting window)
+# is just an env var + worker restart, not a code change/rebuild.
+_NEW_POST_HOURS = float(os.environ.get("FB_NEW_POST_HOURS", NEW_POST_HOURS))
 
 
-async def _run_batch(platform_type: str, target_ids: list[int], session_data: dict, proxy, user_agent: str | None) -> bool:
+async def _run_batch(platform_type: str, target_ids: list[int], account: Account, proxy) -> bool:
     """Crawls every target_id in one browser session. Returns True if the
     account got checkpointed partway through (caller uses this to decide
     what to tell AccountPool.release)."""
@@ -36,14 +43,18 @@ async def _run_batch(platform_type: str, target_ids: list[int], session_data: di
 
     crawler_cls = PlaywrightGroupCrawler if platform_type == "facebook_group" else PlaywrightPageCrawler
     account_checkpointed = False
+    # Only ever try refresh_login() once per batch — an account whose
+    # password/2FA don't actually work anymore shouldn't get retried on
+    # every remaining target, just checkpointed once and moved on.
+    session_refresh_attempted = False
 
     async with crawler_cls(
         headless=True,
-        storage_state_path=session_data,
+        storage_state_path=account.session_data,
         proxy_server=proxy.server,
         proxy_username=proxy.username,
         proxy_password=proxy.password,
-        user_agent=user_agent,
+        user_agent=account.user_agent,
     ) as crawler:
         for i, target_id in enumerate(target_ids):
             target = repository.get_target(target_id)
@@ -53,11 +64,11 @@ async def _run_batch(platform_type: str, target_ids: list[int], session_data: di
             repository.mark_running(target_id)
             try:
                 if platform_type == "facebook_group":
-                    service = GroupCrawlService(storage, crawler)
+                    service = GroupCrawlService(storage, crawler, new_post_hours=_NEW_POST_HOURS)
                     result = await service.crawl_group(target.url)
                     name = result.group_name
                 else:
-                    service = PageCrawlService(storage, crawler)
+                    service = PageCrawlService(storage, crawler, new_post_hours=_NEW_POST_HOURS)
                     result = await service.crawl_page(target.url)
                     name = result.page_name
                 if name is None:
@@ -82,7 +93,24 @@ async def _run_batch(platform_type: str, target_ids: list[int], session_data: di
                     _redis.delete(_inflight_key(platform_type, remaining_id))
                 break
             except SessionExpiredError as exc:
-                repository.mark_failed(target_id, str(exc), status="session_expired")
+                if account.password and not session_refresh_attempted:
+                    session_refresh_attempted = True
+                    logger.info("Session hết hạn cho %s, thử tự động đăng nhập lại...", account.key)
+                    new_session = await crawler.refresh_login(account.key, account.password, account.two_fa_secret)
+                    if new_session:
+                        _account_pool.update_session(account.key, new_session)
+                        repository.mark_failed(target_id, str(exc), status="session_expired")
+                    else:
+                        # Auto-refresh failed — same account-level dead-end
+                        # as a real checkpoint, no point retrying the rest
+                        # of the batch against the same broken session.
+                        account_checkpointed = True
+                        for remaining_id in target_ids[i:]:
+                            repository.mark_failed(remaining_id, "Tự động refresh session thất bại", status="checkpoint")
+                            _redis.delete(_inflight_key(platform_type, remaining_id))
+                        break
+                else:
+                    repository.mark_failed(target_id, str(exc), status="session_expired")
             except NotGroupMemberError as exc:
                 repository.mark_failed(target_id, str(exc), status="not_a_member")
             except Exception as exc:  # noqa: BLE001 - isolate per-target failure
@@ -112,9 +140,7 @@ def crawl_batch_task(self, platform_type: str, target_ids: list[int], session_ke
 
     proxy = _proxy_pool.acquire()
     try:
-        checkpointed = asyncio.run(
-            _run_batch(platform_type, target_ids, account.session_data, proxy, account.user_agent)
-        )
+        checkpointed = asyncio.run(_run_batch(platform_type, target_ids, account, proxy))
     except Exception:
         logger.exception("Batch %s session_key=%s thất bại toàn bộ", platform_type, session_key)
         checkpointed = True

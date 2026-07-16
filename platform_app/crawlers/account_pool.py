@@ -4,6 +4,8 @@ import logging
 import os
 from dataclasses import dataclass
 
+from psycopg.types.json import Jsonb
+
 from platform_app.db.pool import get_pool
 
 logger = logging.getLogger(__name__)
@@ -14,6 +16,11 @@ class Account:
     key: str
     session_data: dict
     user_agent: str | None = None
+    # Optional — only set for accounts an operator has explicitly opted
+    # into auto-refresh (scripts/set_fb_account_credentials.py). None means
+    # batch_tasks.py never attempts refresh_login for this account.
+    password: str | None = None
+    two_fa_secret: str | None = None
 
 
 class AccountPool:
@@ -40,7 +47,7 @@ class AccountPool:
                     UPDATE fb_accounts SET last_used_at = now(), updated_at = now()
                     WHERE id = %s AND status = 'LIVE' AND session_data IS NOT NULL
                       AND (last_used_at IS NULL OR last_used_at < now() - (%s * interval '1 minute'))
-                    RETURNING id, session_data, user_agent
+                    RETURNING id, session_data, user_agent, password, two_fa_secret
                     """,
                     (key, self.cooldown_minutes),
                 ).fetchone()
@@ -56,7 +63,7 @@ class AccountPool:
                         LIMIT 1
                         FOR UPDATE SKIP LOCKED
                     )
-                    RETURNING id, session_data, user_agent
+                    RETURNING id, session_data, user_agent, password, two_fa_secret
                     """,
                     (self.cooldown_minutes,),
                 ).fetchone()
@@ -66,6 +73,8 @@ class AccountPool:
             key=row["id"],
             session_data=row["session_data"],
             user_agent=row["user_agent"],
+            password=row["password"],
+            two_fa_secret=row["two_fa_secret"],
         )
 
     def acquire(self) -> Account | None:
@@ -114,6 +123,22 @@ class AccountPool:
                 (key,),
             )
         logger.info("Tài khoản %s đã được gỡ cách ly, sẵn sàng hoạt động lại.", key)
+
+    def update_session(self, key: str, session_data: dict) -> None:
+        """Called by batch_tasks.py after a successful refresh_login() —
+        persists the freshly re-authenticated storage_state and clears the
+        account back to LIVE, so the very next acquire() (in this batch or
+        the next) picks up the new cookies instead of the dead ones."""
+        with get_pool().connection() as conn:
+            conn.execute(
+                """
+                UPDATE fb_accounts
+                SET session_data = %s, status = 'LIVE', fail_count = 0, updated_at = now()
+                WHERE id = %s
+                """,
+                (Jsonb(session_data), key),
+            )
+        logger.info("Đã tự động refresh session cho account %s", key)
 
 
 def _list_status() -> None:

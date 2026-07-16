@@ -16,15 +16,18 @@ def pool() -> AccountPool:
         conn.execute("DELETE FROM fb_accounts WHERE id LIKE 'test_%'")
 
 
-def _seed(key: str, *, has_session: bool = True) -> None:
+def _seed(key: str, *, has_session: bool = True, password: str | None = None, two_fa_secret: str | None = None) -> None:
     session_data = {"cookies": []} if has_session else None
     with get_pool().connection() as conn:
         conn.execute(
             """
-            INSERT INTO fb_accounts (id, session_data) VALUES (%s, %s)
-            ON CONFLICT (id) DO UPDATE SET session_data = EXCLUDED.session_data
+            INSERT INTO fb_accounts (id, session_data, password, two_fa_secret) VALUES (%s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE SET
+                session_data = EXCLUDED.session_data,
+                password = EXCLUDED.password,
+                two_fa_secret = EXCLUDED.two_fa_secret
             """,
-            (key, Jsonb(session_data) if session_data is not None else None),
+            (key, Jsonb(session_data) if session_data is not None else None, password, two_fa_secret),
         )
 
 
@@ -133,3 +136,39 @@ def test_release_success_resets_fail_count(pool: AccountPool) -> None:
             "SELECT fail_count FROM fb_accounts WHERE id = %s", ("test_acc1",)
         ).fetchone()
     assert row["fail_count"] == 0
+
+
+def test_acquire_returns_credentials_when_set(pool: AccountPool) -> None:
+    _seed("test_acc1", password="hunter2", two_fa_secret="JBSWY3DPEHPK3PXP")
+
+    account = pool.acquire_specific("test_acc1")
+
+    assert account is not None
+    assert account.password == "hunter2"
+    assert account.two_fa_secret == "JBSWY3DPEHPK3PXP"
+
+
+def test_acquire_returns_none_credentials_when_unset(pool: AccountPool) -> None:
+    _seed("test_acc1")
+
+    account = pool.acquire_specific("test_acc1")
+
+    assert account is not None
+    assert account.password is None
+    assert account.two_fa_secret is None
+
+
+def test_update_session_replaces_data_and_restores_live(pool: AccountPool) -> None:
+    _seed("test_acc1")
+    pool.acquire_specific("test_acc1")
+    pool.release("test_acc1", success=False)  # -> CHECKPOINT, fail_count=1
+
+    pool.update_session("test_acc1", {"cookies": [{"name": "c_user", "value": "123"}]})
+
+    with get_pool().connection() as conn:
+        row = conn.execute(
+            "SELECT status, fail_count, session_data FROM fb_accounts WHERE id = %s", ("test_acc1",)
+        ).fetchone()
+    assert row["status"] == "LIVE"
+    assert row["fail_count"] == 0
+    assert row["session_data"] == {"cookies": [{"name": "c_user", "value": "123"}]}

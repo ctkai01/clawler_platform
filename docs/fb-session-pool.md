@@ -65,6 +65,38 @@ nhận gián tiếp: nếu 1 tài khoản bị Facebook chặn, chỉ các targe
 gán `fb_session_key` thủ công; Page tự động round-robin không lưu lại đã dùng
 key nào ở lần crawl gần nhất).
 
+## Tự động refresh session (tuỳ chọn)
+
+Mặc định, khi cookie hết hạn (`SessionExpiredError` — không phải
+checkpoint), hệ thống chỉ đánh dấu các target liên quan là lỗi, account vẫn
+`LIVE` và tiếp tục bị chọn, tiếp tục fail lặp lại tới khi bạn tự phát hiện
+và đăng nhập lại tay (mục "Thêm 1 tài khoản mới" ở trên).
+
+Nếu bạn có sẵn password + 2FA secret của account, có thể bật tự động đăng
+nhập lại (qua `mbasic.facebook.com`, dùng `pyotp` sinh mã 2FA) ngay khi
+gặp `SessionExpiredError`, không cần thao tác tay:
+
+```bash
+docker compose exec -T api python scripts/set_fb_account_credentials.py accN
+```
+
+Script hỏi password + 2FA secret qua stdin ẩn (không hiện trên màn hình,
+không lưu lịch sử shell). Account **không** chạy script này thì đơn giản
+không tự refresh — giữ đúng hành vi cũ.
+
+⚠️ **Đánh đổi bảo mật cần biết trước khi dùng**: password/2FA secret là
+thông tin đăng nhập gốc, lưu **không mã hoá** trong `fb_accounts` (giống
+mức rủi ro của `session_data`, nhưng nghiêm trọng hơn — cookie bị lộ chỉ
+mất 1 phiên, đổi mật khẩu là vô hiệu hoá được; password/2FA bị lộ thì kẻ
+tấn công đăng nhập lại được **vô thời hạn**, kể cả sau khi bạn đổi cookie).
+Chỉ điền cho account nào bạn thực sự muốn đánh đổi để giảm công vận hành —
+không bắt buộc, hệ thống hoạt động bình thường nếu bỏ qua bước này.
+
+Cơ chế **chỉ áp dụng cho session hết hạn thường**, **không** áp dụng cho
+checkpoint thật (Facebook yêu cầu xác minh danh tính — ảnh, số điện thoại —
+mà đăng nhập tự động không vượt qua được) — checkpoint vẫn cần
+`release_checkpoint()` thủ công sau khi bạn tự xác minh như trước.
+
 ## Lưu ý
 
 - Tài khoản mới nên "làm nóng" dần — không gán ngay hàng chục Page/Group từ

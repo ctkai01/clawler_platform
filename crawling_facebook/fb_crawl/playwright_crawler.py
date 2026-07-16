@@ -232,6 +232,41 @@ class PlaywrightGroupCrawler:
         await page.close()
         return False
 
+    async def refresh_login(self, uid: str, password: str, two_fa_secret: str | None) -> dict | None:
+        """Đăng nhập lại tự động qua mbasic.facebook.com khi session đã hết
+        hạn (SessionExpiredError) — dùng ngay context đang mở (giữ nguyên
+        proxy/UA của batch), không mở context mới. Trả về storage_state đầy
+        đủ (cookies + origins/localStorage) nếu thành công, None nếu thất
+        bại — caller coi thất bại như checkpoint (không tự refresh được)."""
+        if not self._context:
+            raise RuntimeError("Crawler context is not initialized")
+        page = await self._context.new_page()
+        try:
+            await page.goto("https://mbasic.facebook.com/", wait_until="domcontentloaded")
+            await page.fill("input[name='email']", uid)
+            await page.fill("input[name='pass']", password)
+            await page.click("input[type='submit']")
+            await page.wait_for_timeout(3000)
+
+            if await page.locator("input[name='approvals_code']").count() > 0:
+                if not two_fa_secret:
+                    logger.error("FB yêu cầu 2FA nhưng account %s không có two_fa_secret", uid)
+                    return None
+                import pyotp
+
+                code = pyotp.TOTP(two_fa_secret.replace(" ", "")).now()
+                await page.fill("input[name='approvals_code']", code)
+                await page.click("input[type='submit']")
+                await page.wait_for_timeout(3000)
+
+            cookies = await self._context.cookies("https://www.facebook.com")
+            if not any(c["name"] == "c_user" for c in cookies):
+                logger.error("Đăng nhập lại tự động thất bại cho account %s", uid)
+                return None
+            return await self._context.storage_state()
+        finally:
+            await page.close()
+
     async def fetch_group_name(self, group_url: str) -> str | None:
         if not self._context:
             raise RuntimeError("Crawler context is not initialized")
