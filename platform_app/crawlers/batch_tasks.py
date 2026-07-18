@@ -162,7 +162,11 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
 
 @app.task(name="platform_app.crawlers.batch_tasks.crawl_batch_task", bind=True, max_retries=0)
 def crawl_batch_task(self, platform_type: str, target_ids: list[int], session_key: str | None) -> None:
-    account = _account_pool.acquire_specific(session_key) if session_key else _account_pool.acquire()
+    account = (
+        _account_pool.acquire_specific(session_key)
+        if session_key
+        else _account_pool.acquire(require_profile=platform_type == "facebook_profile")
+    )
     if account is None:
         # Assigned account is CHECKPOINT/cooldown, or no LIVE account left
         # at all — drop this batch, next dispatch tick will retry. Not an
