@@ -10,7 +10,6 @@ from typing import Any
 from urllib.parse import urlparse
 
 from playwright.async_api import Browser, BrowserContext, Page, Response, async_playwright
-from playwright_stealth import Stealth
 
 from fb_crawl.playwright_page_crawler import EXTRACT_PAGE_NAME_JS
 from fb_crawl.profile_parser import (
@@ -113,9 +112,15 @@ class PlaywrightProfileCrawler:
     ) -> None:
         self.headless = headless
         self.storage_state_path = storage_state_path
+        # Matches the reference project's UA exactly (crawl_facebook_profile.py)
+        # — deliberately not the newer Chrome/128 UA still used by
+        # PlaywrightPageCrawler, after this UA/context combo (+ no stealth, no
+        # launch args) was confirmed NOT to trigger the www->web.facebook.com
+        # Comet redirect that broke post parsing in production.
         self.user_agent = user_agent or (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
         )
         self.proxy_server = proxy_server
         self.proxy_username = proxy_username
@@ -136,19 +141,20 @@ class PlaywrightProfileCrawler:
 
     async def __aenter__(self) -> PlaywrightProfileCrawler:
         self._pw = await async_playwright().start()
-        self._browser = await self._pw.chromium.launch(
-            headless=self.headless,
-            timeout=120_000,
-            args=[
-                "--disable-blink-features=AutomationControlled",
-                "--disable-dev-shm-usage",
-                "--no-sandbox",
-            ],
-        )
+        # No launch args, no stealth patching, no explicit timezone_id, no
+        # set_default_timeout — deliberately matching the reference project's
+        # browser/context setup exactly (crawl_facebook_profile.py's
+        # crawl_profile()). A real incident: with the stealth/hardened setup
+        # PlaywrightPageCrawler uses, Facebook silently redirected this
+        # session's profile timeline from www.facebook.com to
+        # web.facebook.com (the Comet UI), whose GraphQL/embedded-JSON
+        # payload shapes this parser doesn't recognize — 38k+ payloads
+        # collected, 0 posts extracted. The reference project's plainer
+        # setup never saw that redirect on the same profile/account family.
+        self._browser = await self._pw.chromium.launch(headless=self.headless)
         context_kwargs: dict = {
             "viewport": {"width": 1400, "height": 900},
             "locale": "vi-VN",
-            "timezone_id": "Asia/Ho_Chi_Minh",
             "user_agent": self.user_agent,
         }
         if isinstance(self.storage_state_path, dict):
@@ -163,8 +169,6 @@ class PlaywrightProfileCrawler:
                 proxy_kwargs["password"] = self.proxy_password
             context_kwargs["proxy"] = proxy_kwargs
         self._context = await self._browser.new_context(**context_kwargs)
-        self._context.set_default_timeout(45_000)
-        await Stealth().apply_stealth_async(self._context)
         return self
 
     async def __aexit__(self, *args: object) -> None:
