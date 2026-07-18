@@ -246,9 +246,9 @@ function RecentDocumentsTable({ documents }: { documents: RecentDocument[] }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium text-ink hover:underline"
-                  title={d.topic ?? d.url}
+                  title={d.topic || d.url}
                 >
-                  {d.topic ?? d.url}
+                  {d.topic || d.url}
                 </a>
               </td>
               <td className="py-2.5 pr-4">
