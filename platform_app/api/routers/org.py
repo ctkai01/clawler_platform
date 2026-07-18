@@ -37,7 +37,7 @@ from platform_app.api.schemas import (
 from platform_app.db.pool import get_pool
 from platform_app.pipeline.settings import VALID_MODES, get_classify_mode, set_classify_mode
 
-VALID_PLATFORM_TYPES = {"facebook_group", "facebook_page", "forum", "news"}
+VALID_PLATFORM_TYPES = {"facebook_group", "facebook_page", "facebook_profile", "forum", "news"}
 
 
 def _normalize_url(url: str) -> str:
@@ -227,6 +227,7 @@ def delete_source(target_id: int, user: dict = Depends(_require_configurator)) -
 _MONITORED_DAGS = [
     "facebook_groups_crawl",
     "facebook_pages_crawl",
+    "facebook_profiles_crawl",
     "forums_crawl",
     "news_crawl",
     "content_pipeline",
@@ -522,6 +523,7 @@ def deselect_keyword(keyword_id: int, user: dict = Depends(_require_configurator
 _REPORT_CHANNEL_PREFIX = {
     "facebook_group": "FB Group",
     "facebook_page": "FB Page",
+    "facebook_profile": "FB Profile",
     "forum": "Forum",
     "news": "News",
 }
@@ -967,8 +969,8 @@ def _brand_sentiment_counts(conn, conditions: list[str], params: list, brands: l
 def _brand_channel_breakdown(conn, conditions: list[str], params: list, brand: str) -> dict[str, int]:
     """Document count for one brand, bucketed into the channels this
     platform actually crawls (VALID_PLATFORM_TYPES, above): Facebook
-    (facebook_group + facebook_page), News, Forum. Case-insensitive brand
-    match — see _brand_sentiment_counts docstring."""
+    (facebook_group + facebook_page + facebook_profile), News, Forum.
+    Case-insensitive brand match — see _brand_sentiment_counts docstring."""
     where_clause = " AND ".join(conditions)
     rows = conn.execute(
         f"""
@@ -982,7 +984,13 @@ def _brand_channel_breakdown(conn, conditions: list[str], params: list, brand: s
         [brand, *params],
     ).fetchall()
     breakdown = {"Facebook": 0, "News": 0, "Forum": 0}
-    bucket = {"facebook_group": "Facebook", "facebook_page": "Facebook", "news": "News", "forum": "Forum"}
+    bucket = {
+        "facebook_group": "Facebook",
+        "facebook_page": "Facebook",
+        "facebook_profile": "Facebook",
+        "news": "News",
+        "forum": "Forum",
+    }
     for row in rows:
         key = bucket.get(row["platform_type"])
         if key:

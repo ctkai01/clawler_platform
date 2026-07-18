@@ -6,6 +6,7 @@ import os
 
 from fb_crawl.filters import NEW_POST_HOURS
 from fb_crawl.page_service import PageCrawlService
+from fb_crawl.profile_service import ProfileCrawlService
 from fb_crawl.service import GroupCrawlService
 from fb_crawl.types import CheckpointError, NotGroupMemberError
 
@@ -26,6 +27,11 @@ _proxy_pool = ProxyPool()
 # Configurable here so widening it (e.g. to backfill a reporting window)
 # is just an env var + worker restart, not a code change/rebuild.
 _NEW_POST_HOURS = float(os.environ.get("FB_NEW_POST_HOURS", NEW_POST_HOURS))
+# facebook_profile has its own knob, deliberately NOT tied to
+# FB_NEW_POST_HOURS above — that one is set to 96h right now to backfill a
+# specific weekly report window for Group/Page, unrelated to how far back a
+# profile crawl should scroll. Defaults to 48h for the initial rollout/test.
+_PROFILE_NEW_POST_HOURS = float(os.environ.get("FB_PROFILE_NEW_POST_HOURS", "48"))
 
 
 async def _run_batch(platform_type: str, target_ids: list[int], account: Account, proxy) -> bool:
@@ -40,13 +46,40 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
     # imports platform_app.crawlers.batch_tasks in the first place.
     from fb_crawl.playwright_crawler import PlaywrightGroupCrawler
     from fb_crawl.playwright_page_crawler import PlaywrightPageCrawler
+    from fb_crawl.playwright_profile_crawler import PlaywrightProfileCrawler
 
-    crawler_cls = PlaywrightGroupCrawler if platform_type == "facebook_group" else PlaywrightPageCrawler
+    crawler_cls = {
+        "facebook_group": PlaywrightGroupCrawler,
+        "facebook_page": PlaywrightPageCrawler,
+        "facebook_profile": PlaywrightProfileCrawler,
+    }[platform_type]
     account_checkpointed = False
     # Only ever try refresh_login() once per batch — an account whose
     # password/2FA don't actually work anymore shouldn't get retried on
     # every remaining target, just checkpointed once and moved on.
     session_refresh_attempted = False
+
+    # Profile-only knobs: PlaywrightGroupCrawler/PlaywrightPageCrawler don't
+    # accept these kwargs, so only pass them for facebook_profile. Scroll
+    # depth is tied to _PROFILE_NEW_POST_HOURS instead of the reference
+    # project's fixed 365-day default — everything older than that window is
+    # outside what classify_post would ever report as new/recent anyway, so
+    # scrolling further just burns time. Comments capped at 100/post.
+    extra_kwargs: dict = {}
+    if platform_type == "facebook_profile":
+        extra_kwargs = {
+            "days_back": max(_PROFILE_NEW_POST_HOURS / 24.0, 1.0),
+            "max_comments": 100,
+            "top_comment_limit": 100,
+            # Sequential for now (was 3) — concurrent tabs opening/sorting/
+            # scrolling comments simultaneously on the same logged-in
+            # session is a much stronger automation signal to Facebook than
+            # one-at-a-time, and is the leading suspect for 2 accounts
+            # getting checkpointed right after this was turned on. Revisit
+            # once checkpoint-safety (now added — see CheckpointError checks
+            # in playwright_profile_crawler.py) has been proven live.
+            "concurrency": 1,
+        }
 
     async with crawler_cls(
         headless=True,
@@ -55,6 +88,7 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
         proxy_username=proxy.username,
         proxy_password=proxy.password,
         user_agent=account.user_agent,
+        **extra_kwargs,
     ) as crawler:
         for i, target_id in enumerate(target_ids):
             target = repository.get_target(target_id)
@@ -67,14 +101,18 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
                     service = GroupCrawlService(storage, crawler, new_post_hours=_NEW_POST_HOURS)
                     result = await service.crawl_group(target.url)
                     name = result.group_name
-                else:
+                elif platform_type == "facebook_page":
                     service = PageCrawlService(storage, crawler, new_post_hours=_NEW_POST_HOURS)
                     result = await service.crawl_page(target.url)
                     name = result.page_name
+                else:
+                    service = ProfileCrawlService(storage, crawler, new_post_hours=_PROFILE_NEW_POST_HOURS)
+                    result = await service.crawl_profile(target.url)
+                    name = result.profile_name
                 if name is None:
+                    kind = {"facebook_group": "group", "facebook_page": "page"}.get(platform_type, "profile")
                     raise SessionExpiredError(
-                        f"Không lấy được tên {'group' if platform_type == 'facebook_group' else 'page'} "
-                        f"{target.url} — có thể session đã hết hạn"
+                        f"Không lấy được tên {kind} {target.url} — có thể session đã hết hạn"
                     )
                 repository.mark_success(target_id)
                 for item in result.posts:

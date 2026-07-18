@@ -10,7 +10,7 @@ from psycopg.types.json import Jsonb
 
 from platform_app.db.pool import get_pool
 
-_OWNER_ID_KEY = {"facebook_group": "group_id", "facebook_page": "page_id"}
+_OWNER_ID_KEY = {"facebook_group": "group_id", "facebook_page": "page_id", "facebook_profile": "profile_id"}
 
 
 class PgStorage:
@@ -152,7 +152,7 @@ class PgStorage:
         full_text = post.content
         if post.topic and post.topic not in (post.content or ""):
             full_text = f"{post.topic}\n\n{post.content}".strip() if post.content else post.topic
-        owner_id = post.page_id if post.source_type == "page" else post.group_id
+        owner_id = post.page_id if post.source_type in ("page", "profile") else post.group_id
         source_type = post.source_type or "group"
         post_content_hash = content_hash(full_text)
 

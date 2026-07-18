@@ -25,6 +25,7 @@ AIRFLOW_API_PASSWORD = os.environ.get("AIRFLOW_API_PASSWORD", "admin")
 CRAWL_DAGS = [
     "facebook_groups_crawl",
     "facebook_pages_crawl",
+    "facebook_profiles_crawl",
     "forums_crawl",
     "news_crawl",
     "content_pipeline",
@@ -122,7 +123,7 @@ def trigger_dag(dag_id: str = Form(...), next: str = Form(default="/")) -> Redir
     return RedirectResponse(f"{next}?triggered={dag_id}", status_code=303)
 
 
-FB_DAG_IDS = ("facebook_groups_crawl", "facebook_pages_crawl")
+FB_DAG_IDS = ("facebook_groups_crawl", "facebook_pages_crawl", "facebook_profiles_crawl")
 
 
 @app.get("/fb-crawl", response_class=HTMLResponse)
@@ -194,7 +195,7 @@ def fb_crawl_status(
             """
             SELECT platform_type, last_status, count(*) AS n
             FROM crawl_targets
-            WHERE platform_type IN ('facebook_group', 'facebook_page') AND enabled
+            WHERE platform_type IN ('facebook_group', 'facebook_page', 'facebook_profile') AND enabled
             GROUP BY platform_type, last_status
             ORDER BY platform_type, last_status
             """
@@ -203,7 +204,7 @@ def fb_crawl_status(
             """
             SELECT id, platform_type, display_name, last_status, last_crawled_at, last_error
             FROM crawl_targets
-            WHERE platform_type IN ('facebook_group', 'facebook_page')
+            WHERE platform_type IN ('facebook_group', 'facebook_page', 'facebook_profile')
             ORDER BY last_crawled_at DESC NULLS LAST
             LIMIT 20
             """

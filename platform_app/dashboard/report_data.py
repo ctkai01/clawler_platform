@@ -21,6 +21,7 @@ from platform_app.db.pool import get_pool
 _CHANNEL_PREFIX = {
     "facebook_group": "FB Group",
     "facebook_page": "FB Page",
+    "facebook_profile": "FB Profile",
     "forum": "Forum",
     "news": "News",
 }

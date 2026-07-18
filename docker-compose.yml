@@ -220,7 +220,7 @@ services:
       FB_BROKER_URL: amqp://fbcrawl:fbcrawl@rabbitmq:5672//
       FB_INFLIGHT_REDIS_URL: redis://redis:6379/2
     restart: unless-stopped
-    command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl --concurrency ${FB_CELERY_CONCURRENCY:-4}
+    command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl --concurrency ${FB_CELERY_CONCURRENCY:-4} --loglevel=info
     depends_on:
       postgres:
         condition: service_healthy

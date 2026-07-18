@@ -1,6 +1,7 @@
 export const PLATFORM_LABEL: Record<string, string> = {
   facebook_group: 'FB Group',
   facebook_page: 'FB Page',
+  facebook_profile: 'FB Profile',
   forum: 'Forum',
   news: 'News',
 }
