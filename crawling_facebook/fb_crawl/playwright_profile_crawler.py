@@ -639,6 +639,23 @@ class PlaywrightProfileCrawler:
             profile_name = (profile_name or "").strip() or None
 
             await self._scroll_timeline(page, payloads, cutoff)
+
+            # TEMP DEBUG — remove after diagnosing why 0 posts were found in
+            # production (worked fine, 5 posts, locally with a manually
+            # logged-in session): capture what the crawling account actually
+            # saw at the end of scrolling, to check for Facebook silently
+            # serving a generic/degraded surface instead of the real
+            # timeline for this URL (documented precedent — see
+            # EXTRACT_PAGE_NAME_JS's JUNK_NAMES comment in
+            # playwright_page_crawler.py).
+            try:
+                await page.screenshot(path="/tmp/profile_debug.png")
+                logger.warning(
+                    "DEBUG profile scroll end: url=%s title=%s payloads=%d",
+                    page.url, await page.title(), len(payloads),
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("DEBUG screenshot failed: %s", exc)
         finally:
             await page.close()
 
