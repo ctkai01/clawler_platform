@@ -105,6 +105,8 @@ class PlaywrightProfileCrawler:
         top_comment_limit: int = 100,
         scroll_pause_ms: int = 1800,
         max_idle_scrolls: int = 8,
+        max_scroll_rounds: int = 400,
+        max_scroll_seconds: float = 900.0,
         max_comments: int = MAX_COMMENTS,
         public_only: bool = True,
         concurrency: int = 3,
@@ -123,6 +125,8 @@ class PlaywrightProfileCrawler:
         self.top_comment_limit = top_comment_limit
         self.scroll_pause_ms = scroll_pause_ms
         self.max_idle_scrolls = max_idle_scrolls
+        self.max_scroll_rounds = max_scroll_rounds
+        self.max_scroll_seconds = max_scroll_seconds
         self.max_comments = max_comments
         self.public_only = public_only
         self.concurrency = max(1, concurrency)
@@ -267,8 +271,38 @@ class PlaywrightProfileCrawler:
     async def _scroll_timeline(self, page: Page, payloads: list[Any], cutoff: datetime) -> None:
         idle_rounds = 0
         last_count = 0
+        round_count = 0
+        processed_count = 0
+        posts: dict[str, dict[str, Any]] = {}
+        start_time = _monotonic()
 
+        # idle_rounds/cutoff không phải điều kiện dừng đáng tin cậy tuyệt đối: nếu
+        # Facebook liên tục nạp nội dung nền (gợi ý bạn bè, story, widget...) mỗi
+        # lần cuộn, payloads vẫn tăng liên tục nên idle_rounds không bao giờ đạt
+        # ngưỡng; và nếu không tìm được bài nào có published_at hợp lệ (vd. do bộ
+        # lọc post chặt), điều kiện dừng sớm theo cutoff cũng không bao giờ kích
+        # hoạt. Vì vậy BẮT BUỘC phải có giới hạn cứng tuyệt đối (số vòng + thời
+        # gian) độc lập với 2 điều kiện trên để vòng lặp không bao giờ treo vô hạn
+        # — real incident: chạy > 53 phút không log được gì trước khi có giới hạn
+        # này.
         while idle_rounds < self.max_idle_scrolls:
+            round_count += 1
+            if round_count > self.max_scroll_rounds:
+                logger.warning(
+                    "Đạt giới hạn cứng %s vòng cuộn, dừng scroll (khả năng Facebook "
+                    "liên tục nạp nội dung nền không phải bài viết thật).",
+                    self.max_scroll_rounds,
+                )
+                break
+            elapsed = _monotonic() - start_time
+            if elapsed > self.max_scroll_seconds:
+                logger.warning(
+                    "Đạt giới hạn cứng %.0fs cuộn timeline, dừng scroll (khả năng "
+                    "Facebook liên tục nạp nội dung nền không phải bài viết thật).",
+                    self.max_scroll_seconds,
+                )
+                break
+
             await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
             await page.wait_for_timeout(self.scroll_pause_ms)
 
@@ -282,9 +316,15 @@ class PlaywrightProfileCrawler:
                 idle_rounds = 0
             last_count = current_count
 
-            posts: dict[str, dict[str, Any]] = {}
-            for payload in payloads:
+            # Chỉ parse các payload MỚI kể từ vòng trước, không xử lý lại toàn bộ
+            # payload đã thu từ đầu mỗi vòng — nếu không, chi phí mỗi vòng tăng
+            # dần theo O(tổng payload đã thấy), làm vòng lặp ngày càng chậm và có
+            # thể góp phần gây ra tình trạng "treo" khi payloads bị nạp liên tục
+            # không dừng.
+            for payload in payloads[processed_count:]:
                 merge_posts(posts, parse_posts_from_payload(payload))
+            processed_count = current_count
+
             dated_posts = [p for p in posts.values() if p.get("published_at")]
             if dated_posts:
                 oldest = min(
