@@ -198,9 +198,14 @@ services:
       # remote fb-celery-worker use case as postgres/redis above.
       - "${LAN_BIND_IP:-127.0.0.1}:5672:5672"
     healthcheck:
+      # timeout bumped from 10s: rabbitmq-diagnostics names its temporary
+      # Erlang node after the container hostname, and DNS resolution for
+      # that goes through the host's Tailscale-modified resolv.conf
+      # (systemd-resolved + tail521ad7.ts.net/fpt search domains), which
+      # alone can take 10-15s — the ping itself is instant once resolved.
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
-      timeout: 10s
+      timeout: 30s
       retries: 10
 
   fb-celery-worker:
