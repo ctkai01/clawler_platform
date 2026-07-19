@@ -726,9 +726,20 @@ EXTRACT_POST_PAGE_JS = """
       editedTime: '', images: [], videos: [], engagement: normalizeEngagement(null), comments: [],
     };
   }
+  // Only matchedRoot / the confirmed comments-bearing dialog are actually
+  // THIS post's own container — the remaining fallbacks (first [role=
+  // "article"] on the page, first FeedUnit, document.body) exist so
+  // content/comment extraction still has *something* to search, but they
+  // can just as easily be a different post entirely, or the whole page.
+  // Kept separate from postRoot so engagement extraction below can refuse
+  // to trust a root it isn't confident about — same failure mode as the
+  // 373k-fake-reactions incident above, just for likes/reactions instead
+  // of content: a real incident had a post's like_count read as 12,153
+  // (matching the Page's own like/follower count) off a same-sized
+  // discrepancy when postRoot fell through to a too-broad scope.
+  const safeRoot = matchedRoot || (targetPostId && dialogHasComments ? dialog : null);
   const postRoot =
-    matchedRoot ||
-    (targetPostId && dialogHasComments ? dialog : null) ||
+    safeRoot ||
     document.querySelector('[role="article"]') ||
     document.querySelector('div[data-pagelet*="FeedUnit"]') ||
     document.body;
@@ -943,7 +954,11 @@ EXTRACT_POST_PAGE_JS = """
     authorId = findAuthorId(postRoot, author);
   }
 
-  const postEngagement = extractPostEngagement(postRoot);
+  // Engagement (likes/reactions/shares) read from an unconfirmed root is
+  // not trustworthy — see safeRoot's comment above. comment_count is fine
+  // either way: it's overridden right below by comments.length, which
+  // went through its own matching-post filtering separately.
+  const postEngagement = safeRoot ? extractPostEngagement(postRoot) : normalizeEngagement(null);
   postEngagement.comment_count = Math.max(postEngagement.comment_count, comments.length);
 
   function looksLikeFbTime(t) {
