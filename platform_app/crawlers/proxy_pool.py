@@ -86,12 +86,26 @@ class ProxyPool:
         self._lock = threading.Lock()
 
     def acquire(self) -> Proxy:
+        """Returns the next proxy in the round-robin cycle WITHOUT touching
+        its IP. A real account, viewed from a stable IP over time, reads as
+        normal usage to Facebook; an account whose exit IP changes on every
+        single batch (every acquire() used to force a reset here,
+        unconditionally) reads as classic bot/account-takeover behavior —
+        real incident: once profile crawling scaled up batch/acquire
+        frequency, this started timing out group/page crawls too, sharing
+        the same 6 proxies. Only reset a specific proxy's IP on confirmed
+        failure — see reset()."""
         with self._lock:
-            proxy = next(self._cycle)
-        if proxy.reset_url:
-            try:
-                urllib.request.urlopen(proxy.reset_url, timeout=10).read()
-                logger.info("Đã đổi IP proxy qua %s", proxy.reset_url)
-            except Exception:
-                logger.warning("Không đổi được IP proxy qua %s", proxy.reset_url, exc_info=True)
-        return proxy
+            return next(self._cycle)
+
+    def reset(self, proxy: Proxy) -> None:
+        """Explicitly rotate this one proxy's IP — call only when it's been
+        confirmed bad (e.g. connection refused, repeated failures), not
+        preemptively on every use."""
+        if not proxy.reset_url:
+            return
+        try:
+            urllib.request.urlopen(proxy.reset_url, timeout=10).read()
+            logger.info("Đã đổi IP proxy qua %s", proxy.reset_url)
+        except Exception:
+            logger.warning("Không đổi được IP proxy qua %s", proxy.reset_url, exc_info=True)

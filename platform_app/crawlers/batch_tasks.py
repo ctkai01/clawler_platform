@@ -58,6 +58,10 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
     # password/2FA don't actually work anymore shouldn't get retried on
     # every remaining target, just checkpointed once and moved on.
     session_refresh_attempted = False
+    # Only ever reset this batch's proxy once — repeat network failures
+    # after that point are more likely the account/target than the proxy,
+    # no point re-rotating an already-fresh IP for every remaining target.
+    proxy_reset_attempted = False
 
     # Profile-only knobs: PlaywrightGroupCrawler/PlaywrightPageCrawler don't
     # accept these kwargs, so only pass them for facebook_profile. Scroll
@@ -154,6 +158,19 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
             except Exception as exc:  # noqa: BLE001 - isolate per-target failure
                 repository.mark_failed(target_id, str(exc))
                 logger.warning("Crawl lỗi target %s (%s): %s", target_id, platform_type, exc)
+                # net::ERR_* (timeout, connection refused, tunnel failed...)
+                # is Chromium's own signal that the network path — i.e. this
+                # batch's proxy — failed, not something about the page
+                # content. Rotate it once so the NEXT target in this batch
+                # (and future acquires of this proxy) get a fresh IP instead
+                # of repeating the same failure — but only once per batch:
+                # ProxyPool.acquire() no longer resets preemptively on every
+                # use (that itself was flagged as bot-like to Facebook), so
+                # this is the sole automatic recovery path for a proxy that
+                # has actually gone bad.
+                if not proxy_reset_attempted and "net::ERR_" in str(exc):
+                    proxy_reset_attempted = True
+                    _proxy_pool.reset(proxy)
             finally:
                 _redis.delete(_inflight_key(platform_type, target_id))
 
