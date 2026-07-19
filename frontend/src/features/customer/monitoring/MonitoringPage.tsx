@@ -13,7 +13,7 @@ import { PLATFORM_LABEL, SOURCE_STATUS_DESCRIPTION, SOURCE_STATUS_LABEL, sourceS
 import type { CrawledSource, DagRunItem, RecentDocument, SystemStats } from '@/types/org'
 import { cn } from '@/lib/utils'
 
-const PLATFORM_ORDER = ['facebook_group', 'facebook_page', 'forum', 'news']
+const PLATFORM_ORDER = ['facebook_group', 'facebook_page', 'facebook_profile', 'forum', 'news']
 const STATUS_ORDER = ['ok', 'running', 'error', 'session_expired', 'not_a_member', 'checkpoint', 'chua_crawl']
 const PLATFORM_COLOR: Record<string, string> = {
   facebook_group: '#3b5bdb',
@@ -25,6 +25,7 @@ const PLATFORM_COLOR: Record<string, string> = {
 const DAG_LABEL: Record<string, string> = {
   facebook_groups_crawl: 'FB Group crawl',
   facebook_pages_crawl: 'FB Page crawl',
+  facebook_profiles_crawl: 'FB Profile crawl',
   forums_crawl: 'Forum crawl',
   news_crawl: 'News crawl',
   content_pipeline: 'Content pipeline',

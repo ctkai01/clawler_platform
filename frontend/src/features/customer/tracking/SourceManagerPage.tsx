@@ -16,13 +16,14 @@ import { PLATFORM_LABEL, SOURCE_STATUS_DESCRIPTION, SOURCE_STATUS_LABEL, sourceS
 import { ApiError } from '@/lib/apiClient'
 import type { SourceImportResult } from '@/types/org'
 
-const PLATFORM_TYPES = ['facebook_group', 'facebook_page', 'forum', 'news']
+const PLATFORM_TYPES = ['facebook_group', 'facebook_page', 'facebook_profile', 'forum', 'news']
 const ALL_PLATFORMS = '__all__'
 const PAGE_SIZE = 10
 
 const CSV_TEMPLATE = `platform_type,url,display_name
 facebook_group,https://facebook.com/groups/vi-du,Ví dụ FB Group
 facebook_page,https://facebook.com/vi-du,Ví dụ FB Page
+facebook_profile,https://facebook.com/vi-du-profile,Ví dụ FB Profile
 forum,https://forum.vi-du.com/board,Ví dụ Forum
 news,https://vi-du.vn,Ví dụ News
 `
@@ -234,7 +235,7 @@ export function SourceManagerPage() {
         )}
         <p className="mt-3 text-xs text-muted">
           File CSV cần cột <code className="rounded bg-paper px-1 py-0.5">platform_type</code> (facebook_group /
-          facebook_page / forum / news) và <code className="rounded bg-paper px-1 py-0.5">url</code>, cột{' '}
+          facebook_page / facebook_profile / forum / news) và <code className="rounded bg-paper px-1 py-0.5">url</code>, cột{' '}
           <code className="rounded bg-paper px-1 py-0.5">display_name</code> tuỳ chọn.
         </p>
       </Card>
