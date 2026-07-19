@@ -445,30 +445,36 @@ EXTRACT_POST_PAGE_JS = """
       unique.push(block);
     });
 
+    if (expectedTotal <= 0) {
+      // No DOM-read total to anchor against — every past incident here
+      // involved script-tag data for an unrelated (usually far more
+      // viral) post/comment on the same page overwriting a legitimate,
+      // much smaller per-post total, e.g. a post with 48 real reactions
+      // getting stamped with 43,560 from something else entirely. With no
+      // signal to tell blocks apart, guessing (old code picked whichever
+      // block had the highest total) is worse than reporting nothing —
+      // callers already treat "no engagement data found" as a normal,
+      // expected state.
+      return emptyEngagement();
+    }
+
     let best = unique[0];
     for (const block of unique) {
-      if (expectedTotal > 0 && block.total === expectedTotal) {
+      if (block.total === expectedTotal) {
         best = block;
         break;
       }
-      if (expectedTotal > 0) {
-        // When the DOM toolbar already told us the expected total, prefer the
-        // block whose total is CLOSEST to it.  The old "pick highest total"
-        // strategy caused script-tag data from the group page or related posts
-        // (which can be millions) to overwrite a per-post total of a few thousand.
-        if (Math.abs(block.total - expectedTotal) < Math.abs(best.total - expectedTotal)) {
-          best = block;
-        } else if (
-          Math.abs(block.total - expectedTotal) === Math.abs(best.total - expectedTotal) &&
-          block.edges.length > best.edges.length
-        ) {
-          best = block;
-        }
-      } else {
-        if (block.total > best.total) best = block;
-        else if (block.total === best.total && block.edges.length > best.edges.length) {
-          best = block;
-        }
+      // Prefer the block whose total is CLOSEST to the DOM-read expected
+      // total. The old "pick highest total" strategy caused script-tag
+      // data from the group page or related posts (which can be millions)
+      // to overwrite a per-post total of a few thousand.
+      if (Math.abs(block.total - expectedTotal) < Math.abs(best.total - expectedTotal)) {
+        best = block;
+      } else if (
+        Math.abs(block.total - expectedTotal) === Math.abs(best.total - expectedTotal) &&
+        block.edges.length > best.edges.length
+      ) {
+        best = block;
       }
     }
 
