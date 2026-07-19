@@ -313,6 +313,7 @@ class DocumentCommentOut(BaseModel):
 class AccordionCategoryCounts(BaseModel):
     facebook_group: int = 0
     facebook_page: int = 0
+    facebook_profile: int = 0
     forum: int = 0
     news: int = 0
 

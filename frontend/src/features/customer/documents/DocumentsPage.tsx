@@ -12,7 +12,7 @@ import { CategorySection } from '@/features/customer/documents/CategorySection'
 import { DetailPanel } from '@/features/customer/documents/DetailPanel'
 import type { AccordionFilterParams } from '@/types/org'
 
-const CATEGORIES = ['facebook_group', 'facebook_page', 'forum', 'news']
+const CATEGORIES = ['facebook_group', 'facebook_page', 'facebook_profile', 'forum', 'news']
 const DAY_OPTIONS = [0, 1, 7, 14, 30, 90, 365]
 const CUSTOM_RANGE = -1
 
@@ -55,7 +55,7 @@ export function DocumentsPage() {
     <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Bài viết đã crawl"
-        description="Duyệt bài viết theo nguồn (FB Group / FB Page / Forum / News), lọc theo từ khóa hoặc entity."
+        description="Duyệt bài viết theo nguồn (FB Group / FB Page / FB Profile / Forum / News), lọc theo từ khóa hoặc entity."
       />
 
       <Card>
