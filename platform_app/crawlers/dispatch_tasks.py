@@ -19,6 +19,17 @@ REDIS_URL = os.environ.get("FB_INFLIGHT_REDIS_URL", "redis://redis:6379/2")
 # opening/closing per source. See docs/dag-flow.md.
 BATCH_SIZE = int(os.environ.get("FB_BATCH_SIZE", "10"))
 
+# facebook_profile targets are crawled sequentially within a batch (one
+# post's comments at a time) and any single target can burn up to ~15min
+# (the scroll hard-cap in playwright_profile_crawler.py) — at BATCH_SIZE=10
+# a worst-case batch can run past RabbitMQ's default 30-minute consumer
+# ack timeout, which doesn't just fail the batch: it kills the whole
+# Celery connection with an unrecoverable PreconditionFailed and crashes
+# the worker process. Real incident: worker crash-looped repeatedly once
+# profile targets scaled up via CSV import. Keep profile batches small
+# enough that even the worst case stays well under that 30-minute ceiling.
+PROFILE_BATCH_SIZE = int(os.environ.get("FB_PROFILE_BATCH_SIZE", "2"))
+
 # Floor so a very-frequent target doesn't leave a near-zero-TTL inflight
 # lock that could expire mid-crawl.
 MIN_LOCK_TTL_SECONDS = 1800
@@ -62,12 +73,13 @@ def dispatch_due_sources(platform_type: str) -> None:
             continue  # batch trước vẫn đang xử lý target này
         batches.setdefault(t.fb_session_key, []).append(t.id)
 
+    batch_size = PROFILE_BATCH_SIZE if platform_type == "facebook_profile" else BATCH_SIZE
     dispatched = 0
     for session_key, ids in batches.items():
-        for i in range(0, len(ids), BATCH_SIZE):
+        for i in range(0, len(ids), batch_size):
             app.send_task(
                 "platform_app.crawlers.batch_tasks.crawl_batch_task",
-                args=[platform_type, ids[i : i + BATCH_SIZE], session_key],
+                args=[platform_type, ids[i : i + batch_size], session_key],
                 queue="fb_crawl",
             )
             dispatched += 1
