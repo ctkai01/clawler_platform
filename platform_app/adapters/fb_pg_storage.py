@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import json
+import logging
 from datetime import timedelta
 
+import psycopg
 from fb_crawl.parser import resolve_crawled_post_engagement
 from fb_crawl.storage import _to_iso, _utcnow, comment_match_key, content_hash
 from fb_crawl.types import Comment, Post
 from psycopg.types.json import Jsonb
 
 from platform_app.db.pool import get_pool
+
+logger = logging.getLogger(__name__)
 
 _OWNER_ID_KEY = {"facebook_group": "group_id", "facebook_page": "page_id", "facebook_profile": "profile_id"}
 
@@ -51,25 +55,45 @@ class PgStorage:
 
     def _upsert_owner(self, external_id: str, url: str, name: str | None) -> None:
         with self.pool.connection() as conn:
-            conn.execute(
-                """
-                UPDATE crawl_targets
-                SET external_id = %s,
-                    url = %s,
-                    -- display_name is user/import-controlled — the crawler
-                    -- only fills it in when it's still unset (first crawl),
-                    -- never overwrites an existing name. Previously this
-                    -- re-wrote it from the live page on every single crawl,
-                    -- so any extraction glitch (a verified-badge label, a
-                    -- generic "All"/notification-count fallback, ...)
-                    -- silently clobbered a correct, user-set name over and
-                    -- over instead of just being a one-time bad read.
-                    display_name = COALESCE(display_name, %s),
-                    updated_at = now()
-                WHERE id = %s AND platform_type = %s
-                """,
-                (external_id, url, name, self.target_id, self.platform_type),
-            )
+            try:
+                with conn.transaction():
+                    conn.execute(
+                        """
+                        UPDATE crawl_targets
+                        SET external_id = %s,
+                            url = %s,
+                            -- display_name is user/import-controlled — the crawler
+                            -- only fills it in when it's still unset (first crawl),
+                            -- never overwrites an existing name. Previously this
+                            -- re-wrote it from the live page on every single crawl,
+                            -- so any extraction glitch (a verified-badge label, a
+                            -- generic "All"/notification-count fallback, ...)
+                            -- silently clobbered a correct, user-set name over and
+                            -- over instead of just being a one-time bad read.
+                            display_name = COALESCE(display_name, %s),
+                            updated_at = now()
+                        WHERE id = %s AND platform_type = %s
+                        """,
+                        (external_id, url, name, self.target_id, self.platform_type),
+                    )
+            except psycopg.errors.UniqueViolation:
+                # This target's raw URL (e.g. profile.php?id=X) normalizes to
+                # the same canonical URL another crawl_targets row already
+                # owns (e.g. facebook.com/X, imported separately) — a true
+                # duplicate of the same FB profile/page/group under two
+                # target rows. Disable this one rather than let it fail the
+                # same way on every future crawl forever; the surviving
+                # duplicate keeps covering the same source.
+                conn.execute(
+                    "UPDATE crawl_targets SET enabled = false, last_error = %s, updated_at = now() WHERE id = %s",
+                    (f"Trùng lặp với target khác đã có URL {url} — đã tự động tắt.", self.target_id),
+                )
+                logger.warning(
+                    "Target %s (platform=%s) trùng URL chuẩn hoá %s với target khác — đã tắt.",
+                    self.target_id,
+                    self.platform_type,
+                    url,
+                )
 
     def _get_owner(self, external_id: str) -> dict | None:
         with self.pool.connection() as conn:

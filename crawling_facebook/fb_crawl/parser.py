@@ -233,10 +233,19 @@ def normalize_page_url(url: str) -> str:
     if not page_id:
         return url.split("?")[0].rstrip("/")
     if page_id.lower().startswith("pfbid"):
-        # Unlike a numeric id or vanity slug, a bare "facebook.com/pfbid..."
-        # URL doesn't reliably resolve on its own — pfbid ids only load via
-        # their full "/people/<slug>/<pfbid>" path, so keep that intact
-        # instead of collapsing it like every other id shape here.
+        parsed = urlparse(url)
+        if parsed.path.strip("/").lower() == "profile.php":
+            # Here the pfbid lives in the QUERY string (?id=pfbid...), not
+            # the path — stripping the query like the branch below would
+            # collapse every such URL down to the same bare ".../profile.php"
+            # with no identifying info left at all (real bug: 13 distinct
+            # profiles all normalized to one identical string, which then
+            # collided on crawl_targets' per-org URL uniqueness constraint).
+            return f"{parsed.scheme}://{parsed.netloc}/profile.php?id={page_id}"
+        # /people/<slug>/<pfbid> — unlike a numeric id or vanity slug, a bare
+        # "facebook.com/pfbid..." URL doesn't reliably resolve on its own;
+        # pfbid ids under /people/ only load via their full path, so keep
+        # that intact instead of collapsing it like every other id shape.
         return url.split("?")[0].rstrip("/")
     return f"https://www.facebook.com/{page_id}"
 
