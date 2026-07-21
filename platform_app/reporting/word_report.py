@@ -221,7 +221,12 @@ def _draw_sentiment_pie(ax, positive: int, neutral: int, negative: int, *, title
         frameon=False,
     )
     if title:
-        ax.set_title(title, fontsize=9, fontweight="bold")
+        # Extra pad: a slice's pct label can land near the very top of the
+        # pie (pushed out to radius 1.35 by the small-slice branch above,
+        # e.g. a slice straddling the 90° seam), which sits right where a
+        # tight-padded title would print — collided visibly in a real report
+        # (a ~2% "Tiêu cực" slice's label overlapping "...sắc thái").
+        ax.set_title(title, fontsize=9, fontweight="bold", pad=18)
 
 
 def _sentiment_pie_png(positive: int, neutral: int, negative: int, *, title: str = "") -> bytes:

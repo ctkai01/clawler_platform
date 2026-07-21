@@ -29,7 +29,7 @@ from platform_app.reporting.word_report import (
 )
 
 _SENTIMENT_LABEL = {"positive": "Tích cực", "negative": "Tiêu cực", "neutral": "Trung lập"}
-_NEWS_TABLE_HEADERS = ["Tên báo", "Nội dung", "Sắc thái", "Mức độ tiếp cận", "Mức độ ảnh hưởng"]
+_NEWS_TABLE_HEADERS = ["Tên báo", "Nội dung", "Sắc thái", "Mức độ tiếp cận", "Mức độ ảnh hưởng", "Tình trạng xử lý"]
 _SOCIAL_TABLE_HEADERS = ["STT", "Tóm tắt nội dung phản ánh", "Nguồn phản ánh", "Số lượng tương tác", "Mức độ ảnh hưởng", "Tình trạng xử lý"]
 _HANDLING_STATUS_LABEL = {
     "chua_xu_ly": "Chưa xử lý",
@@ -67,6 +67,7 @@ def _add_news_table(doc, matches: list[dict]) -> None:
         _set_cell_text(cells[2], _SENTIMENT_LABEL.get(m["sentiment"], m["sentiment"]), align_center=True)
         _set_cell_text(cells[3], m["reach_tier"] or "")
         _set_cell_text(cells[4], m["impact_level"], align_center=True)
+        _set_cell_text(cells[5], _HANDLING_STATUS_LABEL.get(m["handling_status"], m["handling_status"]), align_center=True)
 
 
 def _add_social_table(doc, matches: list[dict]) -> None:

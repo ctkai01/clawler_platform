@@ -208,8 +208,12 @@ def extract_page_id(url: str) -> str | None:
         # claimed a vanity username (e.g. "Mobifone Internet Hải Phòng").
         # Rejecting the whole path shape blocked legitimate pages; the
         # numeric id further down the path is the stable identifier either way.
+        # Facebook also now issues opaque "pfbid..." ids instead of a plain
+        # numeric one for a lot of profiles (verified: 6 real crawl_targets
+        # broke on this — every /people/ URL added recently uses pfbid, not
+        # a digit string) — accept those too, same position in the path.
         for part in parts[1:]:
-            if part.isdigit():
+            if part.isdigit() or part.lower().startswith("pfbid"):
                 return part
         return None
 
@@ -227,6 +231,12 @@ def extract_page_id(url: str) -> str | None:
 def normalize_page_url(url: str) -> str:
     page_id = extract_page_id(url)
     if not page_id:
+        return url.split("?")[0].rstrip("/")
+    if page_id.lower().startswith("pfbid"):
+        # Unlike a numeric id or vanity slug, a bare "facebook.com/pfbid..."
+        # URL doesn't reliably resolve on its own — pfbid ids only load via
+        # their full "/people/<slug>/<pfbid>" path, so keep that intact
+        # instead of collapsing it like every other id shape here.
         return url.split("?")[0].rstrip("/")
     return f"https://www.facebook.com/{page_id}"
 

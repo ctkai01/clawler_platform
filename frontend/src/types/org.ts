@@ -78,6 +78,7 @@ export interface MonitoringOverview {
   failing_sources: FailingSource[]
   crawled_sources: CrawledSource[]
   document_throughput: DocumentThroughputPoint[]
+  document_throughput_matched: DocumentThroughputPoint[]
   dag_runs: DagRunItem[]
   recent_documents: RecentDocument[]
   airflow_unreachable: boolean

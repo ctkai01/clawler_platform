@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import argparse
 import logging
+import re
 from collections import defaultdict
 from datetime import date
 
 import openpyxl
 
+from platform_app.db.pool import get_pool
+from platform_app.pipeline.text_normalize import fold
 from platform_app.reporting.word_report import build_daily_word_report_bytes
 
 logger = logging.getLogger(__name__)
@@ -14,11 +17,50 @@ logger = logging.getLogger(__name__)
 _SENTIMENT_LABEL = {"1": "positive", "0": "neutral", "-1": "negative"}
 
 
-def _load_rows(xlsx_path: str, sheet_name: str) -> list[dict]:
+def _brand_patterns(org_name: str) -> list[re.Pattern]:
+    """Same brand keyword list + matching rule (fold + \\b...\\b, case
+    insensitive) production classification already uses to decide
+    brand_focus='own' (platform_app/pipeline/keyword_filter.py) — reused
+    here so "really about {org_name}" means the same thing this report as
+    it does everywhere else in the platform, not a fresh ad-hoc guess. An
+    external xlsx export's own topic tagging (by page/source, not by
+    keyword) lets a lot of off-brand noise through (verified: ~66% of one
+    week's non-spam MobiFone-labeled rows never mention MobiFone or any of
+    its sub-brands at all).
+
+    Two terms from that catalog are excluded here: bare "mobi" and "mbf".
+    Both are real entries production classification also matches on as-is,
+    but standing alone (not paired with any more specific brand term on the
+    same row) they're too generic for a report meant to highlight real
+    brand mentions — verified against this file: 244 of 1203 brand-matched
+    rows matched ONLY via "mobi"/"mbf", including a TikTok bio for an
+    unrelated "MOBI PHONE REPAIR" shop ranking in the negative top-5 purely
+    because of its own high engagement. Every other catalog term (mobifone,
+    saymee, mobiphone, mobi3g, ...) is specific enough to keep as-is."""
+    with get_pool().connection() as conn:
+        rows = conn.execute(
+            """
+            SELECT kc.term FROM organization_keywords ok
+            JOIN keywords_catalog kc ON kc.id = ok.keyword_id
+            JOIN organizations o ON o.id = ok.organization_id
+            WHERE o.name ILIKE %s AND kc.category = 'brand' AND kc.is_active
+            """,
+            (org_name,),
+        ).fetchall()
+    too_generic = {"mobi", "mbf"}
+    return [
+        re.compile(r"\b" + re.escape(fold(row["term"])) + r"\b", re.IGNORECASE)
+        for row in rows
+        if fold(row["term"]) not in too_generic
+    ]
+
+
+def _load_rows(xlsx_path: str, sheet_name: str, brand_patterns: list[re.Pattern] | None) -> list[dict]:
     wb = openpyxl.load_workbook(xlsx_path, data_only=True)
     ws = wb[sheet_name]
     headers = [(c.value or "").strip() for c in ws[2]]
     rows = []
+    skipped_off_brand = 0
     for values in ws.iter_rows(min_row=3, values_only=True):
         row = dict(zip(headers, values))
         if (row.get("Tags") or "").strip() == "Spam":
@@ -26,6 +68,11 @@ def _load_rows(xlsx_path: str, sheet_name: str) -> list[dict]:
         sentiment = _SENTIMENT_LABEL.get(str(row.get("Sentiment")).strip())
         if sentiment is None:
             continue
+        if brand_patterns is not None:
+            text = fold(f"{row.get('Title') or ''} {row.get('Intro') or ''}")
+            if not any(p.search(text) for p in brand_patterns):
+                skipped_off_brand += 1
+                continue
         reaction = row.get("Reaction") or 0
         comments = row.get("Comments") or 0
         shares = row.get("Shares") or 0
@@ -52,6 +99,8 @@ def _load_rows(xlsx_path: str, sheet_name: str) -> list[dict]:
                 "author": None,
             }
         )
+    if brand_patterns is not None:
+        logger.info("%s: bỏ %d dòng không thực sự nhắc tới thương hiệu", xlsx_path, skipped_off_brand)
     return rows
 
 
@@ -107,8 +156,21 @@ def _build_report(rows: list[dict], unique_rows: list[dict]) -> dict:
     return report, topic_sentiment_rows
 
 
-def build_report_bytes(xlsx_path: str, sheet_name: str, org_name: str, period_label: str, report_date: date) -> bytes:
-    rows = _load_rows(xlsx_path, sheet_name)
+def build_report_bytes(
+    xlsx_paths: list[str],
+    sheet_name: str,
+    org_name: str,
+    period_label: str,
+    report_date: date,
+    *,
+    filter_off_brand: bool = True,
+) -> bytes:
+    brand_patterns = _brand_patterns(org_name) if filter_off_brand else None
+    rows = [r for xlsx_path in xlsx_paths for r in _load_rows(xlsx_path, sheet_name, brand_patterns)]
+    # Same post can legitimately appear in more than one source export (e.g.
+    # a broader MobiFone export and a narrower 5G-topic export both crawled
+    # the same URL) — dedupe by post_key across ALL files combined, not per
+    # file, so it isn't double-counted.
     unique_rows = _dedupe_posts(rows)
     report, topic_sentiment_rows = _build_report(rows, unique_rows)
 
@@ -134,15 +196,25 @@ def build_report_bytes(xlsx_path: str, sheet_name: str, org_name: str, period_la
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Sinh báo cáo Word từ file Excel dữ liệu MXH (export từ công cụ ngoài)")
-    parser.add_argument("xlsx_path")
+    parser.add_argument("xlsx_paths", nargs="+", help="1 hoặc nhiều file .xlsx (gộp dữ liệu, dedupe theo URL)")
     parser.add_argument("output_path")
     parser.add_argument("--sheet", default="DS Noi Dung")
     parser.add_argument("--org-name", default="MobiFone")
     parser.add_argument("--period-label", required=True, help='VD: "TUẦN 07/07/2026 - 14/07/2026"')
+    parser.add_argument(
+        "--no-brand-filter",
+        action="store_true",
+        help="Tắt lọc theo tên thương hiệu (mặc định: chỉ giữ bài thực sự nhắc tới org-name/thương hiệu con)",
+    )
     args = parser.parse_args()
 
     content = build_report_bytes(
-        args.xlsx_path, args.sheet, args.org_name, args.period_label, date.today()
+        args.xlsx_paths,
+        args.sheet,
+        args.org_name,
+        args.period_label,
+        date.today(),
+        filter_off_brand=not args.no_brand_filter,
     )
     with open(args.output_path, "wb") as f:
         f.write(content)

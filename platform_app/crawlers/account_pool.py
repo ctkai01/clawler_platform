@@ -39,18 +39,17 @@ class AccountPool:
     def __init__(self) -> None:
         self.cooldown_minutes = int(os.environ.get("FB_ACCOUNT_COOLDOWN_MINUTES", "15"))
 
-    def _acquire(self, *, key: str | None, require_profile: bool = False) -> Account | None:
+    def _acquire(self, *, key: str | None) -> Account | None:
         with get_pool().connection() as conn:
             if key:
                 row = conn.execute(
                     """
                     UPDATE fb_accounts SET last_used_at = now(), updated_at = now()
                     WHERE id = %s AND status = 'LIVE' AND session_data IS NOT NULL
-                      AND (NOT %s OR supports_profile)
                       AND (last_used_at IS NULL OR last_used_at < now() - (%s * interval '1 minute'))
                     RETURNING id, session_data, user_agent, password, two_fa_secret
                     """,
-                    (key, require_profile, self.cooldown_minutes),
+                    (key, self.cooldown_minutes),
                 ).fetchone()
             else:
                 row = conn.execute(
@@ -59,7 +58,6 @@ class AccountPool:
                     WHERE id = (
                         SELECT id FROM fb_accounts
                         WHERE status = 'LIVE' AND session_data IS NOT NULL
-                          AND (NOT %s OR supports_profile)
                           AND (last_used_at IS NULL OR last_used_at < now() - (%s * interval '1 minute'))
                         ORDER BY last_used_at ASC NULLS FIRST
                         LIMIT 1
@@ -67,7 +65,7 @@ class AccountPool:
                     )
                     RETURNING id, session_data, user_agent, password, two_fa_secret
                     """,
-                    (require_profile, self.cooldown_minutes),
+                    (self.cooldown_minutes,),
                 ).fetchone()
         if row is None:
             return None
@@ -79,15 +77,13 @@ class AccountPool:
             two_fa_secret=row["two_fa_secret"],
         )
 
-    def acquire(self, *, require_profile: bool = False) -> Account | None:
+    def acquire(self) -> Account | None:
         """Any LIVE account off cooldown, oldest-used first — for FB Pages
-        that haven't been pinned to a specific account. require_profile
-        restricts to accounts an operator has confirmed have a full
-        browser-login session (real localStorage) — facebook_profile's
-        GraphQL/payload-based crawler needs that; facebook_group/page's
-        DOM-scraping doesn't, so they leave this False and can use any
-        LIVE account, including ones flagged supports_profile."""
-        return self._acquire(key=None, require_profile=require_profile)
+        that haven't been pinned to a specific account. Every account is
+        assumed to have a full browser-login session (real localStorage) now
+        that supports_profile was dropped — see migration
+        0028_drop_fb_accounts_supports_profile.sql."""
+        return self._acquire(key=None)
 
     def acquire_specific(self, key: str) -> Account | None:
         """That exact account — for FB Groups, which must use an account

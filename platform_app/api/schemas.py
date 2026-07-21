@@ -173,6 +173,7 @@ class MonitoringOverview(BaseModel):
     failing_sources: list[FailingSourceOut]
     crawled_sources: list[CrawledSourceOut]
     document_throughput: list[DocumentThroughputPoint]
+    document_throughput_matched: list[DocumentThroughputPoint]
     dag_runs: list[DagRunOut]
     recent_documents: list[RecentDocumentOut]
     airflow_unreachable: bool

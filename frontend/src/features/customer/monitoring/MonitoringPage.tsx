@@ -443,6 +443,15 @@ export function MonitoringPage() {
           </Card>
 
           <Card>
+            <h3 className="mb-1 font-display text-base font-semibold text-ink">Số liệu document sau khi lọc từ khoá</h3>
+            <p className="mb-4 text-xs text-muted">
+              Chỉ tính document đã khớp từ khoá thương hiệu/đối thủ (keyword_status = &quot;matched&quot;) — phản ánh khối
+              lượng thực sự liên quan, không tính bài crawl được nhưng không khớp từ khoá nào.
+            </p>
+            <ThroughputChart data={data.document_throughput_matched} />
+          </Card>
+
+          <Card>
             <h3 className="mb-1 font-display text-base font-semibold text-ink">Lịch sử chạy DAG</h3>
             <p className="mb-4 text-xs text-muted">5 lần chạy gần nhất mỗi DAG crawl + content_pipeline.</p>
             <DagRunTable runs={data.dag_runs} />

@@ -331,6 +331,7 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
             failing_sources: list[dict] = []
             crawled_sources: list[dict] = []
             document_throughput: list[dict] = []
+            document_throughput_matched: list[dict] = []
             recent_documents: list[dict] = []
         else:
             sources_by_status = conn.execute(
@@ -380,6 +381,25 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
                 params,
             ).fetchall()
 
+            # Same chart, but scoped to documents that actually passed the
+            # keyword filter (keyword_status='matched' — same concept
+            # run_keyword_filter/brand_focus use everywhere else in the
+            # platform) — the raw chart above counts every crawled document
+            # regardless of relevance, which can look inflated next to how
+            # few are ever worth reporting on.
+            document_throughput_matched = conn.execute(
+                f"""
+                SELECT date(d.first_seen_at AT TIME ZONE 'Asia/Ho_Chi_Minh') AS day, d.platform_type, count(*) AS count
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE {where_clause} AND d.first_seen_at >= now() - interval '14 days'
+                  AND d.keyword_status = 'matched'
+                GROUP BY 1, 2
+                ORDER BY 1
+                """,
+                params,
+            ).fetchall()
+
             recent_documents = conn.execute(
                 f"""
                 SELECT d.id, d.platform_type, d.topic, d.url, ct.display_name AS target_name, d.first_seen_at
@@ -399,6 +419,7 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
         "failing_sources": failing_sources,
         "crawled_sources": crawled_sources,
         "document_throughput": document_throughput,
+        "document_throughput_matched": document_throughput_matched,
         "dag_runs": dag_runs,
         "recent_documents": recent_documents,
         "airflow_unreachable": airflow_unreachable,
