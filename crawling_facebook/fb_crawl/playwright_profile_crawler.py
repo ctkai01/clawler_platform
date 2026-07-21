@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 
 from playwright.async_api import Browser, BrowserContext, Page, Response, async_playwright
 
+from fb_crawl.parser import parse_relative_time
 from fb_crawl.playwright_page_crawler import EXTRACT_PAGE_NAME_JS
 from fb_crawl.profile_parser import (
     REACTION_LABELS,
@@ -30,6 +31,53 @@ from fb_crawl.types import CheckpointError, Post
 logger = logging.getLogger(__name__)
 
 MAX_COMMENTS = 100
+
+# Fallback for when neither the timeline-scroll payload nor this post's own
+# page payload carries creation_time/created_time/publish_time (verified
+# live: business-styled profiles like a "Cong trinh Viettel..." construction
+# updates page return posts via a GraphQL shape that omits all 3) — same
+# data-utime / aria-label / visible-text approach facebook_extract.py
+# already uses for Group/Page, scoped to the whole page since we're already
+# sitting on the post's own permalink (fetched for comments either way, no
+# extra navigation cost).
+EXTRACT_POST_TIME_JS = """
+() => {
+  function looksLikeFbTime(t) {
+    if (!t || t.length > 50) return false;
+    if (/^\\d+\\s*(phút|giờ|ngày|giây|tuần|tháng|năm|min|hr|h|m|d|day|days?\\s+ago)/i.test(t)) return true;
+    if (/^(?:yesterday|today|hôm qua|hôm nay|vừa xong|just now)\\b/i.test(t)) return true;
+    if (/^\\d{1,2}\\s*(?:tháng|thg)\\s*\\d{1,2}/i.test(t)) return true;
+    if (/^(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\\s+\\d{1,2}/i.test(t)) return true;
+    return false;
+  }
+
+  let utime = null;
+  document.querySelectorAll('abbr[data-utime], span[data-utime], a[data-utime]').forEach((el) => {
+    if (utime) return;
+    const raw = el.getAttribute('data-utime');
+    const n = raw ? parseInt(raw, 10) : NaN;
+    if (Number.isFinite(n) && n > 0) utime = n;
+  });
+
+  let text = '';
+  for (const el of document.querySelectorAll('[aria-label]')) {
+    const label = el.getAttribute('aria-label') || '';
+    const m = label.match(/bài viết của .+ vào (.+)$/i) || label.match(/post by .+ (?:on|at) (.+)$/i);
+    if (m) { text = m[1].trim(); break; }
+  }
+  if (!text) {
+    for (const el of document.querySelectorAll('a[href], span, abbr')) {
+      const title = (el.getAttribute('title') || '').trim();
+      const inner = (el.innerText || '').trim();
+      for (const t of [title, inner]) {
+        if (looksLikeFbTime(t)) { text = t; break; }
+      }
+      if (text) break;
+    }
+  }
+  return { utime, text };
+}
+"""
 
 
 def normalize_profile_url(url: str) -> str:
@@ -581,6 +629,27 @@ class PlaywrightProfileCrawler:
                     post["comment_count"] = max(
                         post.get("comment_count", 0), parsed_post["comment_count"]
                     )
+                # The timeline-scroll payload sometimes lacks creation_time/
+                # created_time/publish_time for certain post/page shapes
+                # (verified: business-styled profiles), but this post's own
+                # dedicated permalink query is a richer, individual-post
+                # GraphQL response that's much more likely to carry it.
+                if not post.get("published_at") and parsed_post.get("published_at"):
+                    post["published_at"] = parsed_post["published_at"]
+
+            if not post.get("published_at"):
+                try:
+                    dom_time = await page.evaluate(EXTRACT_POST_TIME_JS)
+                except Exception:  # noqa: BLE001
+                    dom_time = None
+                if dom_time:
+                    parsed_dt = None
+                    if dom_time.get("utime"):
+                        parsed_dt = datetime.fromtimestamp(dom_time["utime"], tz=timezone.utc)
+                    elif dom_time.get("text"):
+                        parsed_dt = parse_relative_time(dom_time["text"], now=datetime.now(timezone.utc))
+                    if parsed_dt:
+                        post["published_at"] = parsed_dt.isoformat()
 
             if not found_post_reactions:
                 dom_reactions = await self._reaction_totals_from_dom(page)
