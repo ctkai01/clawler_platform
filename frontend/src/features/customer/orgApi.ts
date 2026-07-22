@@ -55,18 +55,32 @@ function accordionQuery(params: AccordionFilterParams, extra?: Record<string, st
 }
 
 export const orgApi = {
-  getReport: (days: number, entity?: string, scope: 'own' | 'competitor' = 'own') => {
+  getReport: (
+    days: number,
+    entity?: string,
+    scope: 'own' | 'competitor' = 'own',
+    range?: { start: string; end: string },
+  ) => {
     const search = new URLSearchParams()
     search.set('days', String(days))
     if (entity) search.set('entity', entity)
     search.set('scope', scope)
+    if (range) {
+      search.set('start', range.start)
+      search.set('end', range.end)
+    }
     return apiClient.get<OrgReport>(`/org/report?${search.toString()}`)
   },
-  exportReport: (days: number, entity?: string) => {
+  exportReport: (days: number, entity?: string, range?: { start: string; end: string }) => {
     const search = new URLSearchParams()
     search.set('days', String(days))
     if (entity) search.set('entity', entity)
-    return apiClient.download(`/org/report/export?${search.toString()}`, `bao-cao-${days}ngay.xlsx`)
+    if (range) {
+      search.set('start', range.start)
+      search.set('end', range.end)
+    }
+    const suffix = range ? `${range.start}_${range.end}` : `${days}ngay`
+    return apiClient.download(`/org/report/export?${search.toString()}`, `bao-cao-${suffix}.xlsx`)
   },
   exportReportWord: (reportDate?: string) => {
     const search = new URLSearchParams()
@@ -164,6 +178,8 @@ export const orgApi = {
   getReportPosts: (params: {
     sentiment: 'positive' | 'negative'
     days: number
+    start?: string
+    end?: string
     entity?: string
     scope?: 'own' | 'competitor'
     page: number
@@ -172,6 +188,8 @@ export const orgApi = {
     const search = new URLSearchParams()
     search.set('sentiment', params.sentiment)
     search.set('days', String(params.days))
+    if (params.start) search.set('start', params.start)
+    if (params.end) search.set('end', params.end)
     if (params.entity) search.set('entity', params.entity)
     search.set('scope', params.scope ?? 'own')
     search.set('page', String(params.page))

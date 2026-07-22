@@ -14,6 +14,11 @@ import { Pagination } from '@/components/ui/pagination'
 import { useToast } from '@/components/ui/toast'
 
 const DAY_OPTIONS = [1, 7, 14, 30, 90, 365]
+const CUSTOM_RANGE_VALUE = 'custom'
+
+function todayIsoDate() {
+  return new Date().toISOString().slice(0, 10)
+}
 const SENTIMENT_COLORS = { positive: '#1f8a5f', neutral: '#8990a0', negative: '#c0392b' }
 
 function Kpi({ label, value }: { label: string; value: number }) {
@@ -47,6 +52,10 @@ export function FullReportPanel({
   const user = useAuthStore((s) => s.user)
   const { toast } = useToast()
   const [days, setDays] = useState(initialDays)
+  const [useCustomRange, setUseCustomRange] = useState(false)
+  const [startDate, setStartDate] = useState(todayIsoDate())
+  const [endDate, setEndDate] = useState(todayIsoDate())
+  const range = useCustomRange && startDate && endDate ? { start: startDate, end: endDate } : undefined
   const [entityInput, setEntityInput] = useState('')
   const [entity, setEntity] = useState('')
   const [exporting, setExporting] = useState(false)
@@ -62,7 +71,7 @@ export function FullReportPanel({
   const handleExport = async () => {
     setExporting(true)
     try {
-      await orgApi.exportReport(days, entity || undefined)
+      await orgApi.exportReport(days, entity || undefined, range)
     } catch {
       toast('Xuất Excel thất bại, vui lòng thử lại.', 'error')
     } finally {
@@ -105,8 +114,8 @@ export function FullReportPanel({
   }
 
   const { data, isLoading } = useQuery({
-    queryKey: ['org', 'report', days, entity],
-    queryFn: () => orgApi.getReport(days, entity || undefined),
+    queryKey: ['org', 'report', days, entity, range],
+    queryFn: () => orgApi.getReport(days, entity || undefined, 'own', range),
   })
 
   const pieData = data
@@ -149,16 +158,49 @@ export function FullReportPanel({
               <select
                 id="report-days"
                 className="h-9 rounded-md border border-line bg-surface px-3 text-sm text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                value={days}
-                onChange={(e) => setDays(Number(e.target.value))}
+                value={useCustomRange ? CUSTOM_RANGE_VALUE : days}
+                onChange={(e) => {
+                  if (e.target.value === CUSTOM_RANGE_VALUE) {
+                    setUseCustomRange(true)
+                  } else {
+                    setUseCustomRange(false)
+                    setDays(Number(e.target.value))
+                  }
+                }}
               >
                 {DAY_OPTIONS.map((d) => (
                   <option key={d} value={d}>
                     {d} ngày gần nhất
                   </option>
                 ))}
+                <option value={CUSTOM_RANGE_VALUE}>Tuỳ chỉnh…</option>
               </select>
             </div>
+            {useCustomRange && (
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="report-start">Từ ngày</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="report-start"
+                    type="date"
+                    className="h-9 w-40"
+                    value={startDate}
+                    max={endDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                  <span className="text-sm text-muted">đến</span>
+                  <Input
+                    id="report-end"
+                    type="date"
+                    className="h-9 w-40"
+                    value={endDate}
+                    min={startDate}
+                    max={todayIsoDate()}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex flex-wrap gap-2">
             {actions === 'all' && (
@@ -304,6 +346,7 @@ export function FullReportPanel({
               sentiment="negative"
               days={days}
               entity={entity}
+              range={range}
               emptyText="Không có bài viết tiêu cực trong khoảng thời gian này."
             />
           </Card>
@@ -317,6 +360,7 @@ export function FullReportPanel({
               sentiment="positive"
               days={days}
               entity={entity}
+              range={range}
               emptyText="Không có bài viết tích cực trong khoảng thời gian này."
             />
           </Card>
@@ -336,25 +380,29 @@ function PaginatedPostTable({
   sentiment,
   days,
   entity,
+  range,
   emptyText,
 }: {
   sentiment: 'positive' | 'negative'
   days: number
   entity: string
+  range?: { start: string; end: string }
   emptyText: string
 }) {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
     setPage(1)
-  }, [sentiment, days, entity])
+  }, [sentiment, days, entity, range])
 
   const { data, isLoading } = useQuery({
-    queryKey: ['org', 'report', 'posts', sentiment, days, entity, page],
+    queryKey: ['org', 'report', 'posts', sentiment, days, entity, range, page],
     queryFn: () =>
       orgApi.getReportPosts({
         sentiment,
         days,
+        start: range?.start,
+        end: range?.end,
         entity: entity || undefined,
         page,
         page_size: REPORT_POSTS_PAGE_SIZE,

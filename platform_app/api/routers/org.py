@@ -4,7 +4,7 @@ import csv
 import io
 import os
 import re
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 
 import httpx
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
@@ -607,15 +607,34 @@ _EMPTY_REPORT = {
 }
 
 
+_VN_TZ = timezone(timedelta(hours=7))
+
+
+def _resolve_report_period(days: int, start: date | None, end: date | None) -> tuple[datetime, datetime]:
+    """`start`/`end` (calendar dates, Vietnam-local) win when both are given
+    — a custom range picked on the dashboard — otherwise fall back to the
+    existing rolling "last N days from now" behavior `days` always had."""
+    if start and end:
+        return datetime.combine(start, time.min, tzinfo=_VN_TZ), datetime.combine(end, time.max, tzinfo=_VN_TZ)
+    period_end = datetime.now(timezone.utc)
+    period_start = period_end - timedelta(days=days)
+    return period_start, period_end
+
+
 def _report_scope(
-    user: dict, days: int, entity: str | None, brand_focus: str = "own"
+    user: dict,
+    days: int,
+    entity: str | None,
+    brand_focus: str = "own",
+    *,
+    start: date | None = None,
+    end: date | None = None,
 ) -> tuple[list[str], list, str, list] | None:
     """Shared org/date-range/entity scoping for /report and /report/posts.
     Returns None when an org_sub has no granted targets (caller should
     short-circuit to an empty result) — otherwise (conditions, params,
     entity_clause, entity_params)."""
-    period_end = datetime.now(timezone.utc)
-    period_start = period_end - timedelta(days=days)
+    period_start, period_end = _resolve_report_period(days, start, end)
     return _report_scope_between(user, period_start, period_end, entity, brand_focus)
 
 
@@ -672,6 +691,8 @@ def _report_post_row(row: dict) -> dict:
 def report_posts(
     sentiment: str = Query(..., pattern="^(positive|negative)$"),
     days: int = Query(default=7, ge=1, le=365),
+    start: date | None = Query(default=None),
+    end: date | None = Query(default=None),
     entity: str | None = Query(default=None),
     scope: str = Query(default="own", pattern="^(own|competitor)$"),
     page: int = Query(default=1, ge=1),
@@ -680,7 +701,7 @@ def report_posts(
 ) -> dict:
     """Paginated version of /report's negative_posts/positive_posts (which
     only ever return a top-5 preview) — powers the "xem thêm" list."""
-    report_scope = _report_scope(user, days, entity, scope)
+    report_scope = _report_scope(user, days, entity, scope, start=start, end=end)
     if report_scope is None:
         return {"items": [], "total": 0}
     conditions, params, entity_clause, entity_params = report_scope
@@ -718,10 +739,18 @@ def report_posts(
     return {"items": [_report_post_row(r) for r in rows], "total": total}
 
 
-def _build_report(user: dict, days: int, entity: str | None, brand_focus: str = "own") -> dict | None:
+def _build_report(
+    user: dict,
+    days: int,
+    entity: str | None,
+    brand_focus: str = "own",
+    *,
+    start: date | None = None,
+    end: date | None = None,
+) -> dict | None:
     """Shared by /report and /report/export — returns None when an org_sub
     has no granted targets (caller should fall back to _EMPTY_REPORT)."""
-    scope = _report_scope(user, days, entity, brand_focus)
+    scope = _report_scope(user, days, entity, brand_focus, start=start, end=end)
     if scope is None:
         return None
     return _build_report_from_scope(user, scope, entity)
@@ -1084,6 +1113,8 @@ def _brand_top_posts(
 @router.get("/report")
 def org_report(
     days: int = Query(default=7, ge=1, le=365),
+    start: date | None = Query(default=None, description="Ngày bắt đầu (custom range) — cần đi kèm `end`"),
+    end: date | None = Query(default=None, description="Ngày kết thúc (custom range) — cần đi kèm `start`"),
     entity: str | None = Query(default=None),
     scope: str = Query(default="own", pattern="^(own|competitor)$"),
     user: dict = Depends(get_current_user),
@@ -1099,18 +1130,31 @@ def org_report(
     `scope=competitor` is content that only mentions a tracked competitor
     (see keyword_filter.py's brand_focus tagging) — a separate "Đối thủ" tab,
     kept out of the main aggregates so competitor buzz doesn't get counted
-    as if it were about this org."""
-    report = _build_report(user, days, entity, scope)
+    as if it were about this org.
+
+    `start`/`end` (both required together) pick an explicit calendar-date
+    range instead of the rolling "last `days` days" window — the dashboard's
+    custom date-range filter."""
+    report = _build_report(user, days, entity, scope, start=start, end=end)
     return report if report is not None else _EMPTY_REPORT
 
 
 _EXPORT_POST_CAP = 5000
 
 
-def _all_report_posts(user: dict, days: int, entity: str | None, sentiment: str, brand_focus: str = "own") -> list[dict]:
+def _all_report_posts(
+    user: dict,
+    days: int,
+    entity: str | None,
+    sentiment: str,
+    brand_focus: str = "own",
+    *,
+    start: date | None = None,
+    end: date | None = None,
+) -> list[dict]:
     """Every matching post (not just the report's top-5 preview) — used for
     Excel export, which needs the full list rather than a UI-sized sample."""
-    scope = _report_scope(user, days, entity, brand_focus)
+    scope = _report_scope(user, days, entity, brand_focus, start=start, end=end)
     if scope is None:
         return []
     return _all_report_posts_from_scope(scope, sentiment)
@@ -1160,13 +1204,15 @@ def _write_header(ws, headers: list[str]) -> None:
         cell.font = Font(bold=True)
 
 
-def build_report_workbook_bytes(user: dict, days: int, entity: str | None) -> bytes:
+def build_report_workbook_bytes(
+    user: dict, days: int, entity: str | None, *, start: date | None = None, end: date | None = None
+) -> bytes:
     """Builds the same Excel workbook /report/export streams to the browser
     — shared with the daily report-email job (platform_app.pipeline.report_email)
     so both paths produce byte-identical files from one code path."""
-    report = _build_report(user, days, entity) or _EMPTY_REPORT
-    negative_posts = _all_report_posts(user, days, entity, "negative")
-    positive_posts = _all_report_posts(user, days, entity, "positive")
+    report = _build_report(user, days, entity, start=start, end=end) or _EMPTY_REPORT
+    negative_posts = _all_report_posts(user, days, entity, "negative", start=start, end=end)
+    positive_posts = _all_report_posts(user, days, entity, "positive", start=start, end=end)
     return _build_workbook_bytes(report, negative_posts, positive_posts)
 
 
@@ -1271,13 +1317,15 @@ def _build_workbook_bytes(report: dict, negative_posts: list[dict], positive_pos
 @router.get("/report/export")
 def export_report(
     days: int = Query(default=7, ge=1, le=365),
+    start: date | None = Query(default=None),
+    end: date | None = Query(default=None),
     entity: str | None = Query(default=None),
     user: dict = Depends(get_current_user),
 ) -> StreamingResponse:
     """Excel export of the report currently shown on screen (same days/entity
     filters), with full negative/positive post lists (up to _EXPORT_POST_CAP)
     instead of the UI's top-5 preview."""
-    content = build_report_workbook_bytes(user, days, entity)
+    content = build_report_workbook_bytes(user, days, entity, start=start, end=end)
     filename = f"bao-cao-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M')}.xlsx"
     return StreamingResponse(
         io.BytesIO(content),
