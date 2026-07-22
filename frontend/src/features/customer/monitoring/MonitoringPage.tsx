@@ -235,6 +235,7 @@ function RecentDocumentsTable({ documents }: { documents: RecentDocument[] }) {
             <th className="py-2 pr-4">Tiêu đề</th>
             <th className="py-2 pr-4">Nền tảng</th>
             <th className="py-2 pr-4">Nguồn</th>
+            <th className="py-2 pr-4 text-right">Publish At</th>
             <th className="py-2 text-right">Thêm vào lúc</th>
           </tr>
         </thead>
@@ -256,6 +257,7 @@ function RecentDocumentsTable({ documents }: { documents: RecentDocument[] }) {
                 <Badge tone="neutral">{PLATFORM_LABEL[d.platform_type] ?? d.platform_type}</Badge>
               </td>
               <td className="max-w-40 truncate py-2.5 pr-4 text-xs text-muted">{d.target_name ?? '—'}</td>
+              <td className="py-2.5 pr-4 text-right tabular text-muted">{formatDateTime(d.published_at)}</td>
               <td className="py-2.5 text-right tabular text-muted">{formatDateTime(d.first_seen_at)}</td>
             </tr>
           ))}
@@ -449,6 +451,27 @@ export function MonitoringPage() {
               lượng thực sự liên quan, không tính bài crawl được nhưng không khớp từ khoá nào.
             </p>
             <ThroughputChart data={data.document_throughput_matched} />
+          </Card>
+
+          <Card>
+            <h3 className="mb-1 font-display text-base font-semibold text-ink">Số liệu document theo ngày đăng bài</h3>
+            <p className="mb-4 text-xs text-muted">
+              Gộp theo ngày bài viết THỰC SỰ được đăng (Publish At), không phải ngày crawl được — dùng để xem thực tế
+              đã thu thập được bao nhiêu bài cho từng ngày trong quá khứ (vd 13-19/7), khác với 2 biểu đồ trên vốn
+              luôn dồn hết vào ngày crawl (hôm nay).
+            </p>
+            <ThroughputChart data={data.document_publish_timeline} />
+          </Card>
+
+          <Card>
+            <h3 className="mb-1 font-display text-base font-semibold text-ink">
+              Số liệu document theo ngày đăng bài (sau khi lọc từ khoá)
+            </h3>
+            <p className="mb-4 text-xs text-muted">
+              Giống biểu đồ trên nhưng chỉ tính document đã khớp từ khoá thương hiệu/đối thủ (keyword_status =
+              &quot;matched&quot;) — số thực sự liên quan cho từng ngày.
+            </p>
+            <ThroughputChart data={data.document_publish_timeline_matched} />
           </Card>
 
           <Card>

@@ -332,6 +332,8 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
             crawled_sources: list[dict] = []
             document_throughput: list[dict] = []
             document_throughput_matched: list[dict] = []
+            document_publish_timeline: list[dict] = []
+            document_publish_timeline_matched: list[dict] = []
             recent_documents: list[dict] = []
         else:
             sources_by_status = conn.execute(
@@ -400,9 +402,41 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
                 params,
             ).fetchall()
 
+            # Same shape again, but grouped by published_at (the post's own
+            # date) instead of first_seen_at (when the crawler found it) —
+            # a document crawled today about a post from a week ago shows up
+            # under today in the two charts above, but under its real
+            # publish date here. Needed to actually see "how much of 13-19/7
+            # did we capture" instead of "how much did we crawl today".
+            document_publish_timeline = conn.execute(
+                f"""
+                SELECT date(d.published_at AT TIME ZONE 'Asia/Ho_Chi_Minh') AS day, d.platform_type, count(*) AS count
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE {where_clause} AND d.published_at >= now() - interval '14 days'
+                GROUP BY 1, 2
+                ORDER BY 1
+                """,
+                params,
+            ).fetchall()
+
+            document_publish_timeline_matched = conn.execute(
+                f"""
+                SELECT date(d.published_at AT TIME ZONE 'Asia/Ho_Chi_Minh') AS day, d.platform_type, count(*) AS count
+                FROM documents d
+                JOIN crawl_targets ct ON ct.id = d.target_id
+                WHERE {where_clause} AND d.published_at >= now() - interval '14 days'
+                  AND d.keyword_status = 'matched'
+                GROUP BY 1, 2
+                ORDER BY 1
+                """,
+                params,
+            ).fetchall()
+
             recent_documents = conn.execute(
                 f"""
-                SELECT d.id, d.platform_type, d.topic, d.url, ct.display_name AS target_name, d.first_seen_at
+                SELECT d.id, d.platform_type, d.topic, d.url, ct.display_name AS target_name,
+                       d.first_seen_at, d.published_at
                 FROM documents d
                 JOIN crawl_targets ct ON ct.id = d.target_id
                 WHERE {where_clause}
@@ -420,6 +454,8 @@ def get_monitoring_overview(user: dict = Depends(get_current_user)) -> dict:
         "crawled_sources": crawled_sources,
         "document_throughput": document_throughput,
         "document_throughput_matched": document_throughput_matched,
+        "document_publish_timeline": document_publish_timeline,
+        "document_publish_timeline_matched": document_publish_timeline_matched,
         "dag_runs": dag_runs,
         "recent_documents": recent_documents,
         "airflow_unreachable": airflow_unreachable,

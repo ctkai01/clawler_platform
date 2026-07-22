@@ -50,6 +50,7 @@ export interface RecentDocument {
   url: string
   target_name: string | null
   first_seen_at: string
+  published_at: string | null
 }
 
 export interface DagRunItem {
@@ -79,6 +80,8 @@ export interface MonitoringOverview {
   crawled_sources: CrawledSource[]
   document_throughput: DocumentThroughputPoint[]
   document_throughput_matched: DocumentThroughputPoint[]
+  document_publish_timeline: DocumentThroughputPoint[]
+  document_publish_timeline_matched: DocumentThroughputPoint[]
   dag_runs: DagRunItem[]
   recent_documents: RecentDocument[]
   airflow_unreachable: boolean

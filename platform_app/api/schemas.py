@@ -145,6 +145,7 @@ class RecentDocumentOut(BaseModel):
     url: str
     target_name: str | None
     first_seen_at: datetime
+    published_at: datetime | None
 
 
 class DagRunOut(BaseModel):
@@ -174,6 +175,8 @@ class MonitoringOverview(BaseModel):
     crawled_sources: list[CrawledSourceOut]
     document_throughput: list[DocumentThroughputPoint]
     document_throughput_matched: list[DocumentThroughputPoint]
+    document_publish_timeline: list[DocumentThroughputPoint]
+    document_publish_timeline_matched: list[DocumentThroughputPoint]
     dag_runs: list[DagRunOut]
     recent_documents: list[RecentDocumentOut]
     airflow_unreachable: bool
