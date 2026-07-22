@@ -4,9 +4,32 @@ import hashlib
 import json
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from fb_crawl.types import Comment, Post, PostEngagement
+
+_TIME_DEBUG_DIR = Path("/tmp/fb_time_debug")
+_TIME_DEBUG_MAX_FILES = 8
+
+
+def save_time_debug_html(html: str, post_url: str) -> None:
+    """Best-effort capture of a post's raw HTML when published_at extraction
+    fails on it (see EXTRACT_POST_PAGE_JS's time-scraping block in
+    facebook_extract.py) — for offline inspection of the actual DOM shape
+    the current selectors are missing, instead of guessing blind at further
+    fixes. Capped so a systemic failure mode can't fill the disk. Never
+    raises — a debug aid must not be able to break a real crawl."""
+    try:
+        _TIME_DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+        existing = list(_TIME_DEBUG_DIR.glob("*.html"))
+        if len(existing) >= _TIME_DEBUG_MAX_FILES:
+            return
+        safe_name = re.sub(r"[^a-zA-Z0-9]+", "_", post_url)[-80:]
+        path = _TIME_DEBUG_DIR / f"{len(existing)}_{safe_name}.html"
+        path.write_text(html, encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
 
 _FB_POST_ID_RE = re.compile(
     r"(?:/groups/\d+/posts/(\d+)|/permalink/(\d+)|story_fbid=(\d+)|/posts/([^/?#]+)|/share/p/([^/?]+)|/videos/(\d+)|[?&]v=(\d+)|[?&]fbid=(\d+))"

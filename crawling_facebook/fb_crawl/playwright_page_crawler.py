@@ -23,6 +23,7 @@ from fb_crawl.parser import (
     extract_post_id,
     normalize_page_post_url,
     normalize_page_url,
+    save_time_debug_html,
 )
 from fb_crawl.types import CheckpointError, Post
 
@@ -497,6 +498,8 @@ class PlaywrightPageCrawler:
             post.source_type = "page"
         if post and (post.topic or post.content or post.author):
             post.comments = post.comments[: self.max_comments]
+            if not post.published_at:
+                save_time_debug_html(await page.content(), post_url)
             return post
         await page.wait_for_timeout(1500)
         data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
@@ -508,6 +511,8 @@ class PlaywrightPageCrawler:
             post.videos = media.get("videos") or []
             post.source_type = "page"
             post.comments = post.comments[: self.max_comments]
+            if not post.published_at:
+                save_time_debug_html(await page.content(), post_url)
         return post
 
     async def fetch_single_post(self, post_url: str) -> Post | None:

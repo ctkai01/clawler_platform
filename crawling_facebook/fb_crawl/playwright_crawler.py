@@ -22,6 +22,7 @@ from fb_crawl.parser import (
     extract_group_id,
     extract_post_id,
     normalize_group_post_url,
+    save_time_debug_html,
 )
 from fb_crawl.types import CheckpointError, NotGroupMemberError, Post
 
@@ -496,6 +497,8 @@ class PlaywrightGroupCrawler:
             post.videos = media.get("videos") or []
         if post and (post.topic or post.content or post.author):
             post.comments = post.comments[: self.max_comments]
+            if not post.published_at:
+                save_time_debug_html(await page.content(), post_url)
             return post
         await page.wait_for_timeout(1500)
         data = await page.evaluate(EXTRACT_POST_PAGE_JS, target_post_id)
@@ -507,6 +510,8 @@ class PlaywrightGroupCrawler:
             post.videos = media.get("videos") or []
         if post:
             post.comments = post.comments[: self.max_comments]
+            if not post.published_at:
+                save_time_debug_html(await page.content(), post_url)
         return post
 
     async def fetch_single_post(self, post_url: str) -> Post | None:
