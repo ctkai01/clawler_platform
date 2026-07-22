@@ -964,8 +964,8 @@ EXTRACT_POST_PAGE_JS = """
   function looksLikeFbTime(t) {
     if (!t || t.length > 50) return false;
     if (timeRe.test(t)) return true;
-    if (/^\\d+\\s*(phút|giờ|ngày|giây|min|hr|h|m|d|day|days?\\s+ago)/i.test(t)) return true;
-    if (/^(?:yesterday|today|hôm qua|hôm nay)\\b/i.test(t)) return true;
+    if (/^\\d+\\s*(phút|giờ|ngày|giây|tuần|tháng|năm|min|hr|h|m|d|w|y|day|days?|week|weeks?|month|months?|year|years?)\\s*(trước|ago)?/i.test(t)) return true;
+    if (/^(?:yesterday|today|hôm qua|hôm nay|vừa xong|just now)\\b/i.test(t)) return true;
     if (/^\\d{1,2}\\s*(?:tháng|thg)\\s*\\d{1,2}/i.test(t)) return true;
     if (/^(?:january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\\s+\\d{1,2}/i.test(t)) return true;
     if (/\\b\\d{1,2}:\\d{2}\\s*(?:am|pm)?\\b/i.test(t) && t.length < 35) return true;
@@ -975,21 +975,47 @@ EXTRACT_POST_PAGE_JS = """
   let publishedTime = '';
   let publishedUnix = null;
   const timeScopes = postRoot ? [postRoot, document] : [document];
+  // data-utime can land on any element depending on layout, not just
+  // abbr/span/a — the old selector list silently missed it when Facebook
+  // used a different tag for a given post/page type.
   for (const scope of timeScopes) {
-    scope.querySelectorAll('abbr[data-utime], span[data-utime], a[data-utime]').forEach((el) => {
+    scope.querySelectorAll('[data-utime]').forEach((el) => {
+      if (publishedUnix) return;
       const raw = el.getAttribute('data-utime');
-      if (raw && !publishedUnix) {
-        const n = parseInt(raw, 10);
-        if (Number.isFinite(n) && n > 0) publishedUnix = n;
-      }
+      const n = raw ? parseInt(raw, 10) : NaN;
+      if (Number.isFinite(n) && n > 0) publishedUnix = n;
     });
     if (publishedUnix) break;
   }
+  // Most reliable text source when there's no data-utime: Facebook almost
+  // always renders the visible relative time AS the clickable link back to
+  // the post's own permalink (near the header) — check that specific link
+  // before falling back to a blind scan of every span/abbr on the page,
+  // which can miss a post whose time element isn't one of those 3 tags.
+  if (!publishedUnix && !publishedTime && postRoot) {
+    const permalinkSelectors =
+      'a[href*="/posts/"], a[href*="story_fbid"], a[href*="permalink"], a[href*="/videos/"], a[href*="/photos/"], a[href*="pfbid"]';
+    for (const el of postRoot.querySelectorAll(permalinkSelectors)) {
+      const title = (el.getAttribute('title') || '').trim();
+      const inner = (el.innerText || '').trim();
+      for (const t of [title, inner]) {
+        if (looksLikeFbTime(t)) {
+          publishedTime = t;
+          break;
+        }
+      }
+      if (publishedTime) break;
+    }
+  }
   document.querySelectorAll('[aria-label]').forEach((el) => {
+    if (publishedTime) return;
     const label = el.getAttribute('aria-label') || '';
-    const timeM = label.match(/bài viết của .+ vào (.+)$/i)
-      || label.match(/post by .+ (?:on|at) (.+)$/i);
-    if (timeM && !publishedTime) publishedTime = timeM[1].trim();
+    const explicit = label.match(/bài viết của .+ vào (.+)$/i) || label.match(/post by .+ (?:on|at) (.+)$/i);
+    if (explicit) {
+      publishedTime = explicit[1].trim();
+    } else if (looksLikeFbTime(label)) {
+      publishedTime = label.trim();
+    }
   });
   if (!publishedTime) {
     for (const scope of timeScopes) {
