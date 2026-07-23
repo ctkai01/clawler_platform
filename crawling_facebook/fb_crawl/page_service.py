@@ -42,11 +42,21 @@ class PageCrawlService:
         *,
         new_post_hours: float = NEW_POST_HOURS,
         recent_comment_minutes: float = RECENT_COMMENT_MINUTES,
+        max_posts_per_crawl: int = 40,
     ) -> None:
         self.storage = storage
         self.crawler = crawler
         self.new_post_hours = new_post_hours
         self.recent_comment_minutes = recent_comment_minutes
+        # Unlike the profile crawler (max_posts=200, bounded by its own
+        # scroll-time cap), nothing here limited how many post URLs a single
+        # crawl would fully fetch — an active page resuming after DAGs had
+        # been paused/resumed repeatedly in one day accumulated a 124-post
+        # backlog, and fetching all of them (each its own page load +
+        # comment scroll) blew well past RabbitMQ's 30-minute consumer ack
+        # timeout and killed the whole Celery worker (real incident). The
+        # rest naturally get picked up on the next crawl_interval_sec tick.
+        self.max_posts_per_crawl = max_posts_per_crawl
 
     async def crawl_page(self, page_url: str, *, feed_only: bool = False) -> CrawlPageResult:
         crawled_at = _utcnow()
@@ -91,13 +101,21 @@ class PageCrawlService:
         ]
 
         all_urls = dedupe_page_post_urls(new_feed_urls + recheck_only, page_id)
+        capped = len(all_urls) > self.max_posts_per_crawl
+        if capped:
+            # Keep rechecks (small, already-known posts due a refresh) plus
+            # as many new posts as fit — the rest are still genuinely new
+            # and will show up again (still un-known) on the next crawl.
+            room = max(0, self.max_posts_per_crawl - len(recheck_only))
+            all_urls = dedupe_page_post_urls(new_feed_urls[:room] + recheck_only, page_id)
         logger.info(
-            "Crawl %d URL (feed=%d bo qua %d bai da biet, recheck=%d%s)",
+            "Crawl %d URL (feed=%d bo qua %d bai da biet, recheck=%d%s%s)",
             len(all_urls),
             len(feed_urls),
             len(feed_urls) - len(new_feed_urls),
             len(recheck_only),
             ", feed-only" if feed_only else "",
+            f", cắt bớt (giới hạn {self.max_posts_per_crawl})" if capped else "",
         )
 
         crawled = await self.crawler.fetch_posts_from_urls(all_urls, page_id=page_id)

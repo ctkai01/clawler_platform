@@ -41,11 +41,16 @@ class GroupCrawlService:
         *,
         new_post_hours: float = NEW_POST_HOURS,
         recent_comment_minutes: float = RECENT_COMMENT_MINUTES,
+        max_posts_per_crawl: int = 40,
     ) -> None:
         self.storage = storage
         self.crawler = crawler
         self.new_post_hours = new_post_hours
         self.recent_comment_minutes = recent_comment_minutes
+        # See PageCrawlService's identical field — same real incident
+        # (unbounded post-fetch count blowing past RabbitMQ's 30-min ack
+        # timeout and killing the whole worker), same fix, Group side.
+        self.max_posts_per_crawl = max_posts_per_crawl
 
     async def crawl_group(self, group_url: str, *, feed_only: bool = False) -> CrawlGroupResult:
         crawled_at = _utcnow()
@@ -89,13 +94,18 @@ class GroupCrawlService:
         ]
 
         all_urls = dedupe_post_urls(new_feed_urls + recheck_only, group_id)
+        capped = len(all_urls) > self.max_posts_per_crawl
+        if capped:
+            room = max(0, self.max_posts_per_crawl - len(recheck_only))
+            all_urls = dedupe_post_urls(new_feed_urls[:room] + recheck_only, group_id)
         logger.info(
-            "Crawl %d URL (feed=%d bo qua %d bai da biet, recheck=%d%s)",
+            "Crawl %d URL (feed=%d bo qua %d bai da biet, recheck=%d%s%s)",
             len(all_urls),
             len(feed_urls),
             len(feed_urls) - len(new_feed_urls),
             len(recheck_only),
             ", feed-only" if feed_only else "",
+            f", cắt bớt (giới hạn {self.max_posts_per_crawl})" if capped else "",
         )
 
         crawled = await self.crawler.fetch_posts_from_urls(all_urls, group_id=group_id)
