@@ -142,9 +142,17 @@ class PlaywrightGroupCrawler:
         # already-parsed storage_state dict itself (e.g. read from
         # fb_accounts.session_data) — new_context() below accepts both.
         self.storage_state_path = storage_state_path
+        # Matches auto_generate_states.py/create_profile.py (the tools that
+        # actually create fb_accounts.session_data via a real login) —
+        # replaying a session under a DIFFERENT Chrome version than the one
+        # it was created with is a fingerprint mismatch Facebook's
+        # anti-fraud system can flag; a wave of fresh accounts hit
+        # CHECKPOINT within ~20 minutes on Group/Page specifically (not
+        # Profile, whose own default already matched at Chrome/124) right
+        # after this UA drifted to 128 here.
         self.user_agent = user_agent or (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            "(KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         )
         self.proxy_server = proxy_server
         self.proxy_username = proxy_username
