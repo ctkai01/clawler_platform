@@ -188,6 +188,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: fbcrawl
       RABBITMQ_DEFAULT_PASS: fbcrawl
+    volumes:
+      - ./rabbitmq/consumer-timeout.conf:/etc/rabbitmq/conf.d/10-consumer-timeout.conf:ro
     ports:
       # Management UI — kept loopback-only always (not needed by a remote
       # worker). Not 15672/5672 defaults, and not 15673 either: the
