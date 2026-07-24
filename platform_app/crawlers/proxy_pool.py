@@ -11,8 +11,6 @@ import time
 import urllib.request
 from dataclasses import dataclass
 
-import redis
-
 logger = logging.getLogger(__name__)
 
 # How long a proxy that just failed a health check (startup probe or a
@@ -30,23 +28,6 @@ _UNHEALTHY_COOLDOWN_SECONDS = 60.0
 # specifically (auth issue, IP banned by FB, etc).
 _PROBE_TARGET = "www.facebook.com:443"
 _PROBE_TIMEOUT_SECONDS = 5.0
-
-# Celery's prefork pool means each concurrent worker slot is a SEPARATE OS
-# process with its own copy of this module's in-memory state (forked once
-# at startup, diverges after) — so the cooldown dict below only dedupes
-# reset() calls made by the SAME process, not across sibling processes. A
-# proxy that goes bad gets hit by several concurrently-running batches at
-# once, each in its own process, each deciding independently to call the
-# provider's reset-IP API — real incident: the provider started returning
-# 403 Forbidden, almost certainly its own rate limit on that endpoint.
-# Redis (already used for the inflight locks) is the one thing actually
-# shared across every process, so reset() claims a short-lived key there
-# before calling the provider — only the process that wins the claim
-# actually calls it; the rest skip, since the IP is already mid-rotation.
-_RESET_DEDUPE_SECONDS = 60
-_redis = redis.Redis.from_url(
-    os.environ.get("FB_INFLIGHT_REDIS_URL", "redis://redis:6379/2"), decode_responses=True
-)
 
 
 @dataclass
@@ -213,27 +194,6 @@ class ProxyPool:
         self.mark_unhealthy(proxy)
         if not proxy.reset_url:
             return
-        # Cross-process dedupe (see _RESET_DEDUPE_SECONDS above) — only the
-        # worker process that wins this claim actually calls the provider's
-        # reset-IP endpoint; every sibling process that hits the same dead
-        # proxy in the same window just skips, since the IP is already
-        # being rotated. If Redis itself hiccups, fail open (still call the
-        # provider) rather than raise — an uncaught exception here would
-        # escape reset()'s caller (batch_tasks.py's per-target except
-        # block) uncaught, and the outer crawl_batch_task would misread
-        # that as the ACCOUNT being checkpointed (its only other except
-        # clause), wrongly quarantining a perfectly fine account over a
-        # transient Redis blip that has nothing to do with it — real risk,
-        # not hypothetical, given this whole session's checkpoint history.
-        claim_key = f"fb:proxy-reset-claim:{proxy.server}"
-        try:
-            got_claim = _redis.set(claim_key, "1", nx=True, ex=_RESET_DEDUPE_SECONDS)
-        except Exception:
-            logger.warning("Redis lỗi khi giành quyền đổi IP proxy %s — vẫn thử gọi API.", proxy.server, exc_info=True)
-            got_claim = True
-        if not got_claim:
-            logger.info("Bỏ qua đổi IP proxy %s — vừa có process khác đổi rồi.", proxy.server)
-            return
         try:
             # Some providers (confirmed: mproxy.vn) block urllib's default
             # "Python-urllib/x.y" User-Agent outright with a 403 — nothing
@@ -245,10 +205,10 @@ class ProxyPool:
             )
             body = urllib.request.urlopen(request, timeout=10).read()
             # 200 doesn't mean the IP actually changed — mproxy.vn's own
-            # per-minute rate limit (confirmed: 1/min, matches our Redis
-            # dedupe window) comes back as HTTP 200 with a "code" field in
-            # the JSON body, e.g. {"status":0,"code":"499","message":"Reset
-            # ip quá nhanh..."}. A real success has no "code" key.
+            # per-minute rate limit (confirmed: 1/min) comes back as HTTP
+            # 200 with a "code" field in the JSON body, e.g.
+            # {"status":0,"code":"499","message":"Reset ip quá nhanh..."}.
+            # A real success has no "code" key.
             try:
                 parsed = json.loads(body)
             except ValueError:
