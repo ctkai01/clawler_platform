@@ -10,6 +10,8 @@ import time
 import urllib.request
 from dataclasses import dataclass
 
+import redis
+
 logger = logging.getLogger(__name__)
 
 # How long a proxy that just failed a health check (startup probe or a
@@ -25,6 +27,23 @@ _UNHEALTHY_COOLDOWN_SECONDS = 300.0
 # specifically (auth issue, IP banned by FB, etc).
 _PROBE_TARGET = "www.facebook.com:443"
 _PROBE_TIMEOUT_SECONDS = 5.0
+
+# Celery's prefork pool means each concurrent worker slot is a SEPARATE OS
+# process with its own copy of this module's in-memory state (forked once
+# at startup, diverges after) — so the cooldown dict below only dedupes
+# reset() calls made by the SAME process, not across sibling processes. A
+# proxy that goes bad gets hit by several concurrently-running batches at
+# once, each in its own process, each deciding independently to call the
+# provider's reset-IP API — real incident: the provider started returning
+# 403 Forbidden, almost certainly its own rate limit on that endpoint.
+# Redis (already used for the inflight locks) is the one thing actually
+# shared across every process, so reset() claims a short-lived key there
+# before calling the provider — only the process that wins the claim
+# actually calls it; the rest skip, since the IP is already mid-rotation.
+_RESET_DEDUPE_SECONDS = 60
+_redis = redis.Redis.from_url(
+    os.environ.get("FB_INFLIGHT_REDIS_URL", "redis://redis:6379/2"), decode_responses=True
+)
 
 
 @dataclass
@@ -190,6 +209,15 @@ class ProxyPool:
         proxy while the new IP is still propagating."""
         self.mark_unhealthy(proxy)
         if not proxy.reset_url:
+            return
+        # Cross-process dedupe (see _RESET_DEDUPE_SECONDS above) — only the
+        # worker process that wins this claim actually calls the provider's
+        # reset-IP endpoint; every sibling process that hits the same dead
+        # proxy in the same window just skips, since the IP is already
+        # being rotated.
+        claim_key = f"fb:proxy-reset-claim:{proxy.server}"
+        if not _redis.set(claim_key, "1", nx=True, ex=_RESET_DEDUPE_SECONDS):
+            logger.info("Bỏ qua đổi IP proxy %s — vừa có process khác đổi rồi.", proxy.server)
             return
         try:
             urllib.request.urlopen(proxy.reset_url, timeout=10).read()
