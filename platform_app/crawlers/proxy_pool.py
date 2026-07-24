@@ -217,9 +217,21 @@ class ProxyPool:
         # worker process that wins this claim actually calls the provider's
         # reset-IP endpoint; every sibling process that hits the same dead
         # proxy in the same window just skips, since the IP is already
-        # being rotated.
+        # being rotated. If Redis itself hiccups, fail open (still call the
+        # provider) rather than raise — an uncaught exception here would
+        # escape reset()'s caller (batch_tasks.py's per-target except
+        # block) uncaught, and the outer crawl_batch_task would misread
+        # that as the ACCOUNT being checkpointed (its only other except
+        # clause), wrongly quarantining a perfectly fine account over a
+        # transient Redis blip that has nothing to do with it — real risk,
+        # not hypothetical, given this whole session's checkpoint history.
         claim_key = f"fb:proxy-reset-claim:{proxy.server}"
-        if not _redis.set(claim_key, "1", nx=True, ex=_RESET_DEDUPE_SECONDS):
+        try:
+            got_claim = _redis.set(claim_key, "1", nx=True, ex=_RESET_DEDUPE_SECONDS)
+        except Exception:
+            logger.warning("Redis lỗi khi giành quyền đổi IP proxy %s — vẫn thử gọi API.", proxy.server, exc_info=True)
+            got_claim = True
+        if not got_claim:
             logger.info("Bỏ qua đổi IP proxy %s — vừa có process khác đổi rồi.", proxy.server)
             return
         try:
