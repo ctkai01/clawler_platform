@@ -15,12 +15,14 @@ import redis
 logger = logging.getLogger(__name__)
 
 # How long a proxy that just failed a health check (startup probe or a
-# confirmed net::ERR_* during a real crawl) sits out of acquire()'s
+# confirmed net::ERR_*/timeout during a real crawl) sits out of acquire()'s
 # rotation. Long enough that concurrent batches dispatched in the same
 # burst don't all pile onto the same known-bad proxy; short enough that a
-# proxy which comes back (provider fixes it, IP reset finishes propagating)
-# gets tried again without a worker restart.
-_UNHEALTHY_COOLDOWN_SECONDS = 300.0
+# proxy which comes back (these providers flap — often back within
+# seconds to low tens of seconds, not minutes) doesn't sit needlessly idle
+# for long against a small 6-10 proxy pool, where losing one for a full
+# 5 min was a meaningful chunk of capacity. Was 300s, then 120s.
+_UNHEALTHY_COOLDOWN_SECONDS = 60.0
 # Startup probe target/timeout — CONNECT through the proxy to the actual
 # site we crawl, not some generic reachability check, since a proxy can
 # accept TCP connections but still fail to tunnel to facebook.com
