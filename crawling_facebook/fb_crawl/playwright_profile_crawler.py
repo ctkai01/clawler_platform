@@ -522,6 +522,19 @@ class PlaywrightProfileCrawler:
                 await page.close()
         else:
             if last_exc:
+                exc_str = str(last_exc)
+                if "net::ERR_" in exc_str or "Timeout" in exc_str:
+                    # Same signal batch_tasks.py's per-target handler uses to
+                    # trigger a proxy reset — swallowing this as a per-post
+                    # warning (old behavior) let a genuinely dead proxy get
+                    # reused for every remaining post in the target, real
+                    # incident: 14 posts × 3 failed attempts each, ~10+ min
+                    # wasted on guaranteed failures with the proxy never
+                    # rotated. Raise instead, same as CheckpointError above:
+                    # build_post's gather() cancels the other in-flight
+                    # posts, and batch_tasks.py's except block sees this and
+                    # rotates the proxy.
+                    raise last_exc
                 logger.warning("Bỏ qua comment cho %s sau 3 lần thử: %s", post_url, last_exc)
 
         comments: dict[str, dict[str, Any]] = {}

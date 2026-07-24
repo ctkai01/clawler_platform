@@ -407,8 +407,23 @@ class PlaywrightPageCrawler:
                             post.group_id = page_id
                         post.comments = post.comments[: self.max_comments]
                         return post
+                except CheckpointError:
+                    # Account-level, not per-post — must propagate (unlike
+                    # the generic except below) so the caller isolates the
+                    # account instead of silently hammering the same
+                    # checkpointed session for every remaining post.
+                    raise
                 except Exception as exc:
                     done += 1
+                    exc_str = str(exc)
+                    if "net::ERR_" in exc_str or "Timeout" in exc_str:
+                        # Same signal batch_tasks.py's per-target handler
+                        # uses to trigger a proxy reset — swallowing this as
+                        # a per-post warning (old behavior) let a genuinely
+                        # dead proxy get reused for every remaining post in
+                        # the batch instead of ever getting rotated. Raise
+                        # so it propagates instead.
+                        raise
                     logger.warning("Không crawl được %s: %s", url, exc)
                 finally:
                     await page.close()
