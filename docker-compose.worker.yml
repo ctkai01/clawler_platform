@@ -19,17 +19,27 @@ services:
       context: .
       dockerfile: Dockerfile
       target: fb-worker
+    # Loads everything in .env (FB_PROXY_SERVER_*, FB_NEW_POST_HOURS, ...)
+    # into the container — same as the hub's fb-celery-worker service.
+    # Without this, only the 3 vars explicitly listed below actually reach
+    # the container; FB_CELERY_CONCURRENCY still worked without it because
+    # that one gets substituted straight into the `command:` line below,
+    # not passed as a container env var — real gap, found when this
+    # machine was first given its own dedicated proxies and they silently
+    # had no effect.
+    env_file:
+      - .env
     environment:
       CRAWL_PLATFORM_DSN: postgresql://crawler:${APP_DB_PASSWORD}@${HUB_HOST}/crawl_platform
       FB_BROKER_URL: amqp://fbcrawl:fbcrawl@${HUB_HOST}:5672//
       # Port 16379, not Redis's default 6379 — the hub exposes it there
       # because 6379 is already taken by an unrelated project on that host.
       FB_INFLIGHT_REDIS_URL: redis://${HUB_HOST}:16379/2
-      # Deliberately no FB_PROXY_* here — see docs/fb-worker-remote.md for
-      # why sharing the hub's single proxy port across two workers would
-      # have them reset each other's IP mid-crawl. Leaving these unset
-      # falls back to a direct connection (this machine's own IP), which
-      # sidesteps that and adds a second, distinct source IP for free.
+      # FB_PROXY_* now comes from .env via env_file above when this machine
+      # has its own dedicated proxies (not the hub's — see
+      # docs/fb-worker-remote.md for why sharing a port across 2 workers
+      # would have them reset each other's IP mid-crawl). Leave FB_PROXY_*
+      # unset in .env to fall back to a direct connection instead.
     command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl
       --concurrency ${FB_CELERY_CONCURRENCY:-4} --hostname worker2@%h
     restart: unless-stopped
