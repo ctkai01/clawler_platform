@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import itertools
+import json
 import logging
 import os
 import socket
@@ -222,7 +223,30 @@ class ProxyPool:
             logger.info("Bỏ qua đổi IP proxy %s — vừa có process khác đổi rồi.", proxy.server)
             return
         try:
-            urllib.request.urlopen(proxy.reset_url, timeout=10).read()
-            logger.info("Đã đổi IP proxy qua %s", proxy.reset_url)
+            # Some providers (confirmed: mproxy.vn) block urllib's default
+            # "Python-urllib/x.y" User-Agent outright with a 403 — nothing
+            # to do with rate limits, a plain curl/browser UA to the exact
+            # same URL gets 200. Spoofing a normal UA here fixed it.
+            request = urllib.request.Request(
+                proxy.reset_url,
+                headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"},
+            )
+            body = urllib.request.urlopen(request, timeout=10).read()
+            # 200 doesn't mean the IP actually changed — mproxy.vn's own
+            # per-minute rate limit (confirmed: 1/min, matches our Redis
+            # dedupe window) comes back as HTTP 200 with a "code" field in
+            # the JSON body, e.g. {"status":0,"code":"499","message":"Reset
+            # ip quá nhanh..."}. A real success has no "code" key.
+            try:
+                parsed = json.loads(body)
+            except ValueError:
+                parsed = None
+            if isinstance(parsed, dict) and parsed.get("code"):
+                logger.warning(
+                    "Đổi IP proxy %s KHÔNG thành công (nhà cung cấp từ chối): %s",
+                    proxy.reset_url, parsed.get("message"),
+                )
+            else:
+                logger.info("Đã đổi IP proxy qua %s", proxy.reset_url)
         except Exception:
             logger.warning("Không đổi được IP proxy qua %s", proxy.reset_url, exc_info=True)
