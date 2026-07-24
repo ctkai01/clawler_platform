@@ -214,7 +214,24 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
     return account_checkpointed
 
 
-@app.task(name="platform_app.crawlers.batch_tasks.crawl_batch_task", bind=True, max_retries=0)
+@app.task(
+    name="platform_app.crawlers.batch_tasks.crawl_batch_task",
+    bind=True,
+    max_retries=0,
+    # Hard backstop for a task that's truly hung (Playwright/Chromium
+    # deadlocked, not just slow) — _TASK_TIME_BUDGET_SECONDS above only
+    # works if the code is still at an `await` point respecting
+    # cancellation; a genuinely stuck task would ignore that and sit until
+    # RabbitMQ's consumer_timeout (now 3h, raised specifically so normal
+    # slow-but-working tasks stop crashing the whole worker — see
+    # rabbitmq/consumer-timeout.conf). SIGKILL-ing the one child process
+    # after 28 min (just past the 25 min soft budget) keeps the worst case
+    # in minutes, not hours; the pool spawns a replacement child, no other
+    # task or the worker itself is affected. Known tradeoff: a hard-killed
+    # child can leave its Chromium subprocess orphaned rather than cleanly
+    # closed — acceptable given the alternative is the whole worker down.
+    time_limit=1680,
+)
 def crawl_batch_task(self, platform_type: str, target_ids: list[int], session_key: str | None) -> None:
     account = _account_pool.acquire_specific(session_key) if session_key else _account_pool.acquire()
     if account is None:
