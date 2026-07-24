@@ -40,6 +40,11 @@ services:
       # docs/fb-worker-remote.md for why sharing a port across 2 workers
       # would have them reset each other's IP mid-crawl). Leave FB_PROXY_*
       # unset in .env to fall back to a direct connection instead.
+    # --loglevel=info matches the hub's fb-celery-worker — without it,
+    # Celery defaults to WARNING and every "Task ... received"/"succeeded
+    # in Xs" line (both logger.info) is silently dropped, making it look
+    # like nothing is completing when it actually is (real gap: found while
+    # debugging what looked like zero successful tasks on this machine).
     command: celery -A platform_app.crawlers.celery_app worker --queues fb_crawl
-      --concurrency ${FB_CELERY_CONCURRENCY:-4} --hostname worker2@%h
+      --concurrency ${FB_CELERY_CONCURRENCY:-4} --hostname worker2@%h --loglevel=info
     restart: unless-stopped
