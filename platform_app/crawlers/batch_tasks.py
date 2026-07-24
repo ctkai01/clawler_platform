@@ -93,6 +93,7 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
             # once checkpoint-safety (now added — see CheckpointError checks
             # in playwright_profile_crawler.py) has been proven live.
             "concurrency": 1,
+            "account_key": account.key,
         }
 
     deadline = time.monotonic() + _TASK_TIME_BUDGET_SECONDS

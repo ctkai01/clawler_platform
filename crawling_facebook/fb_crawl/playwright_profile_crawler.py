@@ -157,7 +157,14 @@ class PlaywrightProfileCrawler:
         max_comments: int = MAX_COMMENTS,
         public_only: bool = True,
         concurrency: int = 3,
+        account_key: str | None = None,
     ) -> None:
+        # Only used to label the hard-scroll-limit warnings below — lets an
+        # operator correlate "profile X hit the 400-round cap" with which
+        # fb_accounts row was doing the crawling (e.g. to check whether that
+        # account was itself soft-restricted, not just this profile being
+        # noisy).
+        self.account_key = account_key
         self.headless = headless
         self.storage_state_path = storage_state_path
         # Matches the reference project's UA exactly (crawl_facebook_profile.py)
@@ -342,16 +349,16 @@ class PlaywrightProfileCrawler:
             if round_count > self.max_scroll_rounds:
                 logger.warning(
                     "Đạt giới hạn cứng %s vòng cuộn, dừng scroll (khả năng Facebook "
-                    "liên tục nạp nội dung nền không phải bài viết thật).",
-                    self.max_scroll_rounds,
+                    "liên tục nạp nội dung nền không phải bài viết thật). account=%s",
+                    self.max_scroll_rounds, self.account_key,
                 )
                 break
             elapsed = _monotonic() - start_time
             if elapsed > self.max_scroll_seconds:
                 logger.warning(
                     "Đạt giới hạn cứng %.0fs cuộn timeline, dừng scroll (khả năng "
-                    "Facebook liên tục nạp nội dung nền không phải bài viết thật).",
-                    self.max_scroll_seconds,
+                    "Facebook liên tục nạp nội dung nền không phải bài viết thật). account=%s",
+                    self.max_scroll_seconds, self.account_key,
                 )
                 break
 
@@ -724,8 +731,8 @@ class PlaywrightProfileCrawler:
             try:
                 await page.screenshot(path="/tmp/profile_debug.png")
                 logger.warning(
-                    "DEBUG profile scroll end: url=%s title=%s payloads=%d",
-                    page.url, await page.title(), len(payloads),
+                    "DEBUG profile scroll end: url=%s title=%s payloads=%d account=%s",
+                    page.url, await page.title(), len(payloads), self.account_key,
                 )
             except Exception as exc:  # noqa: BLE001
                 logger.warning("DEBUG screenshot failed: %s", exc)
