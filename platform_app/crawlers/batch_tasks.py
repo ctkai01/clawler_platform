@@ -196,17 +196,21 @@ async def _run_batch(platform_type: str, target_ids: list[int], account: Account
             except Exception as exc:  # noqa: BLE001 - isolate per-target failure
                 repository.mark_failed(target_id, str(exc))
                 logger.warning("Crawl lỗi target %s (%s): %s", target_id, platform_type, exc)
-                # net::ERR_* (timeout, connection refused, tunnel failed...)
-                # is Chromium's own signal that the network path — i.e. this
-                # batch's proxy — failed, not something about the page
-                # content. Rotate it once so the NEXT target in this batch
-                # (and future acquires of this proxy) get a fresh IP instead
-                # of repeating the same failure — but only once per batch:
-                # ProxyPool.acquire() no longer resets preemptively on every
-                # use (that itself was flagged as bot-like to Facebook), so
-                # this is the sole automatic recovery path for a proxy that
-                # has actually gone bad.
-                if not proxy_reset_attempted and "net::ERR_" in str(exc):
+                # net::ERR_* (connection refused, tunnel failed...) is
+                # Chromium's own signal the network path — i.e. this batch's
+                # proxy — failed outright. "Page.goto: Timeout Nms exceeded"
+                # is the OTHER way a bad proxy shows up — not refused, just
+                # hanging until Playwright's own timeout — and doesn't
+                # contain "net::ERR_" at all, so it silently bypassed this
+                # check entirely: a slow/hung proxy (not hard-dead) kept
+                # getting reused, burning a full 60s per target that landed
+                # on it, real incident on tommy. Either signal now rotates
+                # it once per batch — ProxyPool.acquire() no longer resets
+                # preemptively on every use (that itself was flagged as
+                # bot-like to Facebook), so this is the sole automatic
+                # recovery path for a proxy that's actually gone bad.
+                exc_str = str(exc)
+                if not proxy_reset_attempted and ("net::ERR_" in exc_str or "Timeout" in exc_str):
                     proxy_reset_attempted = True
                     _proxy_pool.reset(proxy)
             finally:
